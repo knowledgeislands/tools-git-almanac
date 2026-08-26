@@ -83,6 +83,7 @@ From immutable baseline `54adf837553b00d990ff681dd385ca3650e85ac5`, the standalo
 - Added KI-conformant repository governance, Specifications, Guides, installer, manual, CI, release packaging, and outbound Homebrew trade `TRD-96f0b04f`.
 - Resolved three non-failing Biome environment-access notices in the missing-Git contract test and added reciprocal `ki-all` Agora consent.
 - Aligned the live GitHub repository with the declared public KI standard: synchronized description, squash-only merges, branch cleanup, feature toggles, dependency security, secret protection, and public topics.
+- Initialized ephemeral Claude and Codex repository skill surfaces and aligned KI/XDG registry state so CI can run the canonical full audit on a blank runner.
 
 ### Verification
 
@@ -90,6 +91,7 @@ From immutable baseline `54adf837553b00d990ff681dd385ca3650e85ac5`, the standalo
 - All 19 tests passed with 100% statements, branches, functions, and lines over product code.
 - `ki repo audit --repo .` passed all 16 declared capabilities against the selected canonical Harness.
 - The scoped live-GitHub `ki-repo` audit passed after the repository settings were conformed.
+- An isolated clean-clone reproduction with the CI bootstrap passed the full 16-capability audit using only ephemeral runtime markers, managed repository skill links, and explicit local registry state.
 - The bundled Node release executable reported `gitlendar 0.1.0`.
 - `./bin/gitlendar year` and local terminal, SVG, HTML, and JSON renders agreed on nine commits across one active day; all generated reports were written under `/tmp`.
 - `./install.sh --link` linked the executable and manpage into temporary install directories, and the linked executable reported `gitlendar 0.1.0`.
