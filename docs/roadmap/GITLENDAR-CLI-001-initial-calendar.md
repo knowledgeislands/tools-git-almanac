@@ -92,6 +92,7 @@ From immutable baseline `54adf837553b00d990ff681dd385ca3650e85ac5`, the standalo
 - `ki repo audit --repo .` passed all 16 declared capabilities against the selected canonical Harness.
 - The scoped live-GitHub `ki-repo` audit passed after the repository settings were conformed.
 - An isolated clean-clone reproduction with the CI bootstrap passed the full 16-capability audit using only ephemeral runtime markers, managed repository skill links, and explicit local registry state.
+- The first pushed GitHub Actions run using the corrected bootstrap passed every governance, build, test, manual, and installer job.
 - The bundled Node release executable reported `gitlendar 0.1.0`.
 - `./bin/gitlendar year` and local terminal, SVG, HTML, and JSON renders agreed on nine commits across one active day; all generated reports were written under `/tmp`.
 - `./install.sh --link` linked the executable and manpage into temporary install directories, and the linked executable reported `gitlendar 0.1.0`.
