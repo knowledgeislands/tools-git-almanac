@@ -410,10 +410,11 @@ describe('gitlendar CLI contract', () => {
     const invalid = await invoke(['year', root, '--ref', 'missing'], { git: invalidRefExecutor })
     expect(invalid.stderr).toContain("invalid Git ref 'missing': not found")
 
-    const originalPath = process.env['PATH']
-    process.env['PATH'] = ''
+    const environment = process.env as { PATH?: string }
+    const originalPath = environment.PATH
+    environment.PATH = ''
     const missingGit = await executeGit(['--version'], process.cwd())
-    process.env['PATH'] = originalPath
+    environment.PATH = originalPath
     expect(missingGit.exitCode).toBe(1)
     expect(missingGit.stderr).toContain('git')
   })
