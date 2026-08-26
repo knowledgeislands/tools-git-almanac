@@ -4,10 +4,10 @@ area: CLI
 title: Initial activity calendar
 theme: cli
 horizon: now
-status: ready
+status: in-progress
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: 54adf837553b00d990ff681dd385ca3650e85ac5
 ---
 
 # GITLENDAR-CLI-001: Initial activity calendar
