@@ -72,7 +72,7 @@ Retain this item as the canonical delivery and review record; no additional loca
 
 ### Delivered
 
-The standalone `gitlendar` repository now turns one local repository or monorepo path into terminal, HTML, SVG, or JSON annual activity output. It includes direct checkout execution, development linking, completion output, a manual, CI and release workflows, a sample SVG, and governed release and Homebrew guidance.
+From immutable baseline `54adf837553b00d990ff681dd385ca3650e85ac5`, the standalone `gitlendar` repository now turns one local repository or monorepo path into terminal, HTML, SVG, or JSON annual activity output. It includes direct checkout execution, development linking, completion output, a manual, CI and release workflows, a sample SVG, governed release and Homebrew guidance, and reciprocal `ki-all` registration. The reviewed implementation and test-fix evidence ends at `2a1dd6b0672691dca36287edd76e5ca106707be4` before this packet refresh. Tagging, release publication, and Homebrew tap implementation remain outside the accepted delivery boundary.
 
 ### Summary of changes
 
@@ -81,28 +81,36 @@ The standalone `gitlendar` repository now turns one local repository or monorepo
 - Added terminal, self-contained HTML, accessible standalone SVG, and versioned JSON renderers.
 - Added 19 contract tests using deliberately dated temporary repositories, including filtering, refs, merges, timezones, boundaries, accessibility, renderer consistency, and installer linking.
 - Added KI-conformant repository governance, Specifications, Guides, installer, manual, CI, release packaging, and outbound Homebrew trade `TRD-96f0b04f`.
+- Resolved three non-failing Biome environment-access notices in the missing-Git contract test and added reciprocal `ki-all` Agora consent.
+- Aligned the live GitHub repository with the declared public KI standard: synchronized description, squash-only merges, branch cleanup, feature toggles, dependency security, secret protection, and public topics.
 
 ### Verification
 
-- `bunx tsc --noEmit`, `bun run test`, `bun run test:coverage`, Biome, rumdl, Knip, Syncpack, the compiled build, shellcheck, and mandoc all passed.
-- The 19 tests passed with 100% statements, branches, functions, and lines over product code.
+- `bunx tsc --noEmit`, `bun run test`, `bun run test:coverage`, `bunx biome check .`, `bunx rumdl check .`, `bunx knip`, `bunx syncpack lint`, `bun run build`, `shellcheck install.sh`, `bun run ki:tools:lint-man`, and `git diff --check` passed during review.
+- All 19 tests passed with 100% statements, branches, functions, and lines over product code.
 - `ki repo audit --repo .` passed all 16 declared capabilities against the selected canonical Harness.
-- A bundled Node release executable reported `gitlendar 0.1.0` and generated a non-empty JSON report.
-- The default read-only `hnr-backend` acceptance run resolved `HEAD` to `8d91089114199aeede3531de13c5e1d36a58a195` before and after, found 2,749 commits across 266 active days for 2025-08-27 through 2026-08-26, and generated an 89,651-byte SVG under `/tmp`.
+- The scoped live-GitHub `ki-repo` audit passed after the repository settings were conformed.
+- The bundled Node release executable reported `gitlendar 0.1.0`.
+- `./bin/gitlendar year` and local terminal, SVG, HTML, and JSON renders agreed on nine commits across one active day; all generated reports were written under `/tmp`.
+- `./install.sh --link` linked the executable and manpage into temporary install directories, and the linked executable reported `gitlendar 0.1.0`.
+- The linked executable rendered all four `hnr-backend` formats with identical totals: 2,749 commits across 266 active days from 2025-08-27 through 2026-08-26. The SVG was 89,651 bytes.
+- The `hnr-backend` acceptance repository remained clean at `8d91089114199aeede3531de13c5e1d36a58a195`; its Git status fingerprint was unchanged after all four renders.
+- `ki repo audit --skill ki-agora --repo .` passed in both `tools-gitlendar` and the Agora home. `ki agora show estate` includes `tools-gitlendar`, and `ki agora show ki-all` resolves 19 reciprocal members including this repository.
+- The GitHub repository exists and its `main` branch contained the complete initial delivery before these review commits.
 
 ### Outstanding concerns
 
-- The configured GitHub repository has not been created or pushed, and `v0.1.0` has not been tagged or published; these actions remain outside this delivery's authority.
+- `v0.1.0` remains untagged and unpublished pending explicit release approval.
 - The Homebrew formula cannot be finalized until an immutable release exists and the tap independently receives and accepts `TRD-96f0b04f`.
-- Agora conformance is present, but no reciprocal Agora membership was inferred for this new repository.
+- No implementation or verification concerns remain for the approved delivery boundary.
 
 ### Post-change review
 
-All formats consume the same normalized model, so totals and counting rules cannot drift by renderer. Git invocation uses argument arrays, pathspecs containing spaces are covered by contract tests, empty histories and invalid inputs fail helpfully, and the inspected repository remains unchanged. No network or forge integration entered the product core.
+All formats consume the same normalized model, so totals and counting rules cannot drift by renderer. Git invocation uses argument arrays, pathspecs containing spaces are covered by contract tests, empty histories and invalid inputs fail helpfully, and inspected repositories remain unchanged. The review exercise reproduced those properties against both this repository and `hnr-backend`; no network or forge integration entered the product core.
 
 ### Mini recap
 
-The initial product outcome is complete and locally usable. Human review can start with `./bin/gitlendar year`, inspect `examples/gitlendar.svg`, and exercise `./install.sh --link`; release and tap work remain deliberately gated.
+The initial product outcome is complete, locally usable, present on GitHub, registered in the local estate, and reciprocally admitted to `ki-all`. Human review can exercise `./bin/gitlendar year`, inspect `examples/gitlendar.svg`, and use `./install.sh --link`; acceptance, release, and tap work remain deliberately gated.
 
 ## Discussion
 
