@@ -7,7 +7,7 @@ receiver: knowledgeislands/homebrew-tap
 kind: work
 source_ref: "GITLENDAR-CLI-001"
 observation: completion
-phase: preparing
+phase: submitted
 ---
 
 # TRD-96f0b04f: Add gitlendar formula after v0.1.0 release
