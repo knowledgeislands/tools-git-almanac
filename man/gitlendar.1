@@ -1,0 +1,133 @@
+.TH GITLENDAR 1 "2026-08-26" "gitlendar 0.1.0" "User Commands"
+.SH NAME
+gitlendar \- render a local Git activity calendar
+.SH SYNOPSIS
+.B gitlendar year
+.RI [ repository ]
+.RI [ options ]
+.PP
+.B gitlendar completion
+.RI < bash | zsh >
+.SH DESCRIPTION
+.B gitlendar
+reads commits reachable from one local Git ref and renders an annual activity
+calendar.
+It makes no network requests, needs no forge account, and does not alter Git
+history or configuration.
+.PP
+The default interval contains 365 local calendar dates ending today, padded to
+complete Sunday-through-Saturday display weeks.
+Commits are grouped by author date in the local timezone.
+.SH COMMANDS
+.TP
+.BR year " [" repository "]"
+Render activity for the repository containing the current directory, or for
+the supplied repository path.
+.TP
+.BR completion " <" bash | zsh ">"
+Write a sourceable completion definition to standard output.
+.SH YEAR OPTIONS
+.TP
+.BI --author " pattern"
+Pass an author name or email pattern to Git.
+.TP
+.BI --path " pathspec"
+Restrict history to a Git pathspec relative to the repository root.
+This option may be repeated; paths containing spaces are passed without shell
+interpolation.
+.TP
+.BI --ref " git-ref"
+Select the reachable history root.
+The default is HEAD.
+.TP
+.BI --since " YYYY-MM-DD"
+Set the first counted local calendar date.
+.TP
+.BI --until " YYYY-MM-DD"
+Set the last counted local calendar date.
+The default is today.
+.TP
+.BI --date " author|committer"
+Choose which Git timestamp is grouped into local calendar days.
+The default is author.
+.TP
+.B --include-merges
+Include merge commits.
+Merges are excluded by default.
+.TP
+.BI --format " terminal|html|svg|json"
+Select the renderer.
+The default is terminal.
+.TP
+.BI --output " path"
+Write the rendered result to a file instead of standard output.
+.TP
+.BI --theme " light|dark"
+Select the visual palette.
+The default is light.
+.TP
+.B --no-color
+Disable ANSI colour and use distinct intensity characters.
+.SH COUNTING CONTRACT
+One Git log traversal reads commits reachable from the selected ref.
+Each object ID is counted once.
+All authors are included unless filtered, and merge commits are excluded unless
+requested.
+The selected author or committer timestamp is grouped in the local timezone.
+A path filter uses Git pathspec semantics.
+.PP
+Every renderer consumes the same normalized model and deterministic four-band
+intensity thresholds.
+The generation timestamp is the only intentionally variable report field.
+.SH OUTPUTS
+Terminal output includes month and weekday labels, five intensity states,
+totals, active days, the busiest day, and streaks.
+When colour is disabled, distinct Unicode characters preserve intensity.
+.PP
+HTML is self-contained and embeds an accessible, responsive SVG.
+Standalone SVG cells carry keyboard focus, accessible labels, dates, counts,
+and native hover details.
+JSON uses the versioned schemaVersion 1 model.
+.SH ENVIRONMENT
+.TP
+.B NO_COLOR
+Disable terminal ANSI colour when the variable is present.
+.TP
+.B TZ
+Select the process timezone through the runtime's standard timezone handling.
+.TP
+.B GITLENDAR_INSTALL_DIR
+Override the installer executable directory.
+.TP
+.B GITLENDAR_MAN_INSTALL_DIR
+Override the installer manual directory.
+.TP
+.B GITLENDAR_VERSION
+Select an exact v-prefixed release for install.sh.
+.SH INSTALLATION
+Install an immutable released asset with:
+.nf
+curl -fsSL https://raw.githubusercontent.com/knowledgeislands/tools-gitlendar/\
+main/install.sh | bash
+.fi
+.PP
+For local development, run:
+.nf
+\&./install.sh --link
+gitlendar year .
+.fi
+.PP
+Link mode requires Bun and leaves the checkout as the executable source.
+.SH EXIT STATUS
+.TP
+.B 0
+Success.
+.TP
+.B 1
+Repository, Git, rendering, or output failure.
+.TP
+.B 2
+Invalid gitlendar syntax or option value.
+.SH SEE ALSO
+.BR git (1),
+.BR git-log (1)

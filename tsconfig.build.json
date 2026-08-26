@@ -5,6 +5,7 @@
     "declaration": true,
     "declarationMap": true,
     "noEmit": false,
+    "noUncheckedIndexedAccess": true,
     "outDir": "./dist",
     "rootDir": "./src"
   },
