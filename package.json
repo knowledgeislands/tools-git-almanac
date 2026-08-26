@@ -1,0 +1,67 @@
+{
+  "name": "@knowledgeislands/gitlendar",
+  "description": "Turn one local Git repository's activity into a trustworthy annual calendar.",
+  "version": "0.1.0",
+  "author": "kris@kris.me.uk",
+  "bin": {
+    "gitlendar": "dist/cli/cli.js"
+  },
+  "bugs": {
+    "url": "https://github.com/knowledgeislands/tools-gitlendar/issues"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.5.10",
+    "@types/bun": "^1.3.14",
+    "@types/node": "^24.10.1",
+    "@vitest/coverage-v8": "^4.1.11",
+    "husky": "^9.1.7",
+    "knip": "^6.32.2",
+    "lint-staged": "^17.3.0",
+    "rumdl": "^0.2.60",
+    "syncpack": "^15.3.3",
+    "typescript": "^7.0.0",
+    "vitest": "^4.1.11"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "files": [
+    "dist",
+    "man",
+    "README.md",
+    "LICENSE"
+  ],
+  "homepage": "https://github.com/knowledgeislands/tools-gitlendar#readme",
+  "keywords": [
+    "calendar",
+    "cli",
+    "git",
+    "visualization"
+  ],
+  "license": "MIT",
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx,json,jsonc}": [
+      "bunx @biomejs/biome check --write --no-errors-on-unmatched"
+    ],
+    "*.md": [
+      "bunx rumdl check --fix"
+    ]
+  },
+  "packageManager": "bun@1.3.14",
+  "private": false,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/knowledgeislands/tools-gitlendar.git"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json && chmod +x dist/cli/cli.js",
+    "clean": "rm -rf dist node_modules",
+    "ki:deps:update": "bun update --latest",
+    "ki:tools:lint-man": "mandoc -T lint man/gitlendar.1",
+    "prepare": "husky",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "test:watch": "vitest"
+  },
+  "type": "module"
+}
