@@ -4,7 +4,7 @@ area: CLI
 title: Initial activity calendar
 theme: cli
 horizon: now
-status: draft
+status: ready
 blocks: []
 blocked_by: []
 baseline_ref: null
