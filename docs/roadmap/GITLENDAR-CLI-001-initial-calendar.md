@@ -4,7 +4,7 @@ area: CLI
 title: Initial activity calendar
 theme: cli
 horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 54adf837553b00d990ff681dd385ca3650e85ac5
@@ -114,6 +114,10 @@ All formats consume the same normalized model, so totals and counting rules cann
 ### Mini recap
 
 The initial product outcome is complete, locally usable, present on GitHub, registered in the local estate, and reciprocally admitted to `ki-all`. Human review can exercise `./bin/gitlendar year`, inspect `examples/gitlendar.svg`, and use `./install.sh --link`; acceptance, release, and tap work remain deliberately gated.
+
+## Done
+
+Accepted by the user on 27 August 2026. The initial `gitlendar` delivery is retained as the evidence-backed baseline; the approved successor planning work belongs to GITLENDAR-CLI-002 and does not reopen this item.
 
 ## Discussion
 
