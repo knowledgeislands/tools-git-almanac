@@ -10,7 +10,7 @@ harnesses = ["knowledgeislands/ki-agentic-harness"]
 
 repository = "https://github.com/knowledgeislands/tools-git-almanac"
 title = "Git Almanac"
-description = "Turn one local Git repository's activity into a trustworthy annual calendar."
+description = "Inspect one local Git repository's calendars, authors, contributors, and reports offline."
 repo_code = "ALMANAC"
 supported_runtimes = ["claude-code", "claude-desktop", "chatgpt-codex"]
 visibility = "public"
@@ -21,6 +21,8 @@ license = "MIT"
 
 
 [skills.ki-authoring]
+
+[skills.ki-decision-records]
 
 
 [skills.ki-guides]

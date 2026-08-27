@@ -68,7 +68,7 @@ jobs:
       - run: bun run test:coverage
       - run: bun run build
       - run: ./dist/cli/cli.js --version
-      - run: ./bin/git-almanac year . --format svg --output "$RUNNER_TEMP/git-almanac.svg"
+      - run: ./bin/git-almanac calendar . --format svg --output "$RUNNER_TEMP/git-almanac.svg"
       - run: test -s "$RUNNER_TEMP/git-almanac.svg"
 
   manual:

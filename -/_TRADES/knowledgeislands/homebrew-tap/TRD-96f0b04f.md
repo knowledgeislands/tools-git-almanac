@@ -22,4 +22,4 @@ After `knowledgeislands/tools-git-almanac` publishes immutable v0.1.0, add and v
 
 ## Constraints
 
-Do not create the formula from a mutable branch. Pin the immutable v0.1.0 archive and checksum; depend on `node@22` or a compatible Node 22 runtime; install the `git-almanac` executable and `git-almanac.1` manual; verify `git-almanac --version`, `git almanac year` against a temporary repository, and the installed manual.
+Do not create the formula from a mutable branch. Pin the immutable v0.1.0 archive and checksum; depend on `node@22` or a compatible Node 22 runtime; install the `git-almanac` executable and `git-almanac.1` manual; verify `git-almanac --version`, `git almanac calendar` against a temporary repository, and the installed manual.

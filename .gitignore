@@ -8,3 +8,4 @@
 .agents/skills/*
 !.agents/skills/ki-self/
 !.agents/skills/ki-self/**
+/reports/
