@@ -1,15 +1,15 @@
-.TH GITLENDAR 1 "2026-08-26" "gitlendar 0.1.0" "User Commands"
+.TH GIT-ALMANAC 1 "2026-08-26" "git-almanac 0.1.0" "User Commands"
 .SH NAME
-gitlendar \- render a local Git activity calendar
+git-almanac \- render a local Git activity calendar
 .SH SYNOPSIS
-.B gitlendar year
+.B git-almanac year
 .RI [ repository ]
 .RI [ options ]
 .PP
-.B gitlendar completion
+.B git-almanac completion
 .RI < bash | zsh >
 .SH DESCRIPTION
-.B gitlendar
+.B git-almanac
 reads commits reachable from one local Git ref and renders an annual activity
 calendar.
 It makes no network requests, needs no forge account, and does not alter Git
@@ -96,25 +96,25 @@ Disable terminal ANSI colour when the variable is present.
 .B TZ
 Select the process timezone through the runtime's standard timezone handling.
 .TP
-.B GITLENDAR_INSTALL_DIR
+.B GIT_ALMANAC_INSTALL_DIR
 Override the installer executable directory.
 .TP
-.B GITLENDAR_MAN_INSTALL_DIR
+.B GIT_ALMANAC_MAN_INSTALL_DIR
 Override the installer manual directory.
 .TP
-.B GITLENDAR_VERSION
+.B GIT_ALMANAC_VERSION
 Select an exact v-prefixed release for install.sh.
 .SH INSTALLATION
 Install an immutable released asset with:
 .nf
-curl -fsSL https://raw.githubusercontent.com/knowledgeislands/tools-gitlendar/\
+curl -fsSL https://raw.githubusercontent.com/knowledgeislands/tools-git-almanac/\
 main/install.sh | bash
 .fi
 .PP
 For local development, run:
 .nf
 \&./install.sh --link
-gitlendar year .
+git-almanac year .
 .fi
 .PP
 Link mode requires Bun and leaves the checkout as the executable source.
@@ -127,7 +127,7 @@ Success.
 Repository, Git, rendering, or output failure.
 .TP
 .B 2
-Invalid gitlendar syntax or option value.
+Invalid git-almanac syntax or option value.
 .SH SEE ALSO
 .BR git (1),
 .BR git-log (1)

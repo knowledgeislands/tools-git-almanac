@@ -12,7 +12,7 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       reporter: ['text', 'lcov', 'html'],
-      reportsDirectory: join(tmpdir(), `gitlendar-vitest-coverage-${process.pid}`),
+      reportsDirectory: join(tmpdir(), `git-almanac-vitest-coverage-${process.pid}`),
       include: ['src/**/*.ts'],
       exclude: ['src/**/*.test.ts', 'src/tests/**', 'src/cli/cli.ts'],
       thresholds: {

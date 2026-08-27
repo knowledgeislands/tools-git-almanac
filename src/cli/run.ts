@@ -51,7 +51,7 @@ export const run = async (args: string[], context: RunContext = defaultContext()
       return 0
     }
     if (parsed.command === 'version') {
-      context.stdout(`gitlendar ${VERSION}\n`)
+      context.stdout(`git-almanac ${VERSION}\n`)
       return 0
     }
     if (parsed.command === 'completion') {
@@ -79,11 +79,11 @@ export const run = async (args: string[], context: RunContext = defaultContext()
     return 0
   } catch (error) {
     if (isUsageError(error)) {
-      context.stderr(`gitlendar: error: ${error.message}\n\n${HELP}`)
+      context.stderr(`git-almanac: error: ${error.message}\n\n${HELP}`)
       return 2
     }
     const message = error instanceof Error ? error.message : String(error)
-    context.stderr(`gitlendar: error: ${message}\n`)
+    context.stderr(`git-almanac: error: ${message}\n`)
     return 1
   }
 }

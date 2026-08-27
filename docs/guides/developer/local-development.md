@@ -1,6 +1,6 @@
 # Local development
 
-Use this guide to change or evaluate gitlendar without installing a release.
+Use this guide to change or evaluate Git Almanac without installing a release.
 
 ## Prepare the checkout
 
@@ -14,8 +14,8 @@ bun install
 Run source directly:
 
 ```bash
-./bin/gitlendar --version
-./bin/gitlendar year /path/to/repository --format svg --output /tmp/activity.svg
+./bin/git-almanac --version
+./bin/git-almanac year /path/to/repository --format svg --output /tmp/activity.svg
 ```
 
 The development executable has a Bun shebang and imports `src/cli/cli.ts`. No build is required.
@@ -25,8 +25,8 @@ The development executable has a Bun shebang and imports `src/cli/cli.ts`. No bu
 Link the development executable and manual into user-selected directories:
 
 ```bash
-GITLENDAR_INSTALL_DIR="$HOME/.local/bin" ./install.sh --link
-gitlendar year .
+GIT_ALMANAC_INSTALL_DIR="$HOME/.local/bin" ./install.sh --link
+git almanac year .
 ```
 
 Link mode refuses to replace an existing regular file. Remove or relocate that file deliberately before retrying.

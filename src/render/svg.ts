@@ -33,9 +33,9 @@ export const renderSvg = (model: ActivityModel, theme: Theme): string => {
   const summaryY = TOP + 7 * STEP + 28
 
   return `<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" role="img" aria-labelledby="gitlendar-title gitlendar-desc">
-  <title id="gitlendar-title">${escapeMarkup(model.repository.name)} activity calendar</title>
-  <desc id="gitlendar-desc">${escapeMarkup(`${model.summary.totalCommits} commits across ${model.summary.activeDays} active days. ${COUNTING_RULES}`)}</desc>
+<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}" role="img" aria-labelledby="git-almanac-title git-almanac-desc">
+  <title id="git-almanac-title">${escapeMarkup(model.repository.name)} activity calendar</title>
+  <desc id="git-almanac-desc">${escapeMarkup(`${model.summary.totalCommits} commits across ${model.summary.activeDays} active days. ${COUNTING_RULES}`)}</desc>
   <style>
     svg { background: ${palette.panel}; color: ${palette.text}; font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
     text { fill: ${palette.text}; }

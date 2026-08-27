@@ -8,8 +8,8 @@ harnesses = ["knowledgeislands/ki-agentic-harness"]
 
 [skills.ki-repo]
 
-repository = "https://github.com/knowledgeislands/tools-gitlendar"
-title = "gitlendar"
+repository = "https://github.com/knowledgeislands/tools-git-almanac"
+title = "Git Almanac"
 description = "Turn one local Git repository's activity into a trustworthy annual calendar."
 repo_code = "ALMANAC"
 supported_runtimes = ["claude-code", "claude-desktop", "chatgpt-codex"]

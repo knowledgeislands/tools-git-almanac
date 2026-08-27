@@ -32,7 +32,7 @@ It excludes hosted services, forge APIs, network collection, guessed identity me
 
 ## Current state
 
-The accepted repository provides `gitlendar year` with terminal, HTML, SVG, and JSON renderers over one normalized commit-count model. The public GitHub repository is `knowledgeislands/tools-gitlendar`, the local checkout has the same basename, the npm package is `@knowledgeislands/gitlendar`, and the executable, manual, installer, examples, CI release assets, KI estate entry, `ki-all` membership, and outbound Homebrew trade use the old identity.
+The accepted baseline provides a `year` command with terminal, HTML, SVG, and JSON renderers over one normalized commit-count model. Its pre-release product, repository, package, executable, manual, installer, examples, CI release assets, KI estate entry, `ki-all` membership, and outbound Homebrew trade are all subject to the hard rename in this delivery.
 
 No release or package has been published and no Homebrew formula has been installed, so a hard rename can replace the unreleased command without a legacy alias. By explicit user decision, the pre-release roadmap namespace has moved once to the canonical `ALMANAC` code; Git history is the only retained source of the previous identifier and product name.
 
@@ -40,11 +40,11 @@ No release or package has been published and no Homebrew formula has been instal
 
 - [ ] Complete exact name clearance and add a Decision Record for the Git Almanac identity, one-time pre-release migration to the stable `ALMANAC` roadmap code, command taxonomy, output rules, report workspace, configuration precedence, and deferred metrics.
 - [ ] Extend the normalized history model and argument-safe Git adapter with exact raw `Name <email>` author identities while preserving one history traversal per request, read-only inspection, commit-OID uniqueness, local-timezone grouping, and the accepted filter contract.
-- [ ] Replace the unreleased `gitlendar year` surface with `git almanac calendar`, add `authors` and full `contributors`, share repository/ref/date/path/author/merge options, and expose `--metric commits` as the only initially supported metric.
+- [ ] Replace the unreleased `git-almanac year` surface with `git almanac calendar`, add `authors` and full `contributors`, share repository/ref/date/path/author/merge options, and expose `--metric commits` as the only initially supported metric.
 - [ ] Implement standalone output rules: stdout by default, supported-extension format inference for `--output`, explicit `--format` precedence, exact explicit paths, combined calendar default, deterministic contributor ordering, and explicit `--output-dir` for multi-file exports.
 - [ ] Implement `git almanac report` plus partial `report calendar`, `report authors`, and `report contributors` builds under `<repository-root>/reports/git-almanac/`, with a static linked site, combined and per-author SVG assets, versioned normalized data, an effective counting-contract manifest, atomic managed updates, and refusal to overwrite a foreign directory.
 - [ ] Add optional `<repository-root>/.git-almanac.toml` configuration with schema versioning and built-in → repository → CLI precedence, plus `config init`, `config show`, `config check`, composite `init`, and idempotent `ignore` behavior that chooses `/reports/` only when broad ignoring is safe and otherwise adds `/reports/git-almanac/`.
-- [ ] Rename package, executable, bin entry, manual, installer/link mode, completions, examples, release assets, source terminology, documentation, and local checkout from Gitlendar to Git Almanac without retaining an unreleased compatibility alias.
+- [ ] Rename package, executable, bin entry, manual, installer/link mode, completions, examples, release assets, source terminology, documentation, and local checkout to Git Almanac without retaining an unreleased compatibility alias.
 - [ ] Rename the GitHub repository to `knowledgeislands/tools-git-almanac`, update its canonical metadata and local remote, migrate the local KI estate entry, and update reciprocal `ki-all` consent in this repository and `knowledgeislands/ki-agentic-harness`.
 - [ ] Update every field and instruction in the repository-local Homebrew trade for the future `git-almanac` artifact, including sender, source reference, repository URL, archive, executable, manual, formula, and smoke-test names, without modifying the Homebrew tap, publishing a release, or claiming receiver acceptance.
 - [ ] Add in-process CLI and temporary-repository coverage for command parsing, author identity and ranking, shared filters, output inference, report assembly and partial builds, manifest compatibility, safe overwrite refusal, configuration precedence and validation, ignore/init idempotence, installer linking, paths with spaces, empty repositories, and error behavior.
@@ -56,7 +56,7 @@ No release or package has been published and no Homebrew formula has been instal
 
 Expected scope in this repository includes `.ki-config.toml`, `.gitignore`, package and toolchain metadata, `bin/`, `src/`, tests, installer, manual, completions, examples, workflows, README, changelog, Specifications, Guides, a new Decision Record, the outbound trade, and this roadmap record. Product files may be renamed or split into cohesive history, configuration, report, and rendering modules.
 
-The local checkout moves from `tools-gitlendar` to `tools-git-almanac`. The authorised cross-repository scope is limited to the exact reciprocal `ki-all` membership entry in `knowledgeislands/ki-agentic-harness`; local KI estate registration and GitHub repository metadata are migrated through their canonical tools. `hnr-backend` remains read-only, and `knowledgeislands/homebrew-tap` must not be changed.
+The local checkout moves to `tools-git-almanac`. The authorised cross-repository scope is limited to the exact reciprocal `ki-all` membership entry in `knowledgeislands/ki-agentic-harness`; local KI estate registration and GitHub repository metadata are migrated through their canonical tools. `hnr-backend` remains read-only, and `knowledgeislands/homebrew-tap` must not be changed.
 
 ## Verify
 
@@ -80,7 +80,7 @@ Add a Decision Record that fixes the Git Almanac name, Git extension form, stabl
 
 ### Specifications
 
-Replace the Gitlendar-specific annual-calendar specification with an as-built Git Almanac CLI and data contract covering commands, normalized identity and contribution semantics, counting metadata, output inference, report manifests and ownership, configuration, ignore/init mutations, and explicit non-goals.
+Replace the Git Almanac-specific annual-calendar specification with an as-built Git Almanac CLI and data contract covering commands, normalized identity and contribution semantics, counting metadata, output inference, report manifests and ownership, configuration, ignore/init mutations, and explicit non-goals.
 
 ### Guides
 

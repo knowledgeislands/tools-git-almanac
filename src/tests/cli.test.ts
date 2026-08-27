@@ -20,7 +20,7 @@ const git = (cwd: string, args: string[], env: NodeJS.ProcessEnv = {}): string =
   }).trim()
 
 const repository = (label = 'repository with spaces'): string => {
-  const root = mkdtempSync(join(tmpdir(), `gitlendar-${label}-`))
+  const root = mkdtempSync(join(tmpdir(), `git-almanac-${label}-`))
   roots.push(root)
   git(root, ['init', '-b', 'main'])
   git(root, ['config', 'user.name', 'Test User'])
@@ -109,25 +109,25 @@ afterAll(() => {
   for (const root of roots) rmSync(root, { recursive: true, force: true })
 })
 
-describe('gitlendar CLI contract', () => {
+describe('Git Almanac CLI contract', () => {
   test('renders help, version, and completion surfaces', async () => {
     const help = await invoke([])
     expect(help.code).toBe(0)
-    expect(help.stdout).toContain('Usage: gitlendar year')
+    expect(help.stdout).toContain('Usage: git almanac year')
 
     const version = await invoke(['--version'])
-    expect(version.stdout).toMatch(/^gitlendar 0\.1\.0/)
+    expect(version.stdout).toMatch(/^git-almanac 0\.1\.0/)
 
     const bash = await invoke(['completion', 'bash'])
-    expect(bash.stdout).toContain('complete -F _gitlendar gitlendar')
+    expect(bash.stdout).toContain('complete -F _git_almanac git-almanac')
 
     const zsh = await invoke(['completion', 'zsh'])
-    expect(zsh.stdout).toContain('#compdef gitlendar')
-    expect(zsh.stdout).toContain('compdef _gitlendar gitlendar')
+    expect(zsh.stdout).toContain('#compdef git-almanac')
+    expect(zsh.stdout).toContain('compdef _git_almanac git-almanac')
 
-    expect((await invoke(['help'])).stdout).toContain('Usage: gitlendar year')
-    expect((await invoke(['year', '--help'])).stdout).toContain('Usage: gitlendar year')
-    expect((await invoke(['-V'])).stdout).toContain('gitlendar 0.1.0')
+    expect((await invoke(['help'])).stdout).toContain('Usage: git almanac year')
+    expect((await invoke(['year', '--help'])).stdout).toContain('Usage: git almanac year')
+    expect((await invoke(['-V'])).stdout).toContain('git-almanac 0.1.0')
     expect((await invoke(['year', '--format', 'json'])).code).toBe(0)
   })
 
@@ -342,7 +342,7 @@ describe('gitlendar CLI contract', () => {
   })
 
   test('reports invalid repositories, refs, dates, options, and commands helpfully', async () => {
-    const missing = await invoke(['year', join(tmpdir(), 'gitlendar-does-not-exist')])
+    const missing = await invoke(['year', join(tmpdir(), 'git-almanac-does-not-exist')])
     expect(missing.code).toBe(1)
     expect(missing.stderr).toContain('not a Git repository')
 
@@ -369,7 +369,7 @@ describe('gitlendar CLI contract', () => {
     ]) {
       const result = await invoke(args)
       expect(result.code).toBe(2)
-      expect(result.stderr).toContain('gitlendar: error:')
+      expect(result.stderr).toContain('git-almanac: error:')
     }
   })
 

@@ -68,8 +68,8 @@ jobs:
       - run: bun run test:coverage
       - run: bun run build
       - run: ./dist/cli/cli.js --version
-      - run: ./bin/gitlendar year . --format svg --output "$RUNNER_TEMP/gitlendar.svg"
-      - run: test -s "$RUNNER_TEMP/gitlendar.svg"
+      - run: ./bin/git-almanac year . --format svg --output "$RUNNER_TEMP/git-almanac.svg"
+      - run: test -s "$RUNNER_TEMP/git-almanac.svg"
 
   manual:
     name: Manual
@@ -90,8 +90,8 @@ jobs:
       - uses: jdx/mise-action@9e7f7633ff6f6d6048a9418a68d48f288f50eb14 # v4.2.3
       - run: |
           set -euo pipefail
-          export GITLENDAR_INSTALL_DIR="$RUNNER_TEMP/bin"
-          export GITLENDAR_MAN_INSTALL_DIR="$RUNNER_TEMP/man/man1"
+          export GIT_ALMANAC_INSTALL_DIR="$RUNNER_TEMP/bin"
+          export GIT_ALMANAC_MAN_INSTALL_DIR="$RUNNER_TEMP/man/man1"
           ./install.sh --link
-          "$GITLENDAR_INSTALL_DIR/gitlendar" --version
-          test -L "$GITLENDAR_MAN_INSTALL_DIR/gitlendar.1"
+          "$GIT_ALMANAC_INSTALL_DIR/git-almanac" --version
+          test -L "$GIT_ALMANAC_MAN_INSTALL_DIR/git-almanac.1"

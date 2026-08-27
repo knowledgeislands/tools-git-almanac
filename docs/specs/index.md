@@ -1,6 +1,6 @@
 # Specifications
 
-This corpus defines the as-built behaviour of gitlendar. Requirements state what the system does; Guides explain how to use it, and roadmap items record when changes are delivered.
+This corpus defines the as-built behaviour of Git Almanac. Requirements state what the system does; Guides explain how to use it, and roadmap items record when changes are delivered.
 
 ## How to read a requirement
 

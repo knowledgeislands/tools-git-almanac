@@ -1,6 +1,6 @@
 # Guides
 
-Practical instructions for using, developing, and releasing gitlendar. The [Specifications](../specs/index.md) define what the tool does; these guides explain how to work with it.
+Practical instructions for using, developing, and releasing Git Almanac. The [Specifications](../specs/index.md) define what the tool does; these guides explain how to work with it.
 
 ## Start here
 

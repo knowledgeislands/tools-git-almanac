@@ -50,7 +50,7 @@ export const renderHtml = (model: ActivityModel, theme: Theme): string => {
       </div>
       <p class="policy"><strong>Counting contract.</strong> ${escapeMarkup(COUNTING_RULES)}</p>
     </section>
-    <footer>Generated ${escapeMarkup(model.generatedAt)} by gitlendar</footer>
+    <footer>Generated ${escapeMarkup(model.generatedAt)} by Git Almanac</footer>
   </main>
 </body>
 </html>

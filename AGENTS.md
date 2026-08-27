@@ -1,6 +1,6 @@
-# Working in tools-gitlendar
+# Working in Git Almanac
 
-This repository contains the standalone gitlendar command-line tool.
+This repository contains the standalone Git Almanac command-line tool.
 
 ## Engineering
 

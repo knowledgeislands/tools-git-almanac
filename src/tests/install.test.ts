@@ -8,7 +8,7 @@ const roots: string[] = []
 const repositoryRoot = resolve(import.meta.dirname, '../..')
 
 const temporaryRoot = (): string => {
-  const root = mkdtempSync(join(tmpdir(), 'gitlendar-install-'))
+  const root = mkdtempSync(join(tmpdir(), 'git-almanac-install-'))
   roots.push(root)
   return root
 }
@@ -26,7 +26,7 @@ describe('development installer contract', () => {
 
     expect(output).toContain('./install.sh [vX.Y.Z]')
     expect(output).toContain('./install.sh --link')
-    expect(output).toContain('GITLENDAR_INSTALL_DIR')
+    expect(output).toContain('GIT_ALMANAC_INSTALL_DIR')
   })
 
   test('links the development executable and manual into isolated directories', () => {
@@ -38,18 +38,18 @@ describe('development installer contract', () => {
       cwd: repositoryRoot,
       env: {
         ...process.env,
-        GITLENDAR_INSTALL_DIR: executableDirectory,
-        GITLENDAR_MAN_INSTALL_DIR: manualDirectory
+        GIT_ALMANAC_INSTALL_DIR: executableDirectory,
+        GIT_ALMANAC_MAN_INSTALL_DIR: manualDirectory
       }
     })
 
-    const executable = join(executableDirectory, 'gitlendar')
-    const manual = join(manualDirectory, 'gitlendar.1')
+    const executable = join(executableDirectory, 'git-almanac')
+    const manual = join(manualDirectory, 'git-almanac.1')
     expect(lstatSync(executable).isSymbolicLink()).toBe(true)
     expect(lstatSync(manual).isSymbolicLink()).toBe(true)
-    expect(resolve(executableDirectory, readlinkSync(executable))).toBe(join(repositoryRoot, 'bin', 'gitlendar'))
-    expect(resolve(manualDirectory, readlinkSync(manual))).toBe(join(repositoryRoot, 'man', 'gitlendar.1'))
+    expect(resolve(executableDirectory, readlinkSync(executable))).toBe(join(repositoryRoot, 'bin', 'git-almanac'))
+    expect(resolve(manualDirectory, readlinkSync(manual))).toBe(join(repositoryRoot, 'man', 'git-almanac.1'))
 
-    expect(execFileSync(executable, ['--version'], { encoding: 'utf8' }).trim()).toBe('gitlendar 0.1.0')
+    expect(execFileSync(executable, ['--version'], { encoding: 'utf8' }).trim()).toBe('git-almanac 0.1.0')
   })
 })

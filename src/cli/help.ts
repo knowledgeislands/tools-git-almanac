@@ -1,8 +1,8 @@
-export const HELP = `Usage: gitlendar year [repository] [options]
-       gitlendar completion <bash|zsh>
+export const HELP = `Usage: git almanac year [repository] [options]
+       git almanac completion <bash|zsh>
 
 Render a trailing local Git activity calendar. With no repository argument,
-gitlendar inspects the repository containing the current working directory.
+Git Almanac inspects the repository containing the current working directory.
 
 Options:
   --author <pattern>       Filter with Git's author pattern
@@ -27,7 +27,7 @@ and the inspected repository is changed only if explicitly named by --output.
 
 const dollar = '$'
 const bashCompletion = `${[
-  '_gitlendar() {',
+  '_git_almanac() {',
   `  local current="${dollar}{COMP_WORDS[COMP_CWORD]}"`,
   '  local commands="year completion"',
   '  local options="--author --path --ref --since --until --date --include-merges --format --output --theme --no-color --help --version"',
@@ -37,17 +37,17 @@ const bashCompletion = `${[
   `    COMPREPLY=( $(compgen -W "${dollar}{options}" -- "${dollar}{current}") )`,
   '  fi',
   '}',
-  'complete -F _gitlendar gitlendar'
+  'complete -F _git_almanac git-almanac'
 ].join('\n')}\n`
 
 const zshCompletion = `${[
-  '#compdef gitlendar',
+  '#compdef git-almanac',
   '',
-  '_gitlendar() {',
+  '_git_almanac() {',
   "  _arguments -C '1:command:(year completion)' '*::argument:->args'",
   '}',
   '',
-  'compdef _gitlendar gitlendar'
+  'compdef _git_almanac git-almanac'
 ].join('\n')}\n`
 
 export const renderCompletion = (shell: 'bash' | 'zsh'): string => (shell === 'bash' ? bashCompletion : zshCompletion)

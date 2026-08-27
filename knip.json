@@ -1,6 +1,6 @@
 {
   "$schema": "https://unpkg.com/knip@6/schema.json",
-  "entry": ["bin/gitlendar", "src/cli/cli.ts", "src/**/*.test.ts"],
+  "entry": ["bin/git-almanac", "src/cli/cli.ts", "src/**/*.test.ts"],
   "ignore": [".claude/skills/**", ".agents/skills/**"],
   "ignoreBinaries": ["mandoc"],
   "ignoreDependencies": ["lint-staged", "syncpack"],

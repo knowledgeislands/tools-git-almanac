@@ -25,23 +25,23 @@ jobs:
         run: |
           set -euo pipefail
           test "$(node -p "require('./package.json').version")" = "${VERSION#v}"
-          mkdir -p "release/gitlendar-$VERSION"
-          bun build --target=node --minify --outfile "release/gitlendar-$VERSION/gitlendar" src/cli/cli.ts
-          chmod 0755 "release/gitlendar-$VERSION/gitlendar"
-          cp man/gitlendar.1 "release/gitlendar-$VERSION/gitlendar.1"
-          tar -czf "release/gitlendar-$VERSION.tar.gz" -C release "gitlendar-$VERSION"
+          mkdir -p "release/git-almanac-$VERSION"
+          bun build --target=node --minify --outfile "release/git-almanac-$VERSION/git-almanac" src/cli/cli.ts
+          chmod 0755 "release/git-almanac-$VERSION/git-almanac"
+          cp man/git-almanac.1 "release/git-almanac-$VERSION/git-almanac.1"
+          tar -czf "release/git-almanac-$VERSION.tar.gz" -C release "git-almanac-$VERSION"
           (
             cd release
-            sha256sum "gitlendar-$VERSION.tar.gz" > SHA256SUMS
+            sha256sum "git-almanac-$VERSION.tar.gz" > SHA256SUMS
           )
-          "release/gitlendar-$VERSION/gitlendar" --version
+          "release/git-almanac-$VERSION/git-almanac" --version
       - name: Publish GitHub release
         env:
           GH_TOKEN: ${{ github.token }}
           VERSION: ${{ github.ref_name }}
         run: |
           gh release create "$VERSION" \
-            "release/gitlendar-$VERSION.tar.gz" \
+            "release/git-almanac-$VERSION.tar.gz" \
             "release/SHA256SUMS" \
             --generate-notes \
-            --title "gitlendar $VERSION"
+            --title "git-almanac $VERSION"

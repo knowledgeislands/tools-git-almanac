@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" width="814" height="238" viewBox="0 0 814 238" role="img" aria-labelledby="gitlendar-title gitlendar-desc">
-  <title id="gitlendar-title">tools-gitlendar activity calendar</title>
-  <desc id="gitlendar-desc">4 commits across 1 active days. Commits reachable from the selected ref are counted once by object ID; all authors are included unless filtered; merges are excluded by default; commits are grouped by the selected Git date in the local timezone.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" width="814" height="238" viewBox="0 0 814 238" role="img" aria-labelledby="git-almanac-title git-almanac-desc">
+  <title id="git-almanac-title">tools-git-almanac activity calendar</title>
+  <desc id="git-almanac-desc">4 commits across 1 active days. Commits reachable from the selected ref are counted once by object ID; all authors are included unless filtered; merges are excluded by default; commits are grouped by the selected Git date in the local timezone.</desc>
   <style>
     svg { background: #161b22; color: #f0f6fc; font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
     text { fill: #f0f6fc; }

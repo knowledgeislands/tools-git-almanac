@@ -1,10 +1,10 @@
-# gitlendar
+# Git Almanac
 
 Turn one local Git repository's activity into a trustworthy annual calendar.
 
-`gitlendar year` reads local history reachable from `HEAD`, counts each non-merge commit once by author date in the local timezone, and renders a GitHub-inspired 53-week calendar without a network request or forge account.
+`git almanac year` reads local history reachable from `HEAD`, counts each non-merge commit once by author date in the local timezone, and renders a GitHub-inspired 53-week calendar without a network request or forge account.
 
-![A sample gitlendar SVG calendar](examples/gitlendar.svg)
+![A sample Git Almanac SVG calendar](examples/git-almanac.svg)
 
 ## Try it locally
 
@@ -12,25 +12,25 @@ Install dependencies once, then run the checkout directly:
 
 ```bash
 bun install
-./bin/gitlendar year
+./bin/git-almanac year
 ```
 
 Generate each supported format:
 
 ```bash
-./bin/gitlendar year --no-color
-./bin/gitlendar year --format svg --output activity.svg
-./bin/gitlendar year --format html --output activity.html --theme dark
-./bin/gitlendar year --format json --output activity.json
+./bin/git-almanac year --no-color
+./bin/git-almanac year --format svg --output activity.svg
+./bin/git-almanac year --format html --output activity.html --theme dark
+./bin/git-almanac year --format json --output activity.json
 ```
 
 Use one workspace or subsystem in a monorepo:
 
 ```bash
-./bin/gitlendar year /path/to/repository --path "packages/service with spaces"
+./bin/git-almanac year /path/to/repository --path "packages/service with spaces"
 ```
 
-Run `./bin/gitlendar --help` or read [gitlendar(1)](man/gitlendar.1) for every option.
+Run `./bin/git-almanac --help` or read [git-almanac(1)](man/git-almanac.1) for every option.
 
 ## Counting contract
 
@@ -56,24 +56,24 @@ For checkout development, link both the executable and manual without publishing
 
 ```bash
 ./install.sh --link
-gitlendar year .
+git almanac year .
 ```
 
 After the first immutable release:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/knowledgeislands/tools-gitlendar/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/knowledgeislands/tools-git-almanac/main/install.sh | bash
 brew tap knowledgeislands/tap
-brew install gitlendar
+brew install git-almanac
 ```
 
 The release installer verifies the published SHA-256 manifest before replacing the installed executable. The Homebrew command becomes available only after the tap independently accepts the prepared formula handoff for an immutable release.
 
 [Guides](docs/guides/README.md) cover everyday use, local development, and release preparation.
 
-## Why gitlendar
+## Why Git Almanac
 
-The name combines Git and calendar, makes `gitlendar year` self-explanatory, and had no exact npm, PyPI, crates.io, Homebrew, or GitHub repository-name collision when selected on 26 August 2026.
+The name describes a local collection of Git calendars, identities, statistics, and reports. The `git-almanac` executable is naturally available as the `git almanac` extension command.
 
 ## License
 

@@ -3,21 +3,21 @@
 set -euo pipefail
 
 readonly release_owner='knowledgeislands'
-readonly release_repository='tools-gitlendar'
+readonly release_repository='tools-git-almanac'
 readonly release_base="https://github.com/${release_owner}/${release_repository}"
 script_dir=$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd)
-install_dir=${GITLENDAR_INSTALL_DIR:-"$HOME/.local/bin"}
-man_install_dir=${GITLENDAR_MAN_INSTALL_DIR:-"$(dirname -- "$install_dir")/share/man/man1"}
+install_dir=${GIT_ALMANAC_INSTALL_DIR:-"$HOME/.local/bin"}
+man_install_dir=${GIT_ALMANAC_MAN_INSTALL_DIR:-"$(dirname -- "$install_dir")/share/man/man1"}
 mode='release'
-requested_version=${GITLENDAR_VERSION:-}
+requested_version=${GIT_ALMANAC_VERSION:-}
 stage=''
 
 say() {
-  printf 'gitlendar-install: %s\n' "$*"
+  printf 'git-almanac-install: %s\n' "$*"
 }
 
 die() {
-  printf 'gitlendar-install: error: %s\n' "$*" >&2
+  printf 'git-almanac-install: error: %s\n' "$*" >&2
   exit 1
 }
 
@@ -26,12 +26,12 @@ usage() {
 Usage: ./install.sh [vX.Y.Z]
        ./install.sh --link
 
-Install the latest released gitlendar, or an exact v-prefixed version.
+Install the latest released git-almanac, or an exact v-prefixed version.
 
 Environment:
-  GITLENDAR_INSTALL_DIR      executable directory (default: ~/.local/bin)
-  GITLENDAR_MAN_INSTALL_DIR  manual directory (default: ../share/man/man1)
-  GITLENDAR_VERSION          exact release version when no argument is given
+  GIT_ALMANAC_INSTALL_DIR      executable directory (default: ~/.local/bin)
+  GIT_ALMANAC_MAN_INSTALL_DIR  manual directory (default: ../share/man/man1)
+  GIT_ALMANAC_VERSION          exact release version when no argument is given
 
 --link links this checkout's development executable and manual. It requires Bun.
 EOF
@@ -74,20 +74,20 @@ require_command() {
 
 if [[ "$mode" == 'link' ]]; then
   require_command bun
-  source_bin="$script_dir/bin/gitlendar"
-  source_man="$script_dir/man/gitlendar.1"
+  source_bin="$script_dir/bin/git-almanac"
+  source_man="$script_dir/man/git-almanac.1"
   [[ -x "$source_bin" ]] || die "local executable not found: $source_bin"
   [[ -f "$source_man" ]] || die "local manual not found: $source_man"
   mkdir -p -- "$install_dir" "$man_install_dir"
-  for target in "$install_dir/gitlendar" "$man_install_dir/gitlendar.1"; do
+  for target in "$install_dir/git-almanac" "$man_install_dir/git-almanac.1"; do
     if [[ -e "$target" && ! -L "$target" ]]; then
       die "refusing to replace regular file in --link mode: $target"
     fi
   done
-  ln -sfn -- "$source_bin" "$install_dir/gitlendar"
-  ln -sfn -- "$source_man" "$man_install_dir/gitlendar.1"
-  say "linked $install_dir/gitlendar -> $source_bin"
-  say "linked $man_install_dir/gitlendar.1 -> $source_man"
+  ln -sfn -- "$source_bin" "$install_dir/git-almanac"
+  ln -sfn -- "$source_man" "$man_install_dir/git-almanac.1"
+  say "linked $install_dir/git-almanac -> $source_bin"
+  say "linked $man_install_dir/git-almanac.1 -> $source_man"
   exit 0
 fi
 
@@ -106,9 +106,9 @@ fi
 printf '%s\n' "$requested_version" | grep -Eq '^v[0-9]+\.[0-9]+\.[0-9]+$' ||
   die "expected exact version such as v0.1.0"
 
-stage=$(mktemp -d "${TMPDIR:-/tmp}/gitlendar-install.XXXXXX") ||
+stage=$(mktemp -d "${TMPDIR:-/tmp}/git-almanac-install.XXXXXX") ||
   die 'could not create staging directory'
-archive_name="gitlendar-${requested_version}.tar.gz"
+archive_name="git-almanac-${requested_version}.tar.gz"
 archive="$stage/$archive_name"
 checksums="$stage/SHA256SUMS"
 asset_base="${release_base}/releases/download/${requested_version}"
@@ -132,12 +132,12 @@ fi
 [[ "$actual" == "$expected" ]] || die 'release checksum verification failed'
 
 tar -xzf "$archive" -C "$stage"
-payload="$stage/gitlendar-${requested_version}"
-[[ -x "$payload/gitlendar" ]] || die 'release executable is missing'
-[[ -f "$payload/gitlendar.1" ]] || die 'release manual is missing'
+payload="$stage/git-almanac-${requested_version}"
+[[ -x "$payload/git-almanac" ]] || die 'release executable is missing'
+[[ -f "$payload/git-almanac.1" ]] || die 'release manual is missing'
 
 mkdir -p -- "$install_dir" "$man_install_dir"
-install -m 0755 "$payload/gitlendar" "$install_dir/gitlendar"
-install -m 0644 "$payload/gitlendar.1" "$man_install_dir/gitlendar.1"
-say "installed gitlendar ${requested_version} to $install_dir/gitlendar"
-say "installed manual to $man_install_dir/gitlendar.1"
+install -m 0755 "$payload/git-almanac" "$install_dir/git-almanac"
+install -m 0644 "$payload/git-almanac.1" "$man_install_dir/git-almanac.1"
+say "installed git-almanac ${requested_version} to $install_dir/git-almanac"
+say "installed manual to $man_install_dir/git-almanac.1"
