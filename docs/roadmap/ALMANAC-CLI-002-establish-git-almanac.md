@@ -32,7 +32,7 @@ It excludes hosted services, forge APIs, network collection, guessed identity me
 
 ## Current state
 
-The accepted baseline provides a `year` command with terminal, HTML, SVG, and JSON renderers over one normalized commit-count model. Its pre-release product, repository, package, executable, manual, installer, examples, CI release assets, KI estate entry, `ki-all` membership, and outbound Homebrew trade are all subject to the hard rename in this delivery.
+The accepted baseline provides a `year` command with terminal, HTML, SVG, and JSON renderers over one normalized commit-count model. The hard rename is complete across the product, repository, package, executable, manual, installer, examples, CI release assets, KI estate entry, reciprocal `ki-all` membership, and outbound Homebrew trade. The remaining delivery expands that baseline into the approved Git Almanac command suite.
 
 No release or package has been published and no Homebrew formula has been installed, so a hard rename can replace the unreleased command without a legacy alias. By explicit user decision, the pre-release roadmap namespace has moved once to the canonical `ALMANAC` code; Git history is the only retained source of the previous identifier and product name.
 
@@ -44,12 +44,12 @@ No release or package has been published and no Homebrew formula has been instal
 - [ ] Implement standalone output rules: stdout by default, supported-extension format inference for `--output`, explicit `--format` precedence, exact explicit paths, combined calendar default, deterministic contributor ordering, and explicit `--output-dir` for multi-file exports.
 - [ ] Implement `git almanac report` plus partial `report calendar`, `report authors`, and `report contributors` builds under `<repository-root>/reports/git-almanac/`, with a static linked site, combined and per-author SVG assets, versioned normalized data, an effective counting-contract manifest, atomic managed updates, and refusal to overwrite a foreign directory.
 - [ ] Add optional `<repository-root>/.git-almanac.toml` configuration with schema versioning and built-in → repository → CLI precedence, plus `config init`, `config show`, `config check`, composite `init`, and idempotent `ignore` behavior that chooses `/reports/` only when broad ignoring is safe and otherwise adds `/reports/git-almanac/`.
-- [ ] Rename package, executable, bin entry, manual, installer/link mode, completions, examples, release assets, source terminology, documentation, and local checkout to Git Almanac without retaining an unreleased compatibility alias.
-- [ ] Rename the GitHub repository to `knowledgeislands/tools-git-almanac`, update its canonical metadata and local remote, migrate the local KI estate entry, and update reciprocal `ki-all` consent in this repository and `knowledgeislands/ki-agentic-harness`.
-- [ ] Update every field and instruction in the repository-local Homebrew trade for the future `git-almanac` artifact, including sender, source reference, repository URL, archive, executable, manual, formula, and smoke-test names, without modifying the Homebrew tap, publishing a release, or claiming receiver acceptance.
+- [x] Rename package, executable, bin entry, manual, installer/link mode, completions, examples, release assets, source terminology, documentation, and local checkout to Git Almanac without retaining an unreleased compatibility alias.
+- [x] Rename the GitHub repository to `knowledgeislands/tools-git-almanac`, update its canonical metadata and local remote, migrate the local KI estate entry, and update reciprocal `ki-all` consent in this repository and `knowledgeislands/ki-agentic-harness`.
+- [x] Update every field and instruction in the repository-local Homebrew trade for the future `git-almanac` artifact, including sender, source reference, repository URL, archive, executable, manual, formula, and smoke-test names, without modifying the Homebrew tap, publishing a release, or claiming receiver acceptance.
 - [ ] Add in-process CLI and temporary-repository coverage for command parsing, author identity and ranking, shared filters, output inference, report assembly and partial builds, manifest compatibility, safe overwrite refusal, configuration precedence and validation, ignore/init idempotence, installer linking, paths with spaces, empty repositories, and error behavior.
 - [ ] Run the complete local engineering and KI gates, exercise the linked `git almanac` command and all report views against this repository, and perform read-only acceptance against `hnr-backend` while proving its status fingerprint does not change.
-- [ ] Prove an exhaustive case-insensitive tracked-file sweep contains no previous product, command, repository, package, artifact, trade, estate, or Agora name outside Git history.
+- [x] Prove an exhaustive case-insensitive tracked-file sweep contains no previous product, command, repository, package, artifact, trade, estate, or Agora name outside Git history.
 - [ ] Commit each repository's changes atomically with Conventional Commits, push the authorised GitHub and Harness migrations, verify green GitHub CI at the renamed canonical URL, and assemble the six-part awaiting-review packet without accepting, tagging, releasing, publishing, or editing the Homebrew tap.
 
 ## Files touched
@@ -115,6 +115,12 @@ The default report root is `<repository-root>/reports/git-almanac/`. Its manifes
 ### Deferred extensions
 
 The public grammar reserves metrics beyond commits without accepting undefined values. File-change and line-churn metrics, mailmap or other identity consolidation, global user configuration, programmatic config mutation, PDF, hosted publication, and cross-repository aggregation require later records with their own semantics and verification.
+
+### Rename checkpoint
+
+The repository identity rename is recorded by `88b43ea`, and the reciprocal Harness membership rename by `98e637e8`. GitHub, `origin`, the local checkout, the KI estate, and `ki-all` now resolve `knowledgeislands/tools-git-almanac`; Zed was opened on the renamed checkout. `./install.sh --link` installs `git-almanac`, `git almanac --version` succeeds, and the two obsolete checkout symlinks were removed after their targets were verified.
+
+The rename gate passes TypeScript checking, 19 tests with 100% statement, branch, function, and line coverage, build, Biome, manual lint, installer syntax, all four renderer smoke tests, and read-only `hnr-backend` acceptance with an unchanged Git status fingerprint. Fifteen of sixteen full KI repository skill audits pass. The remaining `ki-repo` audit is temporarily non-actionable because the shared Harness checkout contains unpublished rubric work: its live code requests a new managed `.gitignore` block while its published rubric catalogue does not yet contain that rule, so conform refuses publication. No unrelated Harness work was changed or incorporated.
 
 ### Migration and authority
 
