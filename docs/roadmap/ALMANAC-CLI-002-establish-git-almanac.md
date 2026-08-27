@@ -4,7 +4,7 @@ area: CLI
 title: Establish Git Almanac
 theme: cli
 horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 435dc16f86a195b739b41b67147575e018acb37b
@@ -116,7 +116,11 @@ The delivered command and report surfaces satisfy the approved boundary while pr
 
 ### Mini recap
 
-Git Almanac is now a coherent local repository-analysis suite with pipe-friendly standalone views and a reusable static report workspace. Deferred ideas such as churn metrics, mailmap-based identities, PDFs, hosted publishing, or multi-repository analysis remain out of scope and require their own roadmap records. ALMANAC-CLI-002 remains at `awaiting-review` until explicit acceptance invokes the normal `ki-accept` lifecycle.
+Git Almanac is now a coherent local repository-analysis suite with pipe-friendly standalone views and a reusable static report workspace. Deferred ideas such as churn metrics, mailmap-based identities, PDFs, hosted publishing, or multi-repository analysis remain out of scope and require their own roadmap records. At delivery, ALMANAC-CLI-002 remained at `awaiting-review` until explicit acceptance invoked the normal `ki-accept` lifecycle.
+
+## Done
+
+Accepted explicitly by the user on 27 August 2026 after review of the complete evidence packet. The accepted boundary includes the ALM-014 protection that refuses an incompatible existing report contract; any future change to full-report replacement ergonomics requires separate work. No tag, release, package publication, or Homebrew tap change was included in acceptance.
 
 ## Discussion
 
