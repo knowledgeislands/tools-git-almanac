@@ -19,7 +19,7 @@ export interface PeopleInput {
   timezone: string
 }
 
-const compareText = (left: string, right: string): number => (left < right ? -1 : left > right ? 1 : 0)
+const compareText = (left: string, right: string): number => left.localeCompare(right, 'en')
 
 export const authorFileSlug = (identity: string): string => {
   const readable = identity
@@ -51,7 +51,7 @@ export const buildPeopleModel = (input: PeopleInput, kind: PeopleModel['kind']):
     name: summary.name,
     email: summary.email,
     commits: summary.commits,
-    share: commits.length === 0 ? 0 : Number(((summary.commits / commits.length) * 100).toFixed(6)),
+    share: Number(((summary.commits / commits.length) * 100).toFixed(6)),
     fileSlug: authorFileSlug(identity)
   }))
 

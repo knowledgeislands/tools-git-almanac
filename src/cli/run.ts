@@ -124,13 +124,11 @@ const writeCalendarSet = async (
     renderCalendar(calendar, options.format, options.theme, color)
   )
   for (const person of people.people) {
-    const model = calendars.get(person.identity)
-    if (model) {
-      await context.writeOutput(
-        join(target, `${person.fileSlug}.${extension}`),
-        renderCalendar(model, options.format, options.theme, color)
-      )
-    }
+    const model = calendars.get(person.identity) as ActivityModel
+    await context.writeOutput(
+      join(target, `${person.fileSlug}.${extension}`),
+      renderCalendar(model, options.format, options.theme, color)
+    )
   }
   context.stdout(`Wrote ${people.people.length + 1} calendar files to ${target}\n`)
 }
@@ -203,7 +201,7 @@ export const run = async (args: string[], context: RunContext = defaultContext()
       throw usageError('--output-dir is supported by calendar; report creates managed contributor assets')
     }
 
-    const history = await collectHistory(options, context.cwd, context.git, repository)
+    const history = await collectHistory(options, context.cwd, repository, context.git)
     const input: PeopleInput = {
       commits: history.commits,
       repository: history.repository,

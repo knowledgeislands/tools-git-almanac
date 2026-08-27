@@ -96,18 +96,17 @@ export const resolveRepository = async (
 export const collectHistory = async (
   options: HistoryOptions,
   cwd: string,
-  executor: GitExecutor = executeGit,
-  repository?: RepositoryIdentity
+  repository: RepositoryIdentity,
+  executor: GitExecutor = executeGit
 ): Promise<CollectedHistory> => {
-  const identity = repository ?? (await resolveRepository(options.repository, cwd, executor))
-  const root = identity.root
+  const root = repository.root
   const refResult = await executor(['-C', root, 'rev-parse', '--verify', `${options.ref}^{commit}`], cwd)
 
   if (refResult.exitCode !== 0) {
     const headResult = await executor(['-C', root, 'rev-parse', '--verify', 'HEAD'], cwd)
     if (options.ref === 'HEAD' && headResult.exitCode !== 0) {
       return {
-        repository: identity,
+        repository,
         resolvedRef: null,
         commits: []
       }
@@ -123,7 +122,7 @@ export const collectHistory = async (
 
   const history = await requireGit(executor, args, cwd, 'could not read Git history', false)
   return {
-    repository: identity,
+    repository,
     resolvedRef,
     commits: parseCommits(history)
   }

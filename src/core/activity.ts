@@ -112,7 +112,7 @@ export const buildActivityModel = (input: ModelInput): ActivityModel => {
   for (const commit of selectedCommits(input.commits, input.options, interval)) {
     const epoch = input.options.date === 'author' ? commit.authorEpoch : commit.committerEpoch
     const date = dateKeyForEpoch(epoch, input.timezone)
-    if (counts.has(date)) counts.set(date, (counts.get(date) as number) + 1)
+    counts.set(date, (counts.get(date) as number) + 1)
   }
 
   const maximum = Math.max(0, ...counts.values())

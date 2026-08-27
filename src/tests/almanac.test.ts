@@ -16,6 +16,7 @@ import { afterAll, describe, expect, test } from 'vitest'
 
 import { type RunContext, run } from '../cli/run.js'
 import { executeGit, type GitExecutor } from '../git/adapter.js'
+import { renderPeople } from '../render/people.js'
 import type { PeopleModel, ReportSection } from '../types.js'
 
 const roots: string[] = []
@@ -92,6 +93,34 @@ afterAll(() => {
 })
 
 describe('Git Almanac expanded command contract', () => {
+  test('renders scoped help and rejects command-specific invalid combinations', async () => {
+    const root = repository('usage')
+    commit(root, { author: 'Alice', email: 'alice@example.com', date: '2026-08-26T12:00:00Z' })
+    for (const topic of ['config', 'report', 'calendar', 'ignore', 'init', 'not-a-topic']) {
+      const help = await invoke(['help', topic])
+      expect(help.code).toBe(0)
+      expect(help.stdout).toContain('Usage:')
+    }
+    for (const args of [
+      ['report', '--help'],
+      ['config', '--help'],
+      ['ignore', '--help'],
+      ['init', '--help'],
+      ['calendar', root, '--output', 'one.svg', '--output-dir', 'many'],
+      ['report', root, '--format', 'json'],
+      ['config', 'unknown'],
+      ['ignore', root, 'extra'],
+      ['ignore', '--unknown'],
+      ['authors', root, '--format', 'svg'],
+      ['contributors', root, '--output-dir', 'many']
+    ]) {
+      const result = await invoke(args)
+      if (args.includes('--help')) expect(result.code).toBe(0)
+      else expect(result.code).toBe(2)
+    }
+    expect((await invoke(['calendar', root, '--metric', 'commits'])).code).toBe(0)
+  })
+
   test('lists exact authors and ranks contributors from one history traversal', async () => {
     const root = repository('people')
     commit(root, { author: 'Alice Example', email: 'alice@example.com', date: '2026-08-24T12:00:00Z' })
@@ -129,6 +158,7 @@ describe('Git Almanac expanded command contract', () => {
     expect(model.people[0]?.share).toBe(66.666667)
     expect(model.countingPolicy.identity).toBe('exact-raw-name-email')
     expect(model.countingPolicy.metric).toBe('commits')
+    expect((await invoke(['contributors', root])).stdout).toContain('  1  Alice Example')
   })
 
   test('infers output format from extension while explicit format wins', async () => {
@@ -163,6 +193,8 @@ describe('Git Almanac expanded command contract', () => {
 
     const stdout = await invoke(['calendar', root, '--format', 'html'])
     expect(stdout.stdout).toContain('<!doctype html>')
+    const inferredJson = await invoke(['calendar', root, '--output', 'calendar.json'])
+    expect(() => JSON.parse([...inferredJson.written.values()][0] as string)).not.toThrow()
   })
 
   test('writes combined and per-author calendar sets only with output-dir', async () => {
@@ -188,6 +220,8 @@ describe('Git Almanac expanded command contract', () => {
       'all.svg',
       'bob-bob-example-com-d7117734.svg'
     ])
+    const terminalSet = await invoke(['calendar', root, '--output-dir', join(root, 'text-exports')])
+    expect([...terminalSet.written.keys()].every((path) => path.endsWith('.txt'))).toBe(true)
   })
 
   test('applies built-in then repository then CLI configuration precedence from a nested directory', async () => {
@@ -207,6 +241,9 @@ describe('Git Almanac expanded command contract', () => {
     expect(JSON.parse(overridden.stdout).summary.totalCommits).toBe(2)
     expect((await invoke(['config', 'check'], { cwd: nested })).stdout).toContain('Valid')
     expect((await invoke(['config', 'show'], { cwd: nested })).stdout).toContain('since = "2026-08-24"')
+    const withoutConfig = repository('no-config')
+    expect((await invoke(['config', 'check', withoutConfig])).stdout).toContain('No .git-almanac.toml')
+    expect((await invoke(['config', 'show', withoutConfig])).stdout).not.toContain('since =')
   })
 
   test('initialises configuration and chooses broad or narrow safe ignore rules idempotently', async () => {
@@ -275,5 +312,45 @@ describe('Git Almanac expanded command contract', () => {
     expect(refused.code).toBe(1)
     expect(refused.stderr).toContain('refusing foreign report directory')
     expect(readFileSync(join(foreign, 'reports', 'git-almanac', 'foreign.txt'), 'utf8')).toBe('do not overwrite')
+
+    for (const [label, manifestSource] of [
+      ['invalid-json', '{'],
+      ['invalid-shape', '{}']
+    ] as const) {
+      const invalidManifest = repository(label)
+      mkdirSync(join(invalidManifest, 'reports', 'git-almanac'), { recursive: true })
+      writeFileSync(join(invalidManifest, 'reports', 'git-almanac', 'manifest.json'), manifestSource)
+      const invalid = await invoke(['report', invalidManifest])
+      expect(invalid.code).toBe(1)
+      expect(invalid.stderr).toContain('invalid')
+    }
+
+    const manifestDirectory = repository('manifest-directory')
+    mkdirSync(join(manifestDirectory, 'reports', 'git-almanac', 'manifest.json'), { recursive: true })
+    expect((await invoke(['report', manifestDirectory])).code).toBe(1)
+
+    const reportFile = repository('report-file')
+    mkdirSync(join(reportFile, 'reports'), { recursive: true })
+    writeFileSync(join(reportFile, 'reports', 'git-almanac'), 'not a directory')
+    expect((await invoke(['report', reportFile])).code).toBe(1)
+  })
+
+  test('supports dark ignored reports, empty people views, and renderer guardrails', async () => {
+    const root = repository('dark-report')
+    commit(root, { author: 'Dark Author', email: 'dark@example.com', date: '2026-08-26T12:00:00Z' })
+    expect((await invoke(['ignore', root])).code).toBe(0)
+    const report = await invoke(['report', root, '--since', '2026-08-26', '--until', '2026-08-26', '--theme', 'dark'])
+    expect(report.code).toBe(0)
+    expect(report.stderr).toBe('')
+    expect(readFileSync(join(root, 'reports', 'git-almanac', 'index.html'), 'utf8')).toContain('#0d1117')
+
+    const empty = repository('empty-people')
+    const authors = await invoke(['authors', empty])
+    expect(authors.stdout).toContain('No matching authors.')
+    const json = await invoke(['authors', empty, '--format', 'json'])
+    const model = JSON.parse(json.stdout) as PeopleModel
+    expect(() => renderPeople(model, 'svg', 'light')).toThrow('does not support SVG')
+    const htm = await invoke(['calendar', root, '--output', 'calendar.htm'])
+    expect([...htm.written.values()][0]).toContain('<!doctype html>')
   })
 })

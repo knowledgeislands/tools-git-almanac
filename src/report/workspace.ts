@@ -121,8 +121,8 @@ const sortedUnique = <T extends string>(values: T[]): T[] => [...new Set(values)
 export const buildReport = async (input: ReportInput): Promise<{ root: string; manifest: ReportManifest }> => {
   const root = join(input.root, REPORT_RELATIVE_ROOT)
   const manifestPath = join(root, 'manifest.json')
-  const existingSource = await readOptional(manifestPath)
   const entries = await listOptional(root)
+  const existingSource = await readOptional(manifestPath)
   if (!existingSource && entries.length > 0) {
     throw new Error(`refusing foreign report directory without a Git Almanac manifest: ${root}`)
   }
@@ -159,8 +159,8 @@ export const buildReport = async (input: ReportInput): Promise<{ root: string; m
       )
       await record('data/contributors.json', `${JSON.stringify(input.contributors, null, 2)}\n`)
       for (const person of input.contributors.people) {
-        const calendar = input.authorCalendars.get(person.identity)
-        if (calendar) await record(`assets/contributors/${person.fileSlug}.svg`, renderSvg(calendar, input.theme))
+        const calendar = input.authorCalendars.get(person.identity) as ActivityModel
+        await record(`assets/contributors/${person.fileSlug}.svg`, renderSvg(calendar, input.theme))
       }
     }
   }
