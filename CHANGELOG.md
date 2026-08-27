@@ -8,6 +8,11 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 
 ### Added
 
+- Establish `calendar`, `authors`, `contributors`, `report`, `config`, `ignore`, and `init` commands over one normalized local-history model.
+- Preserve exact raw Git author identities, rank commit shares deterministically, and export combined and per-author calendar sets.
+- Infer standalone HTML, SVG, and JSON output from file extensions while keeping explicit format precedence and stdout defaults.
+- Generate protected static report workspaces with versioned manifests, linked pages, normalized data, and per-contributor SVG assets.
+- Support optional repository configuration, strict built-in → repository → CLI precedence, and idempotent narrowest-safe report ignore rules.
 - Rename the product, Git extension, package, repository, installer, manual, release assets, and KI registrations to Git Almanac.
 - Establish the standalone repository and governed initial-delivery roadmap.
 - Add the local Git activity collector, normalized annual model, statistics, and deterministic intensity bands.

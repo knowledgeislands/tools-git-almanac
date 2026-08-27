@@ -1,40 +1,86 @@
-.TH GIT-ALMANAC 1 "2026-08-26" "git-almanac 0.1.0" "User Commands"
+.TH GIT-ALMANAC 1 "2026-08-27" "git-almanac 0.1.0" "User Commands"
 .SH NAME
-git-almanac \- render a local Git activity calendar
+git-almanac \- inspect local Git calendars, authors, contributors, and reports
 .SH SYNOPSIS
-.B git-almanac year
+.B git-almanac calendar
 .RI [ repository ]
 .RI [ options ]
+.PP
+.B git-almanac authors
+.RI [ repository ]
+.RI [ options ]
+.PP
+.B git-almanac contributors
+.RI [ repository ]
+.RI [ options ]
+.PP
+.B git-almanac report
+.RI [ calendar | authors | contributors ]
+.RI [ repository ]
+.RI [ options ]
+.PP
+.B git-almanac config
+.RI < init | show | check >
+.RI [ repository ]
+.PP
+.B git-almanac ignore
+.RI [ repository ]
+.PP
+.B git-almanac init
+.RI [ repository ]
 .PP
 .B git-almanac completion
 .RI < bash | zsh >
 .SH DESCRIPTION
 .B git-almanac
-reads commits reachable from one local Git ref and renders an annual activity
-calendar.
-It makes no network requests, needs no forge account, and does not alter Git
-history or configuration.
+inspects commits reachable from one local Git ref without network requests
+or a forge account.
+With no repository argument, it discovers the repository containing the
+current directory.
 .PP
-The default interval contains 365 local calendar dates ending today, padded to
-complete Sunday-through-Saturday display weeks.
-Commits are grouped by author date in the local timezone.
+The default interval contains 365 local calendar dates ending today.
+Commits are grouped by author date in the local timezone,
+merge commits are excluded,
+and exact raw Git
+.I Name <email>
+identities are preserved.
 .SH COMMANDS
 .TP
-.BR year " [" repository "]"
-Render activity for the repository containing the current directory, or for
-the supplied repository path.
+.BR calendar " [" repository "]"
+Render selected activity as a terminal, HTML, SVG, or JSON
+contribution calendar.
+.TP
+.BR authors " [" repository "]"
+List exact author identities in deterministic identity order
+with counts and shares.
+.TP
+.BR contributors " [" repository "]"
+Rank exact identities by selected commit activity and report their shares.
+.TP
+.BR report " [" calendar | authors | contributors "] [" repository "]"
+Build all or one compatible static view under
+.IR reports/git-almanac/ .
+.TP
+.BR config " <" init | show | check "> [" repository "]"
+Create, display, or validate optional repository-local defaults.
+.TP
+.BR ignore " [" repository "]"
+Add the narrowest safe report rule to the repository-root
+.IR .gitignore .
+.TP
+.BR init " [" repository "]"
+Initialise configuration and report ignore behavior without generating a report.
 .TP
 .BR completion " <" bash | zsh ">"
 Write a sourceable completion definition to standard output.
-.SH YEAR OPTIONS
+.SH SHARED HISTORY OPTIONS
 .TP
 .BI --author " pattern"
 Pass an author name or email pattern to Git.
 .TP
 .BI --path " pathspec"
-Restrict history to a Git pathspec relative to the repository root.
-This option may be repeated; paths containing spaces are passed without shell
-interpolation.
+Restrict history with a Git pathspec relative to the repository root.
+This option may be repeated.
 .TP
 .BI --ref " git-ref"
 Select the reachable history root.
@@ -48,53 +94,105 @@ Set the last counted local calendar date.
 The default is today.
 .TP
 .BI --date " author|committer"
-Choose which Git timestamp is grouped into local calendar days.
+Choose the Git timestamp grouped into local calendar days.
 The default is author.
 .TP
 .B --include-merges
 Include merge commits.
 Merges are excluded by default.
 .TP
-.BI --format " terminal|html|svg|json"
-Select the renderer.
-The default is terminal.
-.TP
-.BI --output " path"
-Write the rendered result to a file instead of standard output.
+.BI --metric " commits"
+Select the counting metric.
+Commits is the only current metric.
 .TP
 .BI --theme " light|dark"
 Select the visual palette.
 The default is light.
+.SH STANDALONE OUTPUT OPTIONS
+.TP
+.BI --format " terminal|html|svg|json"
+Select a renderer.
+Authors and contributors do not support SVG.
+.TP
+.BI --output " path"
+Write one exact path instead of standard output.
+An HTML, SVG, or JSON extension infers format when
+.B --format
+is absent.
+.TP
+.BI --output-dir " path"
+With
+.BR calendar ,
+write one combined file and one deterministic file for every
+exact author identity.
 .TP
 .B --no-color
-Disable ANSI colour and use distinct intensity characters.
+Disable ANSI terminal color.
+.PP
+An explicit format overrides output-extension inference.
+A format without an output path writes to standard output.
+.SH REPORT WORKSPACE
+Reports live under
+.IR <repository-root>/reports/git-almanac/ .
+The workspace contains linked HTML pages, normalized JSON data,
+a combined SVG calendar,
+per-contributor SVG calendars, and
+.IR manifest.json .
+.PP
+The manifest records the effective repository, revision, history selectors,
+timezone,
+identity policy, metric, theme, sections, and managed paths.
+Git Almanac refuses a non-empty directory without a valid manifest
+and refuses partial updates with an incompatible contract.
+.SH CONFIGURATION
+Optional
+.I <repository-root>/.git-almanac.toml
+uses schema 1.
+Built-in defaults apply first, repository configuration second,
+and CLI arguments last.
+Supported keys are ref, since, until, date, include_merges, metric,
+theme, author, and paths.
+.PP
+.B config init
+does not replace an existing configuration.
+.B ignore
+uses
+.I /reports/
+only when no tracked or foreign report content could be hidden;
+otherwise it uses
+.IR /reports/git-almanac/ .
 .SH COUNTING CONTRACT
-One Git log traversal reads commits reachable from the selected ref.
-Each object ID is counted once.
-All authors are included unless filtered, and merge commits are excluded unless
-requested.
-The selected author or committer timestamp is grouped in the local timezone.
-A path filter uses Git pathspec semantics.
+Each commit object reachable from the selected ref is counted at most once.
+All authors are included unless filtered.
+Exact raw author identities remain separate.
+Merge inclusion, date field, timezone grouping, ref, date interval,
+and pathspecs are explicit in JSON and report manifests.
 .PP
-Every renderer consumes the same normalized model and deterministic four-band
-intensity thresholds.
-The generation timestamp is the only intentionally variable report field.
+Contributor percentages describe selected commit activity
+and are not productivity scores.
 .SH OUTPUTS
-Terminal output includes month and weekday labels, five intensity states,
-totals, active days, the busiest day, and streaks.
-When colour is disabled, distinct Unicode characters preserve intensity.
-.PP
-HTML is self-contained and embeds an accessible, responsive SVG.
-Standalone SVG cells carry keyboard focus, accessible labels, dates, counts,
+Terminal output preserves five distinguishable intensity states without color.
+HTML is self-contained and embeds an accessible SVG.
+Standalone SVG cells carry keyboard focus, date and count labels,
 and native hover details.
-JSON uses the versioned schemaVersion 1 model.
+JSON models use schemaVersion 1.
+.SH FILES
+.TP
+.I <repository-root>/.git-almanac.toml
+Optional repository-local defaults.
+.TP
+.I <repository-root>/reports/git-almanac/
+Managed static report workspace.
+.TP
+.I <repository-root>/.gitignore
+Modified only by explicit ignore or init commands.
 .SH ENVIRONMENT
 .TP
 .B NO_COLOR
-Disable terminal ANSI colour when the variable is present.
+Disable terminal ANSI color when the variable is present.
 .TP
 .B TZ
-Select the process timezone through the runtime's standard timezone handling.
+Select the process timezone through standard runtime handling.
 .TP
 .B GIT_ALMANAC_INSTALL_DIR
 Override the installer executable directory.
@@ -103,7 +201,7 @@ Override the installer executable directory.
 Override the installer manual directory.
 .TP
 .B GIT_ALMANAC_VERSION
-Select an exact v-prefixed release for install.sh.
+Select the exact v-prefixed release for install.sh.
 .SH INSTALLATION
 Install an immutable released asset with:
 .nf
@@ -114,20 +212,19 @@ main/install.sh | bash
 For local development, run:
 .nf
 \&./install.sh --link
-git-almanac year .
+git almanac calendar
 .fi
-.PP
-Link mode requires Bun and leaves the checkout as the executable source.
 .SH EXIT STATUS
 .TP
 .B 0
 Success.
 .TP
 .B 1
-Repository, Git, rendering, or output failure.
+Repository, Git, configuration, report ownership, rendering, or output failure.
 .TP
 .B 2
 Invalid git-almanac syntax or option value.
 .SH SEE ALSO
 .BR git (1),
-.BR git-log (1)
+.BR git-log (1),
+.BR gitignore (5)
