@@ -4,10 +4,10 @@ area: CLI
 title: Establish Git Almanac
 theme: cli
 horizon: now
-status: ready
+status: in-progress
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: 435dc16f86a195b739b41b67147575e018acb37b
 ---
 
 # ALMANAC-CLI-002: Establish Git Almanac
