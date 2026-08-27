@@ -7,7 +7,7 @@ horizon: next
 status: ready
 blocks: []
 blocked_by: []
-baseline_ref: 556a43f0359b0df857b336ed2cd58447d439e2eb
+baseline_ref: bf68935f14f80ed2ec681aad179f1c258ca96850
 ---
 
 # ALMANAC-CLI-003: Reconcile tool documentation
@@ -20,28 +20,30 @@ Users and maintainers encounter coherent, correctly rendered, and tool-appropria
 
 The three Knowledge Islands tool repositories have evolved independently and now expose differences in documentation structure, terminology, coverage, and presentation. One visible example is missing visual separation after headings in the Git Almanac manual page. A later bounded reconciliation should identify material inconsistencies across the complete documentation surfaces rather than repairing isolated symptoms opportunistically.
 
-The repositories in scope are `knowledgeislands/tools-git-almanac`, `knowledgeislands/tools-mgit`, and `knowledgeislands/tools-ki`. This draft records future work only and does not authorize documentation edits.
+The documentation repositories in scope are `knowledgeislands/tools-git-almanac`, `knowledgeislands/tools-mgit`, and `knowledgeislands/tools-ki`. The governing checker and safe conformance implementation is owned by `knowledgeislands/ki-agentic-harness` under `ki-repo-tools`.
 
 ## Boundary
 
 Reconcile user-facing manual pages, CLI help, READMEs, guides, specifications, installation and release instructions, examples, terminology, links, navigation, and documented command behavior across the three tools. Establish shared conventions where they improve comprehension while preserving intentional tool-specific structure and behavior.
 
-The work is documentation-only. Help text embedded in runtime source may change, but command parsing, execution, outputs, exit behavior, and other runtime contracts may not. The item excludes new CLI capabilities, release publication, package publication, tags, Harness changes, and unrelated repository conformance changes. Implementation must retain atomic per-repository commits and preserve unrelated work.
+The tool changes are documentation-only. Help text embedded in runtime source may change, but command parsing, execution, outputs, exit behavior, and other runtime contracts may not. The Harness change may add deterministic manual-layout audit and safe conformance behavior only within `ki-repo-tools`; it must not alter unrelated skill contracts. The item excludes new CLI capabilities, release publication, package publication, tags, and unrelated repository conformance changes. Implementation must retain atomic per-repository commits and preserve unrelated work.
 
 ## Current state
 
-All three repositories are clean, synchronized with `origin/main`, and pass their declared `ki-authoring`, `ki-guides`, `ki-specs`, and `ki-repo-tools` audits. Their grounded baselines are Git Almanac `556a43f0359b0df857b336ed2cd58447d439e2eb`, mgit `e207025453d5ca76dcca2197862fbd97f1cd52b2`, and tools-ki `4ba8d0788babd7cb3a23729d84fadea21bb4599d`.
+All four repositories are clean. Their reshaping baselines are Git Almanac `bf68935f14f80ed2ec681aad179f1c258ca96850`, mgit `fd1a05a3bf774271912743630b8a2448dc219308`, tools-ki `0e4cbd2d387f72844cd4400961bd31916371ce66`, and KI Agentic Harness `712976bb0de9bebd9c64d8307d67e8a2599a2fde`. The three sibling repositories contain concurrent, unrelated roadmap and trade commits ahead of their remotes; those commits are baseline state and must not be rewritten or incorporated into item-specific commits.
 
-All three physical manuals pass `mandoc -T lint`, but lint does not prove rendered spacing. The current `ki-repo-tools` standard requires a literal `\&` after every `.SH` and `.SS`, followed by `.PP` before prose or a structural macro. Git Almanac omits that separator after all 15 headings, while mgit has it after all 20 and tools-ki after all 35. Git Almanac keeps help in `src/cli/help.ts`, mgit keeps contextual help in `bin/mgit`, and tools-ki builds help through its command modules, so reconciliation must compare rendered behavior rather than mechanically copying source layout.
+All three physical manuals pass `mandoc -T lint` and the current `ki-repo-tools` audit, but neither gate proves the standard's rendered-spacing contract. The standard requires a literal `\&` after every `.SH` and `.SS`, followed by `.PP` before prose or a structural macro. Git Almanac omits the separator after all 15 headings; mgit and tools-ki have the separator but do not consistently include the required paragraph macro before structural content. `MAN-STYLE` is currently judgment-only, so these objective divergences do not fail audit or produce a conform proposal.
 
 ## Steps
 
 - [ ] Build one command-and-documentation matrix for each tool covering the executable help hierarchy, installer help, manual, README, guides, specifications, examples, navigation, configuration files, completion command, and release guidance at the recorded baselines.
 - [ ] Establish the shared contract from current KI tool and authoring standards: source authority is explicit, command and option claims match executable help, terminology is internally consistent, links and navigation resolve, examples are runnable, and intentional tool-specific differences are recorded.
+- [ ] Extend the Harness `ki-repo-tools` rubric with a deterministic failing manual-spacing criterion and focused fixtures; add safe, idempotent conform behavior for the literal separator and paragraph macro when the physical roff source is unambiguous, while retaining judgment review for broader layout and FILES quality.
+- [ ] Prove the released checker gap with pre-change fixtures, then use the updated local Harness audit and conform path against all three tools so the shared rule drives repository fixes rather than duplicating ad hoc checks.
 - [ ] Reconcile `git-almanac(1)`, including literal separators and paragraph macros after every heading, then align Git Almanac help, README, guides, specifications, examples, installation, and release guidance with the verified command surface.
 - [ ] Reconcile `mgit(1)`, embedded contextual and installer help, README, user and developer guides, and specifications against actual Bash command behavior while preserving its standalone Bash runtime and intentional workspace terminology.
 - [ ] Reconcile `ki(1)`, generated command help and descriptions, README, governance and developer guides, and specifications against the current command tree while preserving its existing CLI behavior and normative/specification boundaries.
-- [ ] Add the smallest repository-local regression checks needed to catch manual heading and rendered-layout drift that `mandoc -T lint` alone misses; do not modify KI Agentic Harness under this item.
+- [ ] Add repository-local regression checks only where the shared Harness audit cannot cover a tool-specific source-of-truth relationship; do not duplicate the portable manual-spacing rule in three repositories.
 - [ ] Render every manual at representative widths, exercise documented help and examples, run the complete native and KI gates in each repository, and compare each working tree against its recorded baseline for behavior-only drift.
 - [ ] Commit each repository independently with atomic Conventional Commits, assemble one cross-repository evidence summary in this canonical record, and stop at `awaiting-review` without pushing, releasing, tagging, or publishing unless separately authorized.
 
@@ -53,11 +55,15 @@ mgit scope is `README.md`, `man/mgit.1`, help-only text in `bin/mgit` and `insta
 
 tools-ki scope is `README.md`, `man/ki.1`, help-only descriptions under `src/commands/**` or their registration sites, related CLI/manual assertions under `src/tests/**`, `docs/guides/**`, and `docs/specs/**`. Decision Records and portable normative contracts change only if reconciliation proves an existing contradiction; no new product decision is in scope.
 
-Documentation-specific CI configuration in each repository may change only when required to run the agreed regression check. No other repository, generated release asset, Homebrew tap, or published artifact is in scope.
+KI Agentic Harness scope is the `ki-repo-tools` rubric item and context needed to read and safely propose manual-source changes, focused rubric/session fixtures, and generated rubric publication required by the native skill gate. Existing standards already state the desired rule and change only if implementation exposes ambiguity.
+
+Documentation-specific CI configuration in each repository may change only when required to run the agreed regression check. No fifth repository, generated release asset, Homebrew tap, or published artifact is in scope.
 
 ## Verify
 
-In every repository, run `mandoc -T lint` for the physical manual, render with `mandoc -T utf8 ... | col -b` at representative widths, and prove every `.SH` and `.SS` is immediately followed by literal `\&` with the required following paragraph or structural macro. Run `ki repo audit --skill ki-repo-tools`, `ki-authoring`, `ki-guides`, and `ki-specs`, followed by the full `ki repo audit --repo .`.
+In the Harness, run focused `ki-repo-tools` rubric tests, `bunx tsc --noEmit`, `bun run test`, `ki repo audit --skill ki-skills --repo .`, and the full repository audit. Prove audit fails a physical manual missing either required spacing token, conform produces the minimal idempotent patch for a safe source, unsafe or ambiguous sources remain diagnostic, and the post-conform audit passes.
+
+In every tool repository, run `mandoc -T lint` for the physical manual, render with `mandoc -T utf8 ... | col -b` at representative widths, and prove every `.SH` and `.SS` is immediately followed by literal `\&` and the required `.PP`. Run the updated local Harness `ki repo audit --skill ki-repo-tools`, `ki-authoring`, `ki-guides`, and `ki-specs`, followed by the full `ki repo audit --repo .`.
 
 For Git Almanac, run `bunx tsc --noEmit`, `bun run test:coverage`, `bun run build`, `bunx biome check .`, `bunx knip`, `bun run ki:tools:lint-man`, `bash -n install.sh`, the executable and installer help surfaces, and representative documented calendar, authors, contributors, and report examples.
 
@@ -67,9 +73,9 @@ For tools-ki, run `bunx tsc --noEmit`, `bun run test`, `bun run test:coverage`, 
 
 ## Dependencies / blocks
 
-No dependency blocks implementation. The user explicitly selected CLI-003 from Soon into Next and approved its agreed three-repository documentation boundary. The Git Almanac record remains the single canonical coordinator by prior user decision; no duplicate sibling roadmap records are created.
+No dependency blocks implementation. The user explicitly approved expanding CLI-003 to the owning Harness skill and direct changes in all four repositories. The Git Almanac record remains the single canonical coordinator by prior user decision; no duplicate sibling roadmap records are created.
 
-Implementation still requires fresh preflight in all three repositories. Their local instructions apply independently: sibling changes must remain within the exact help/documentation and test paths above, commits must be reviewed separately, and pushing any repository requires separate explicit authority. Any required Harness rubric correction, functional CLI change, release action, or newly discovered product decision must stop and become separate work.
+Local instructions apply independently. Changes must remain within the exact Harness checker, help, documentation, manual, and test paths above; commits must be reviewed separately; concurrent commits must be preserved; and pushing any repository requires separate explicit authority. Any functional CLI change, release action, or newly discovered product decision must stop and become separate work.
 
 ## Documentation impact
 
@@ -77,7 +83,7 @@ Documentation is the delivery surface. The implementation should make authority 
 
 ### Decision Records
 
-No Decision Record change is planned because this item applies existing documentation and tool-repository standards without making a new product decision. If reconciliation exposes a genuine unresolved decision or contradiction in an accepted record, stop and route that work separately.
+No Decision Record change is planned because this item enforces and applies existing documentation and tool-repository standards without making a new product decision. If reconciliation exposes a genuine unresolved decision or contradiction in an accepted record, stop and route that work separately.
 
 ### Specifications
 
@@ -89,7 +95,7 @@ Reconcile user and developer guides, their indexes, installation and release gui
 
 ### Roadmap
 
-Keep this Git Almanac item as the canonical cross-repository coordinator and update it with implementation evidence. Do not create sibling roadmap records unless implementation discovers separately scoped work that cannot honestly remain within this approved boundary.
+Keep this Git Almanac item as the canonical four-repository coordinator and update it with implementation evidence. Do not create sibling roadmap records unless implementation discovers separately scoped work that cannot honestly remain within this approved boundary.
 
 ## Discussion
 
@@ -103,4 +109,4 @@ Verification must render each manual page with canonical tooling and run manual 
 
 ### Authority and timing
 
-The selected item is Ready in Next. Approval of this plan authorizes later `ki-implement` execution only after its fresh preflight; it does not authorize pushing, release publication, package publication, tags, functional runtime changes, Harness changes, or unrelated conformance work.
+The selected item is Ready in Next. The user approved implementation across the Harness and all three tool repositories, including atomic commits. Approval does not authorize pushing, release publication, package publication, tags, functional runtime changes, or unrelated conformance work.
