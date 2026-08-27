@@ -21,14 +21,18 @@ const renderTerminal = (model: PeopleModel): string => {
   ].join('\n')
 }
 
-const renderHtml = (model: PeopleModel, theme: Theme): string => {
+const renderHtml = (
+  model: PeopleModel,
+  theme: Theme,
+  calendarHref?: (person: PeopleModel['people'][number]) => string
+): string => {
   const palette = palettes[theme]
   const title = model.kind === 'authors' ? 'Authors' : 'Contributors'
   const rows = model.people
     .map(
       (person, index) => `<tr>
         ${model.kind === 'contributors' ? `<td>${index + 1}</td>` : ''}
-        <td><strong>${escapeMarkup(person.name)}</strong><br><span>${escapeMarkup(person.email)}</span></td>
+        <td>${calendarHref ? `<a href="${escapeMarkup(calendarHref(person))}">` : ''}<strong>${escapeMarkup(person.name)}</strong><br><span>${escapeMarkup(person.email)}</span>${calendarHref ? '</a>' : ''}</td>
         <td>${person.commits}</td>
         <td>${percentage(person.share)}</td>
       </tr>`
@@ -72,9 +76,14 @@ const renderHtml = (model: PeopleModel, theme: Theme): string => {
 `
 }
 
-export const renderPeople = (model: PeopleModel, format: OutputFormat, theme: Theme): string => {
+export const renderPeople = (
+  model: PeopleModel,
+  format: OutputFormat,
+  theme: Theme,
+  calendarHref?: (person: PeopleModel['people'][number]) => string
+): string => {
   if (format === 'terminal') return renderTerminal(model)
-  if (format === 'html') return renderHtml(model, theme)
+  if (format === 'html') return renderHtml(model, theme, calendarHref)
   if (format === 'json') return `${JSON.stringify(model, null, 2)}\n`
   throw new Error(`${model.kind} does not support SVG output; use terminal, HTML, or JSON`)
 }

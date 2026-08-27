@@ -258,6 +258,7 @@ describe('Git Almanac expanded command contract', () => {
     expect(manifest.sections).toEqual(['authors', 'calendar', 'contributors'])
     expect(manifest.managedPaths).toContain('assets/calendar.svg')
     expect(readdirSync(join(reportRoot, 'assets', 'contributors'))).toHaveLength(2)
+    expect(readFileSync(join(reportRoot, 'contributors.html'), 'utf8')).toContain('assets/contributors/')
 
     const partial = await invoke(['report', 'authors', ...contract])
     expect(partial.code).toBe(0)

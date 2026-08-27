@@ -153,7 +153,10 @@ export const buildReport = async (input: ReportInput): Promise<{ root: string; m
       await record('data/authors.json', `${JSON.stringify(input.authors, null, 2)}\n`)
     }
     if (section === 'contributors') {
-      await record('contributors.html', renderPeople(input.contributors, 'html', input.theme))
+      await record(
+        'contributors.html',
+        renderPeople(input.contributors, 'html', input.theme, (person) => `assets/contributors/${person.fileSlug}.svg`)
+      )
       await record('data/contributors.json', `${JSON.stringify(input.contributors, null, 2)}\n`)
       for (const person of input.contributors.people) {
         const calendar = input.authorCalendars.get(person.identity)
