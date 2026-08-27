@@ -1,6 +1,3 @@
-import { tmpdir } from 'node:os'
-import { join } from 'node:path'
-
 import { defineConfig } from 'vitest/config'
 
 export default defineConfig({
@@ -12,7 +9,7 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       reporter: ['text', 'lcov', 'html'],
-      reportsDirectory: join(tmpdir(), `git-almanac-vitest-coverage-${process.pid}`),
+      reportsDirectory: 'reports/coverage',
       include: ['src/**/*.ts'],
       exclude: ['src/**/*.test.ts', 'src/tests/**', 'src/cli/cli.ts'],
       thresholds: {
