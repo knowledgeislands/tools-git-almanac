@@ -5,7 +5,7 @@ created_at: 2026-08-26T09:44:35Z
 sender: knowledgeislands/tools-gitlendar
 receiver: knowledgeislands/homebrew-tap
 kind: work
-source_ref: "GITLENDAR-CLI-001"
+source_ref: "ALMANAC-CLI-001"
 observation: completion
 phase: submitted
 ---

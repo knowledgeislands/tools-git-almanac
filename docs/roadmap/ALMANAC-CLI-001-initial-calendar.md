@@ -1,5 +1,5 @@
 ---
-id: GITLENDAR-CLI-001
+id: ALMANAC-CLI-001
 area: CLI
 title: Initial activity calendar
 theme: cli
@@ -10,7 +10,7 @@ blocked_by: []
 baseline_ref: 54adf837553b00d990ff681dd385ca3650e85ac5
 ---
 
-# GITLENDAR-CLI-001: Initial activity calendar
+# ALMANAC-CLI-001: Initial activity calendar
 
 ## Goal
 
@@ -117,7 +117,7 @@ The initial product outcome is complete, locally usable, present on GitHub, regi
 
 ## Done
 
-Accepted by the user on 27 August 2026. The initial `gitlendar` delivery is retained as the evidence-backed baseline; the approved successor planning work belongs to GITLENDAR-CLI-002 and does not reopen this item.
+Accepted by the user on 27 August 2026. The initial delivery is retained as the evidence-backed baseline; the approved successor planning work belongs to ALMANAC-CLI-002 and does not reopen this item. The canonical record identity moved once from its former pre-release namespace to `ALMANAC` by explicit user decision.
 
 ## Discussion
 

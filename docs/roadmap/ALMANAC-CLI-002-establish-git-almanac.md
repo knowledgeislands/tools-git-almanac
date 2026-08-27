@@ -1,5 +1,5 @@
 ---
-id: GITLENDAR-CLI-002
+id: ALMANAC-CLI-002
 area: CLI
 title: Establish Git Almanac
 theme: cli
@@ -10,7 +10,7 @@ blocked_by: []
 baseline_ref: null
 ---
 
-# GITLENDAR-CLI-002: Establish Git Almanac
+# ALMANAC-CLI-002: Establish Git Almanac
 
 ## Goal
 
@@ -18,7 +18,7 @@ The user can invoke a local-first `git almanac` suite to inspect repository cale
 
 ## Context
 
-GITLENDAR-CLI-001 delivered and established the trustworthy calendar engine as `gitlendar`; the user accepted that evidence-backed baseline on 27 August 2026.
+ALMANAC-CLI-001 delivered and established the trustworthy calendar engine under its pre-release name; the user accepted that evidence-backed baseline on 27 August 2026.
 
 Review showed that the intended product is broader than an annual calendar. `git-stats`, `git-info`, `git-radar`, and `git-chronicle` have material existing command or product collisions, while preliminary exact registry checks found no `git-almanac` collision. The rename should happen before the first release, package publication, or Homebrew formula so that the public identity does not accumulate compatibility obligations.
 
@@ -34,21 +34,22 @@ It excludes hosted services, forge APIs, network collection, guessed identity me
 
 The accepted repository provides `gitlendar year` with terminal, HTML, SVG, and JSON renderers over one normalized commit-count model. The public GitHub repository is `knowledgeislands/tools-gitlendar`, the local checkout has the same basename, the npm package is `@knowledgeislands/gitlendar`, and the executable, manual, installer, examples, CI release assets, KI estate entry, `ki-all` membership, and outbound Homebrew trade use the old identity.
 
-No release or package has been published and no Homebrew formula has been installed, so a hard rename can replace the unreleased command without a legacy alias. The stable KI roadmap `repo_code` remains `GITLENDAR`; already-issued identifiers, including this item, must not be rewritten during the product rename.
+No release or package has been published and no Homebrew formula has been installed, so a hard rename can replace the unreleased command without a legacy alias. By explicit user decision, the pre-release roadmap namespace has moved once to the canonical `ALMANAC` code; Git history is the only retained source of the previous identifier and product name.
 
 ## Steps
 
-- [ ] Complete exact name clearance and add a Decision Record for the Git Almanac identity, stable `GITLENDAR` roadmap code, command taxonomy, output rules, report workspace, configuration precedence, and deferred metrics.
+- [ ] Complete exact name clearance and add a Decision Record for the Git Almanac identity, one-time pre-release migration to the stable `ALMANAC` roadmap code, command taxonomy, output rules, report workspace, configuration precedence, and deferred metrics.
 - [ ] Extend the normalized history model and argument-safe Git adapter with exact raw `Name <email>` author identities while preserving one history traversal per request, read-only inspection, commit-OID uniqueness, local-timezone grouping, and the accepted filter contract.
 - [ ] Replace the unreleased `gitlendar year` surface with `git almanac calendar`, add `authors` and full `contributors`, share repository/ref/date/path/author/merge options, and expose `--metric commits` as the only initially supported metric.
 - [ ] Implement standalone output rules: stdout by default, supported-extension format inference for `--output`, explicit `--format` precedence, exact explicit paths, combined calendar default, deterministic contributor ordering, and explicit `--output-dir` for multi-file exports.
 - [ ] Implement `git almanac report` plus partial `report calendar`, `report authors`, and `report contributors` builds under `<repository-root>/reports/git-almanac/`, with a static linked site, combined and per-author SVG assets, versioned normalized data, an effective counting-contract manifest, atomic managed updates, and refusal to overwrite a foreign directory.
 - [ ] Add optional `<repository-root>/.git-almanac.toml` configuration with schema versioning and built-in → repository → CLI precedence, plus `config init`, `config show`, `config check`, composite `init`, and idempotent `ignore` behavior that chooses `/reports/` only when broad ignoring is safe and otherwise adds `/reports/git-almanac/`.
 - [ ] Rename package, executable, bin entry, manual, installer/link mode, completions, examples, release assets, source terminology, documentation, and local checkout from Gitlendar to Git Almanac without retaining an unreleased compatibility alias.
-- [ ] Rename the GitHub repository to `knowledgeislands/tools-git-almanac`, update its canonical metadata and local remote, migrate the local KI estate entry, update reciprocal `ki-all` consent in this repository and `knowledgeislands/ki-agentic-harness`, and preserve the stable roadmap prefix and done GITLENDAR-CLI-001 record.
-- [ ] Update the repository-local Homebrew trade for the future `git-almanac` artifact without modifying the Homebrew tap, publishing a release, or claiming receiver acceptance.
+- [ ] Rename the GitHub repository to `knowledgeislands/tools-git-almanac`, update its canonical metadata and local remote, migrate the local KI estate entry, and update reciprocal `ki-all` consent in this repository and `knowledgeislands/ki-agentic-harness`.
+- [ ] Update every field and instruction in the repository-local Homebrew trade for the future `git-almanac` artifact, including sender, source reference, repository URL, archive, executable, manual, formula, and smoke-test names, without modifying the Homebrew tap, publishing a release, or claiming receiver acceptance.
 - [ ] Add in-process CLI and temporary-repository coverage for command parsing, author identity and ranking, shared filters, output inference, report assembly and partial builds, manifest compatibility, safe overwrite refusal, configuration precedence and validation, ignore/init idempotence, installer linking, paths with spaces, empty repositories, and error behavior.
 - [ ] Run the complete local engineering and KI gates, exercise the linked `git almanac` command and all report views against this repository, and perform read-only acceptance against `hnr-backend` while proving its status fingerprint does not change.
+- [ ] Prove an exhaustive case-insensitive tracked-file sweep contains no previous product, command, repository, package, artifact, trade, estate, or Agora name outside Git history.
 - [ ] Commit each repository's changes atomically with Conventional Commits, push the authorised GitHub and Harness migrations, verify green GitHub CI at the renamed canonical URL, and assemble the six-part awaiting-review packet without accepting, tagging, releasing, publishing, or editing the Homebrew tap.
 
 ## Files touched
@@ -67,7 +68,7 @@ Run calendar, author, contributor, and report acceptance against `hnr-backend`; 
 
 ## Dependencies / blocks
 
-GITLENDAR-CLI-001 is done and supplies the accepted baseline. The GitHub repository exists, current administrative access is available, the package and release remain unpublished, and the Homebrew tap has not acted on the outbound trade.
+ALMANAC-CLI-001 is done and supplies the accepted baseline. The GitHub repository exists, current administrative access is available, the package and release remain unpublished, and the Homebrew tap has not acted on the outbound trade.
 
 Implementation requires explicit approval of this Ready plan because it includes a public GitHub rename, a local checkout move, a bounded sibling-Harness commit and push, and local estate migration. No release, tag, package publication, or Homebrew-tap write is authorised by approving this item.
 
@@ -87,13 +88,13 @@ Rewrite user, local-development, installation, and release guidance for `git alm
 
 ### Roadmap
 
-Retain GITLENDAR-CLI-001 as the accepted historical baseline and this stable GITLENDAR-CLI-002 identity as the canonical rename and product-expansion delivery record. Future work continues to use the stable `GITLENDAR` repository code despite the product and repository rename.
+Retain ALMANAC-CLI-001 as the accepted baseline and this ALMANAC-CLI-002 identity as the canonical rename and product-expansion delivery record. Future work uses the stable `ALMANAC` repository code; the one-time migration from the pre-release namespace is documented in Git history and the new Decision Record rather than preserved as a live alias.
 
 ## Discussion
 
 ### Product identity
 
-The product name is Git Almanac, the package and executable identity is `git-almanac`, the natural invocation is `git almanac`, the GitHub repository is `knowledgeislands/tools-git-almanac`, and the KI roadmap code remains the already-issued stable `GITLENDAR` value.
+The product name is Git Almanac, the package and executable identity is `git-almanac`, the natural invocation is `git almanac`, the GitHub repository is `knowledgeislands/tools-git-almanac`, and the KI roadmap code is the stable `ALMANAC` value after one explicit pre-release namespace migration.
 
 ### Command responsibilities
 
@@ -117,4 +118,4 @@ The public grammar reserves metrics beyond commits without accepting undefined v
 
 ### Migration and authority
 
-The hard rename is appropriate before release and avoids maintaining two commands. GitHub, local checkout, package, documentation, KI estate, and reciprocal Agora identities migrate together, while historical roadmap identifiers remain stable. The Homebrew trade may describe the renamed future release, but release publication and tap implementation remain separately gated.
+The hard rename is appropriate before release and avoids maintaining two commands. GitHub, local checkout, package, documentation, roadmap records, KI estate, reciprocal Agora identities, and the complete outbound Homebrew trade migrate together. No previous product-name reference or compatibility alias remains in tracked files; release publication and tap implementation remain separately gated.
