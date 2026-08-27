@@ -1,15 +1,17 @@
 import type {
+  ActivityInterval,
   ActivityModel,
   ActivitySummary,
+  CountingPolicy,
   DayActivity,
   GitCommit,
-  RepositoryIdentity,
-  YearOptions
+  HistoryOptions,
+  RepositoryIdentity
 } from '../types.js'
 import { addDays, dateKeyForEpoch, dateRange, daysBetweenInclusive, gridBounds, todayDateKey } from './dates.js'
 
 export const COUNTING_RULES =
-  'Commits reachable from the selected ref are counted once by object ID; all authors are included unless filtered; merges are excluded by default; commits are grouped by the selected Git date in the local timezone.'
+  'Commits reachable from the selected ref are counted once by object ID; exact raw Name <email> identities are preserved; all authors are included unless filtered; merges are excluded by default; commits are grouped by the selected Git date in the local timezone.'
 
 export const intensityThresholds = (maximum: number): [number, number, number, number] => {
   if (maximum === 0) return [0, 0, 0, 0]
@@ -56,18 +58,58 @@ export interface ModelInput {
   commits: GitCommit[]
   repository: RepositoryIdentity
   resolvedRef: string | null
-  options: YearOptions
+  options: HistoryOptions
   now: Date
   timezone: string
 }
 
+export const activityInterval = (options: HistoryOptions, now: Date, timezone: string): ActivityInterval => {
+  const until = options.until ?? todayDateKey(now, timezone)
+  const since = options.since ?? addDays(until, -364)
+  const grid = gridBounds(since, until)
+  return {
+    since,
+    until,
+    gridSince: grid.gridSince,
+    gridUntil: grid.gridUntil,
+    timezone,
+    days: daysBetweenInclusive(since, until),
+    weeks: grid.weeks
+  }
+}
+
+export const selectedCommits = (
+  commits: GitCommit[],
+  options: HistoryOptions,
+  interval: ActivityInterval
+): GitCommit[] => {
+  const unique = new Map<string, GitCommit>()
+  for (const commit of commits) {
+    const epoch = options.date === 'author' ? commit.authorEpoch : commit.committerEpoch
+    const date = dateKeyForEpoch(epoch, interval.timezone)
+    if (date >= interval.since && date <= interval.until) unique.set(commit.oid, commit)
+  }
+  return [...unique.values()]
+}
+
+export const countingPolicy = (options: HistoryOptions): CountingPolicy => ({
+  reachability: 'reachable-from-selected-ref',
+  authors: options.author ? 'filtered' : 'all',
+  identity: 'exact-raw-name-email',
+  metric: options.metric,
+  merges: options.includeMerges ? 'included' : 'excluded',
+  dateField: options.date,
+  timezoneGrouping: 'local-calendar-day',
+  uniqueness: 'commit-oid',
+  pathSemantics: 'git-pathspec'
+})
+
 export const buildActivityModel = (input: ModelInput): ActivityModel => {
-  const until = input.options.until ?? todayDateKey(input.now, input.timezone)
-  const since = input.options.since ?? addDays(until, -364)
-  const dates = dateRange(since, until)
+  const interval = activityInterval(input.options, input.now, input.timezone)
+  const dates = dateRange(interval.since, interval.until)
   const counts = new Map(dates.map((date) => [date, 0]))
 
-  for (const commit of input.commits) {
+  for (const commit of selectedCommits(input.commits, input.options, interval)) {
     const epoch = input.options.date === 'author' ? commit.authorEpoch : commit.committerEpoch
     const date = dateKeyForEpoch(epoch, input.timezone)
     if (counts.has(date)) counts.set(date, (counts.get(date) as number) + 1)
@@ -79,8 +121,6 @@ export const buildActivityModel = (input: ModelInput): ActivityModel => {
     const count = counts.get(date) as number
     return { date, count, intensity: intensityFor(count, thresholds) }
   })
-  const grid = gridBounds(since, until)
-
   return {
     schemaVersion: 1,
     generatedAt: input.now.toISOString(),
@@ -93,26 +133,11 @@ export const buildActivityModel = (input: ModelInput): ActivityModel => {
       author: input.options.author,
       paths: [...input.options.paths],
       date: input.options.date,
-      includeMerges: input.options.includeMerges
+      includeMerges: input.options.includeMerges,
+      metric: input.options.metric
     },
-    interval: {
-      since,
-      until,
-      gridSince: grid.gridSince,
-      gridUntil: grid.gridUntil,
-      timezone: input.timezone,
-      days: daysBetweenInclusive(since, until),
-      weeks: grid.weeks
-    },
-    countingPolicy: {
-      reachability: 'reachable-from-selected-ref',
-      authors: input.options.author ? 'filtered' : 'all',
-      merges: input.options.includeMerges ? 'included' : 'excluded',
-      dateField: input.options.date,
-      timezoneGrouping: 'local-calendar-day',
-      uniqueness: 'commit-oid',
-      pathSemantics: 'git-pathspec'
-    },
+    interval,
+    countingPolicy: countingPolicy(input.options),
     intensityThresholds: thresholds,
     daily,
     summary: summarize(daily)

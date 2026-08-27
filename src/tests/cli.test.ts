@@ -100,7 +100,7 @@ const invoke = async (args: string[], options: InvokeOptions = {}): Promise<Invo
 }
 
 const report = async (root: string, extra: string[] = [], options: InvokeOptions = {}): Promise<ActivityModel> => {
-  const result = await invoke(['year', root, '--format', 'json', ...extra], options)
+  const result = await invoke(['calendar', root, '--format', 'json', ...extra], options)
   expect(result.code).toBe(0)
   return JSON.parse(result.stdout) as ActivityModel
 }
@@ -113,7 +113,7 @@ describe('Git Almanac CLI contract', () => {
   test('renders help, version, and completion surfaces', async () => {
     const help = await invoke([])
     expect(help.code).toBe(0)
-    expect(help.stdout).toContain('Usage: git almanac year')
+    expect(help.stdout).toContain('git almanac calendar [repository]')
 
     const version = await invoke(['--version'])
     expect(version.stdout).toMatch(/^git-almanac 0\.1\.0/)
@@ -125,10 +125,10 @@ describe('Git Almanac CLI contract', () => {
     expect(zsh.stdout).toContain('#compdef git-almanac')
     expect(zsh.stdout).toContain('compdef _git_almanac git-almanac')
 
-    expect((await invoke(['help'])).stdout).toContain('Usage: git almanac year')
-    expect((await invoke(['year', '--help'])).stdout).toContain('Usage: git almanac year')
+    expect((await invoke(['help'])).stdout).toContain('git almanac calendar [repository]')
+    expect((await invoke(['calendar', '--help'])).stdout).toContain('Usage: git almanac calendar')
     expect((await invoke(['-V'])).stdout).toContain('git-almanac 0.1.0')
-    expect((await invoke(['year', '--format', 'json'])).code).toBe(0)
+    expect((await invoke(['calendar', '--format', 'json'])).code).toBe(0)
   })
 
   test('constructs a usable default process context', async () => {
@@ -257,7 +257,7 @@ describe('Git Almanac CLI contract', () => {
       currentStreak: 0,
       longestStreak: 0
     })
-    expect((await invoke(['year', empty, '--no-color'])).stdout).toContain('busiest No activity')
+    expect((await invoke(['calendar', empty, '--no-color'])).stdout).toContain('busiest No activity')
 
     const old = repository('old')
     commit(old, { authorDate: '2020-01-01T12:00:00Z' })
@@ -290,7 +290,7 @@ describe('Git Almanac CLI contract', () => {
   test('keeps totals consistent and exposes accessible SVG labels in every renderer', async () => {
     const root = repository('renderers')
     commit(root, { authorDate: '2026-08-26T12:00:00Z' })
-    const base = ['year', root, '--since', '2026-08-26', '--until', '2026-08-26']
+    const base = ['calendar', root, '--since', '2026-08-26', '--until', '2026-08-26']
     const terminal = await invoke([...base, '--format', 'terminal', '--no-color'])
     const svg = await invoke([...base, '--format', 'svg'])
     const html = await invoke([...base, '--format', 'html', '--theme', 'dark'])
@@ -309,7 +309,7 @@ describe('Git Almanac CLI contract', () => {
   test('emits ANSI colour only for an eligible terminal', async () => {
     const root = repository('color')
     commit(root, { authorDate: '2026-08-26T12:00:00Z' })
-    const args = ['year', root, '--since', '2026-08-26', '--until', '2026-08-26']
+    const args = ['calendar', root, '--since', '2026-08-26', '--until', '2026-08-26']
     const color = await invoke(args, { isTTY: true })
     expect(color.stdout).toContain('\u001B[38;2;')
 
@@ -320,7 +320,7 @@ describe('Git Almanac CLI contract', () => {
   test('writes explicit output and remains deterministic with an injected clock', async () => {
     const root = repository('deterministic')
     commit(root, { authorDate: '2026-08-26T12:00:00Z' })
-    const args = ['year', root, '--format', 'svg', '--output', 'report.svg']
+    const args = ['calendar', root, '--format', 'svg', '--output', 'report.svg']
     const first = await invoke(args)
     const second = await invoke(args)
     const expectedPath = join(process.cwd(), 'report.svg')
@@ -336,32 +336,32 @@ describe('Git Almanac CLI contract', () => {
       if (args.includes('log')) traversals += 1
       return executeGit(args, cwd)
     }
-    const result = await invoke(['year', root, '--format', 'json'], { git: countingExecutor })
+    const result = await invoke(['calendar', root, '--format', 'json'], { git: countingExecutor })
     expect(result.code).toBe(0)
     expect(traversals).toBe(1)
   })
 
   test('reports invalid repositories, refs, dates, options, and commands helpfully', async () => {
-    const missing = await invoke(['year', join(tmpdir(), 'git-almanac-does-not-exist')])
+    const missing = await invoke(['calendar', join(tmpdir(), 'git-almanac-does-not-exist')])
     expect(missing.code).toBe(1)
     expect(missing.stderr).toContain('not a Git repository')
 
     const root = repository('errors')
     commit(root, { authorDate: '2026-08-26T12:00:00Z' })
-    const invalidRef = await invoke(['year', root, '--ref', 'missing-ref'])
+    const invalidRef = await invoke(['calendar', root, '--ref', 'missing-ref'])
     expect(invalidRef.code).toBe(1)
     expect(invalidRef.stderr).toContain("invalid Git ref 'missing-ref'")
 
     for (const args of [
-      ['year', root, '--since', 'not-a-date'],
-      ['year', root, '--since', '2026-02-30'],
-      ['year', root, '--since', '2026-08-27', '--until', '2026-08-26'],
-      ['year', root, '--format', 'pdf'],
-      ['year', root, '--date', 'tree'],
-      ['year', root, '--theme', 'blue'],
-      ['year', root, '--author', '--no-color'],
-      ['year', root, '--unknown'],
-      ['year', root, 'second-repository'],
+      ['calendar', root, '--since', 'not-a-date'],
+      ['calendar', root, '--since', '2026-02-30'],
+      ['calendar', root, '--since', '2026-08-27', '--until', '2026-08-26'],
+      ['calendar', root, '--format', 'pdf'],
+      ['calendar', root, '--date', 'tree'],
+      ['calendar', root, '--theme', 'blue'],
+      ['calendar', root, '--author', '--no-color'],
+      ['calendar', root, '--unknown'],
+      ['calendar', root, 'second-repository'],
       ['completion', 'fish'],
       ['completion', 'bash', 'extra'],
       ['--version', 'extra'],
@@ -376,7 +376,7 @@ describe('Git Almanac CLI contract', () => {
   test('surfaces output failures without changing history', async () => {
     const root = repository('output error')
     commit(root, { authorDate: '2026-08-26T12:00:00Z' })
-    const result = await invoke(['year', root, '--output', 'blocked.txt'], { outputError: 'write blocked' })
+    const result = await invoke(['calendar', root, '--output', 'blocked.txt'], { outputError: 'write blocked' })
     expect(result.code).toBe(1)
     expect(result.stderr).toContain('write blocked')
     const before = git(root, ['rev-parse', 'HEAD'])
@@ -393,12 +393,12 @@ describe('Git Almanac CLI contract', () => {
       if (args.includes('--verify')) return { stdout: oid, stderr: '', exitCode: 0 }
       return { stdout: 'malformed\x1e', stderr: '', exitCode: 0 }
     }
-    const malformed = await invoke(['year', root], { git: malformedExecutor })
+    const malformed = await invoke(['calendar', root], { git: malformedExecutor })
     expect(malformed.code).toBe(1)
     expect(malformed.stderr).toContain('malformed history data')
 
     const emptyFailure: GitExecutor = async () => ({ stdout: '', stderr: '', exitCode: 1 })
-    const failed = await invoke(['year', root], { git: emptyFailure })
+    const failed = await invoke(['calendar', root], { git: emptyFailure })
     expect(failed.stderr).toContain('Git failed')
 
     const invalidRefExecutor: GitExecutor = async (args) => {
@@ -407,7 +407,7 @@ describe('Git Almanac CLI contract', () => {
       if (args.at(-1) === 'HEAD') return { stdout: oid, stderr: '', exitCode: 0 }
       return { stdout: '', stderr: '', exitCode: 1 }
     }
-    const invalid = await invoke(['year', root, '--ref', 'missing'], { git: invalidRefExecutor })
+    const invalid = await invoke(['calendar', root, '--ref', 'missing'], { git: invalidRefExecutor })
     expect(invalid.stderr).toContain("invalid Git ref 'missing': not found")
 
     const environment = process.env as { PATH?: string }

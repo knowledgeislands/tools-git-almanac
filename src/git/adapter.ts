@@ -2,7 +2,7 @@ import { execFile } from 'node:child_process'
 import { basename } from 'node:path'
 import { promisify } from 'node:util'
 
-import type { GitCommit, RepositoryIdentity, YearOptions } from '../types.js'
+import type { GitCommit, HistoryOptions, RepositoryIdentity } from '../types.js'
 
 const execFileAsync = promisify(execFile)
 
@@ -34,24 +34,37 @@ export const executeGit: GitExecutor = async (args, cwd) => {
   }
 }
 
-const requireGit = async (executor: GitExecutor, args: string[], cwd: string, message: string): Promise<string> => {
+const requireGit = async (
+  executor: GitExecutor,
+  args: string[],
+  cwd: string,
+  message: string,
+  trim = true
+): Promise<string> => {
   const result = await executor(args, cwd)
   if (result.exitCode !== 0) throw gitProcessError(`${message}: ${result.stderr.trim() || 'Git failed'}`)
-  return result.stdout.trim()
+  return trim ? result.stdout.trim() : result.stdout
 }
 
 const parseCommits = (output: string): GitCommit[] =>
   output
     .split('\x1e')
-    .map((record) => record.trim())
+    .map((record) => record.replace(/^\n+|\n+$/g, ''))
     .filter(Boolean)
     .map((record) => {
-      const [oid, authorEpoch, committerEpoch] = record.split('\x1f')
-      if (!oid || !authorEpoch || !committerEpoch) throw gitProcessError('Git returned malformed history data')
+      const [oid, authorEpoch, committerEpoch, authorName, authorEmail] = record.split('\x1f')
+      if (!oid || !authorEpoch || !committerEpoch || authorName === undefined || authorEmail === undefined) {
+        throw gitProcessError('Git returned malformed history data')
+      }
       return {
         oid,
         authorEpoch: Number(authorEpoch),
-        committerEpoch: Number(committerEpoch)
+        committerEpoch: Number(committerEpoch),
+        author: {
+          name: authorName,
+          email: authorEmail,
+          identity: `${authorName} <${authorEmail}>`
+        }
       }
     })
 
@@ -61,27 +74,40 @@ export interface CollectedHistory {
   commits: GitCommit[]
 }
 
-export const collectHistory = async (
-  options: YearOptions,
+export const resolveRepository = async (
+  repository: string,
   cwd: string,
   executor: GitExecutor = executeGit
-): Promise<CollectedHistory> => {
+): Promise<RepositoryIdentity> => {
   const root = await requireGit(
     executor,
-    ['-C', options.repository, 'rev-parse', '--show-toplevel'],
+    ['-C', repository, 'rev-parse', '--show-toplevel'],
     cwd,
-    `not a Git repository: ${options.repository}`
+    `not a Git repository: ${repository}`
   )
-
   const remoteResult = await executor(['-C', root, 'config', '--get', 'remote.origin.url'], cwd)
-  const remote = remoteResult.exitCode === 0 ? remoteResult.stdout.trim() || null : null
+  return {
+    root,
+    name: basename(root),
+    remote: remoteResult.exitCode === 0 ? remoteResult.stdout.trim() || null : null
+  }
+}
+
+export const collectHistory = async (
+  options: HistoryOptions,
+  cwd: string,
+  executor: GitExecutor = executeGit,
+  repository?: RepositoryIdentity
+): Promise<CollectedHistory> => {
+  const identity = repository ?? (await resolveRepository(options.repository, cwd, executor))
+  const root = identity.root
   const refResult = await executor(['-C', root, 'rev-parse', '--verify', `${options.ref}^{commit}`], cwd)
 
   if (refResult.exitCode !== 0) {
     const headResult = await executor(['-C', root, 'rev-parse', '--verify', 'HEAD'], cwd)
     if (options.ref === 'HEAD' && headResult.exitCode !== 0) {
       return {
-        repository: { root, name: basename(root), remote },
+        repository: identity,
         resolvedRef: null,
         commits: []
       }
@@ -90,14 +116,14 @@ export const collectHistory = async (
   }
 
   const resolvedRef = refResult.stdout.trim()
-  const args = ['-C', root, 'log', resolvedRef, '--format=%H%x1f%at%x1f%ct%x1e', '--no-decorate']
+  const args = ['-C', root, 'log', resolvedRef, '--format=%H%x1f%at%x1f%ct%x1f%an%x1f%ae%x1e', '--no-decorate']
   if (!options.includeMerges) args.push('--no-merges')
   if (options.author) args.push(`--author=${options.author}`)
   if (options.paths.length > 0) args.push('--', ...options.paths)
 
-  const history = await requireGit(executor, args, cwd, 'could not read Git history')
+  const history = await requireGit(executor, args, cwd, 'could not read Git history', false)
   return {
-    repository: { root, name: basename(root), remote },
+    repository: identity,
     resolvedRef,
     commits: parseCommits(history)
   }
