@@ -4,7 +4,7 @@ area: CLI
 title: Rebuild changed reports
 theme: cli
 horizon: next
-status: in-progress
+status: awaiting-review
 blocks: []
 blocked_by: []
 baseline_ref: e4be1838a03e07cbfcdc9730812361bd1ffe6c54
@@ -30,19 +30,19 @@ Rebuild only paths owned by the previous manifest, publish the replacement manif
 
 ## Current state
 
-`src/report/workspace.ts` parses the existing manifest and compares its full contract with the requested contract before writing. The mismatch guard is unconditional, so both full and partial report requests emit the same refusal. `manifest.json` already contains repository identity, resolved ref, filters, interval, timezone, counting and identity policy, metric, theme, sections, and managed paths.
+`src/report/workspace.ts` now validates the complete manifest contract and managed paths, distinguishes complete rebuilds from compatibility-bound partial refreshes, stages the whole replacement workspace under a lock, preserves unowned files, removes stale owned paths, and rolls back a failed publication. `manifest.json` remains the single authoritative record of repository identity, resolved ref, filters, interval, timezone, counting and identity policy, metric, theme, sections, and managed paths.
 
-The report writer uses atomic sibling replacement for individual files and publishes the manifest after section content. It carries prior `managedPaths` forward but does not currently remove paths that become obsolete, such as contributor SVGs after an identity or filter change.
+The report writer publishes a complete staged workspace with its manifest written last. It swaps the staged directory into place only after generation succeeds and restores the previous directory if publication fails.
 
 ## Steps
 
-- [ ] Define the complete-versus-partial compatibility decision before filesystem mutation and lock the staging, rollback, unowned-file, and stale-managed-path rules.
-- [ ] Refactor report-workspace handling so a compatible request refreshes normally, an incompatible full request rebuilds every section, and an incompatible partial request continues failing closed.
-- [ ] Rebuild only manifest-owned content, safely remove obsolete manifest-owned assets after replacement content succeeds, preserve unowned files, and publish the new manifest last.
-- [ ] Keep `manifest.json` as the authoritative property record and add a concise human-readable contract view only if it does not create duplicated mutable state.
-- [ ] Extend in-process CLI and temporary-repository tests across changed dates, ref, author and path filters, merge policy, date field, timezone, metric, theme, repository identity, compatible refreshes, incompatible partial requests, stale managed paths, unowned files, malformed manifests, and simulated write failure.
-- [ ] Update the report specification and user guidance to distinguish automatic complete rebuilds from compatibility-bound partial refreshes.
-- [ ] Run the complete engineering and KI gates, exercise a changed full rebuild against a temporary clone, and stop at `awaiting-review` without pushing, releasing, tagging, or publishing.
+- [x] Define the complete-versus-partial compatibility decision before filesystem mutation, including lock, staging, rollback, unowned-file, and stale-managed-path rules.
+- [x] Refactor report-workspace handling so a compatible request refreshes normally, an incompatible full request rebuilds every section, and an incompatible partial request continues failing closed.
+- [x] Rebuild only manifest-owned content, safely remove obsolete manifest-owned assets after replacement content succeeds, preserve unowned files, and publish the new manifest last.
+- [x] Keep `manifest.json` as the authoritative property record and add a concise human-readable contract view only if it does not create duplicated mutable state.
+- [x] Extend in-process CLI and temporary-repository tests across changed dates, ref, author and path filters, merge policy, date field, timezone, metric, theme, repository identity, compatible refreshes, incompatible partial requests, stale managed paths, unowned files, malformed manifests, and simulated write failure.
+- [x] Update the report specification and user guidance to distinguish automatic complete rebuilds from compatibility-bound partial refreshes.
+- [x] Run the complete engineering and KI gates, exercise a changed full rebuild against a temporary clone, and stop at `awaiting-review` without pushing, releasing, tagging, or publishing.
 
 ## Files touched
 
@@ -62,7 +62,7 @@ No functional dependency blocks the work. CLI-003 may touch the same documentati
 
 ### Decision Records
 
-Assess the accepted report-contract Decision Record. Add a superseding decision only if automatic full rebuild contradicts its locked intent; do not rewrite accepted history silently.
+The current living product Decision Record was updated in place, as required by the KI Decision Record standard, to state the automatic complete-rebuild and compatibility-bound partial-refresh contract.
 
 ### Specifications
 
@@ -75,6 +75,40 @@ Explain that changing report properties triggers a complete rebuild, while named
 ### Roadmap
 
 Retain this item as the independent behavioral delivery record. Keep CLI-003 focused on cross-tool documentation conformance and do not merge their review or acceptance evidence.
+
+## Review
+
+### Delivered
+
+- Complete report requests rebuild all managed sections when any manifest-recorded generation property changes; named partial reports remain compatibility-bound.
+- Whole-workspace staging, a repository-local lock, manifest validation, unowned-path collision checks, stale owned-path cleanup, directory publication, and rollback protect report updates.
+- The existing product Decision Record, specification, guide, README, CLI help, and manual describe the current rebuild contract and manifest inspection path.
+
+### Summary of changes
+
+- `3f0c967 feat(report): rebuild changed complete reports` implements the transaction and adds report-contract, filesystem-safety, repository-identity, and publication-failure coverage.
+- `115112a docs(report): describe automatic complete rebuilds` reconciles the living decision, specification, guide, README, and manual.
+- `./install.sh --link` refreshed the local executable and manual links; no repository, tap, release, tag, or publication mutation was performed.
+
+### Verification
+
+- Focused report suite: 12 tests passed across `src/tests/almanac.test.ts` and `src/tests/report-transaction.test.ts`.
+- Complete suite: 50 tests passed with 100% statements, branches, functions, and lines.
+- `bunx tsc --noEmit`, `bun run build`, `bunx biome check .`, `bunx knip`, `bun run ki:tools:lint-man`, `bash -n install.sh`, and `git diff --check` passed; Knip retained two existing configuration hints only.
+- Full `ki repo audit --repo .` passed all 17 declared skills.
+- A clean temporary clone passed changed interval, theme, date-field, merge-policy, and ref rebuilds; incompatible partial refusal left the manifest unchanged; unowned content survived; no transaction artifacts remained.
+
+### Outstanding concerns
+
+None within the approved scope.
+
+### Post-change review
+
+The implementation grants replacement authority only through a valid manifest's managed paths. Complete rebuilds remove stale owned files but preserve unowned files, while malformed ownership, unsafe filesystem shapes, unowned collisions, concurrent locks, and incompatible partial requests fail closed. Simulated initial and replacement publication failures leave no partial report. Documentation now matches this behavior, and the current Decision Record remains a living present-state record.
+
+### Mini recap
+
+ALMANAC-CLI-004 is implemented, verified, committed, and ready for human review at `awaiting-review`. Its immutable baseline is `e4be1838a03e07cbfcdc9730812361bd1ffe6c54`. No push, release, tag, or publication occurred.
 
 ## Discussion
 
