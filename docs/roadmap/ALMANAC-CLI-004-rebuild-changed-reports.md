@@ -4,7 +4,7 @@ area: CLI
 title: Rebuild changed reports
 theme: cli
 horizon: next
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: e4be1838a03e07cbfcdc9730812361bd1ffe6c54
@@ -109,6 +109,10 @@ The implementation grants replacement authority only through a valid manifest's 
 ### Mini recap
 
 ALMANAC-CLI-004 is implemented, verified, committed, and ready for human review at `awaiting-review`. Its immutable baseline is `e4be1838a03e07cbfcdc9730812361bd1ffe6c54`. No push, release, tag, or publication occurred.
+
+## Done
+
+Accepted by the user on 2026-08-28 after review of the automatic rebuild behavior, transaction safety evidence, complete verification gates, and clean repository state. The done record is retained.
 
 ## Discussion
 
