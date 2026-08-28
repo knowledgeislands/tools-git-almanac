@@ -90,15 +90,15 @@ _Verify:_ report tests inspect index, section pages, normalized data, combined c
 
 ### ALM-014 — Manifest ownership
 
-The report manifest MUST identify its schema, tool, repository, resolved revision, selectors, interval, timezone, identity policy, metric, theme, generated sections, and managed paths. Git Almanac MUST refuse a non-empty directory without a valid manifest and MUST refuse partial combination when the effective contract differs.
+The report manifest MUST identify its schema, tool, repository, resolved revision, selectors, interval, timezone, identity policy, metric, theme, generated sections, and managed paths. A complete report request with a valid manifest MUST rebuild every managed section when the effective contract differs. A partial request MUST refuse an incompatible contract. Git Almanac MUST refuse a non-empty directory without a valid manifest, unsafe managed paths, and collisions with unowned paths.
 
-_Verify:_ report tests exercise compatible partial updates, incompatible contracts, malformed or missing ownership, and preservation of foreign files.
+_Verify:_ report tests exercise changed complete contracts, compatible and incompatible partial updates, malformed or missing ownership, unsafe paths, unowned collisions, stale managed-path removal, and preservation of unowned files.
 
 ### ALM-015 — Managed writes
 
-Report files MUST be written through atomic sibling replacement, and the manifest MUST be published after section content. Git Almanac MUST warn when the canonical report path is not ignored.
+Report updates MUST be assembled in a sibling staging directory, with the manifest written after section content, and published by replacing the report directory. A failed publication MUST restore the previous workspace and remove transaction artifacts. A complete rebuild MUST remove stale manifest-owned files while preserving unowned files. Git Almanac MUST serialize report updates with a repository-local lock and warn when the canonical report path is not ignored.
 
-_Verify:_ report implementation uses temporary sibling writes and rename; command tests inspect warning and final manifest state.
+_Verify:_ report implementation tests cover staged replacement, simulated publication failure and rollback, lock refusal, warning, and final manifest state.
 
 ## Configuration and ignore behavior
 

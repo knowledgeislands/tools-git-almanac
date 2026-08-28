@@ -80,7 +80,9 @@ git almanac report authors
 git almanac report contributors
 ```
 
-The manifest records the effective repository, revision, selectors, timezone, exact-identity policy, metric, theme, sections, and managed paths. Git Almanac refuses a foreign directory or a partial update whose contract differs; use a different selector set only after deliberately moving the previous report aside.
+The manifest records the effective repository, revision, selectors, timezone, exact-identity policy, metric, theme, sections, and managed paths. A complete `git almanac report` automatically rebuilds every managed section when that contract changes, removes stale managed files, and preserves files it does not own. A named partial update requires the existing manifest to have the same contract. Git Almanac refuses missing, malformed, or unsafe ownership metadata rather than guessing what it may replace.
+
+Inspect `reports/git-almanac/manifest.json` to see the exact props used for the current report and the paths Git Almanac owns.
 
 ## Keep report output out of Git
 

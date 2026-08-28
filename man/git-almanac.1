@@ -159,8 +159,11 @@ per-contributor SVG calendars, and
 The manifest records the effective repository, revision, history selectors,
 timezone,
 identity policy, metric, theme, sections, and managed paths.
-Git Almanac refuses a non-empty directory without a valid manifest
-and refuses partial updates with an incompatible contract.
+A complete report automatically rebuilds every managed section when that
+contract changes, removes stale managed files, and preserves unowned files.
+A named partial update requires a compatible contract.
+Git Almanac refuses a non-empty directory without a valid manifest,
+unsafe managed paths, and collisions with unowned paths.
 .SH CONFIGURATION
 \&
 .PP

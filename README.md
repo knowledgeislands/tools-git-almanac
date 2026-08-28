@@ -47,7 +47,7 @@ git almanac report
 open reports/git-almanac/index.html
 ```
 
-Refresh one compatible section with `report calendar`, `report authors`, or `report contributors`. The manifest protects foreign directories and prevents partial output from combining different repository, ref, filter, date, timezone, identity, metric, or theme contracts.
+A complete `report` run automatically rebuilds every managed section when its repository, ref, filters, interval, timezone, identity, metric, or theme contract changes. Refresh one compatible section with `report calendar`, `report authors`, or `report contributors`. The manifest protects foreign directories, records every owned path, preserves unowned files, and prevents incompatible partial updates.
 
 Git Almanac warns when its report is not ignored. Add the narrowest safe rule, or initialise both configuration and ignore behavior:
 
