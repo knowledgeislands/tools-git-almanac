@@ -447,7 +447,7 @@ describe('Git Almanac expanded command contract', () => {
     expect((await invoke(['report', reportFile])).code).toBe(1)
   })
 
-  test('protects unowned, unsafe, and locked report workspaces without partial publication', async () => {
+  test('refuses unowned report collisions without partial publication', async () => {
     const collision = repository('report-unowned-collision')
     commit(collision, {
       author: 'Owner',
@@ -469,7 +469,9 @@ describe('Git Almanac expanded command contract', () => {
     expect(readFileSync(collisionManifestPath, 'utf8')).toBe(collisionManifestSource)
     expect(readFileSync(join(collisionRoot, 'authors.html'), 'utf8')).toBe(collisionAuthorsSource)
     expect(readdirSync(join(collision, 'reports')).filter((entry) => entry.startsWith('.git-almanac'))).toEqual([])
+  })
 
+  test('rejects malformed and unsafe report manifests', async () => {
     const unsafe = repository('report-unsafe-manifest')
     commit(unsafe, { author: 'Owner', email: 'owner@example.com', date: '2026-08-26T12:00:00Z' })
     expect((await invoke(['report', unsafe])).code).toBe(0)
@@ -508,7 +510,9 @@ describe('Git Almanac expanded command contract', () => {
     malformedManifest.contract = null
     writeFileSync(malformedManifestPath, `${JSON.stringify(malformedManifest, null, 2)}\n`)
     expect((await invoke(['report', malformed, '--theme', 'dark'])).stderr).toContain('unrecognised manifest')
+  })
 
+  test('rejects unsafe manifest-owned filesystem shapes', async () => {
     const symbolic = repository('report-symbolic-owned-path')
     commit(symbolic, { author: 'Owner', email: 'owner@example.com', date: '2026-08-26T12:00:00Z' })
     expect((await invoke(['report', symbolic])).code).toBe(0)
@@ -536,7 +540,9 @@ describe('Git Almanac expanded command contract', () => {
     expect((await invoke(['report', nonFile, '--theme', 'dark'])).stderr).toContain(
       'refusing non-file report path owned by manifest'
     )
+  })
 
+  test('refuses concurrent report updates without mutation', async () => {
     const locked = repository('report-locked')
     commit(locked, { author: 'Owner', email: 'owner@example.com', date: '2026-08-26T12:00:00Z' })
     expect((await invoke(['report', locked])).code).toBe(0)
@@ -549,7 +555,6 @@ describe('Git Almanac expanded command contract', () => {
     expect(lockedResult.stderr).toContain('refusing concurrent report update')
     expect(readFileSync(lockedManifestPath, 'utf8')).toBe(lockedManifestSource)
   })
-
   test('supports dark ignored reports, empty people views, and renderer guardrails', async () => {
     const root = repository('dark-report')
     commit(root, { author: 'Dark Author', email: 'dark@example.com', date: '2026-08-26T12:00:00Z' })
