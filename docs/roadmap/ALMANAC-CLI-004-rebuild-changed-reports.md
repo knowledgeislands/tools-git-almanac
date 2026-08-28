@@ -4,10 +4,10 @@ area: CLI
 title: Rebuild changed reports
 theme: cli
 horizon: next
-status: draft
+status: ready
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: 562d7727f9d34c46ceb670b73ba607efd33d4238
 ---
 
 # ALMANAC-CLI-004: Rebuild changed reports
