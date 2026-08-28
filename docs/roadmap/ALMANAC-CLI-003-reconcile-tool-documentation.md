@@ -4,10 +4,10 @@ area: CLI
 title: Reconcile tool documentation
 theme: cli
 horizon: next
-status: ready
+status: in-progress
 blocks: []
 blocked_by: []
-baseline_ref: bf68935f14f80ed2ec681aad179f1c258ca96850
+baseline_ref: a7cad61bf2458de20075fb6479ce36e82494022d
 ---
 
 # ALMANAC-CLI-003: Reconcile tool documentation
@@ -29,6 +29,8 @@ Reconcile user-facing manual pages, CLI help, READMEs, guides, specifications, i
 The tool changes are documentation-only. Help text embedded in runtime source may change, but command parsing, execution, outputs, exit behavior, and other runtime contracts may not. The Harness change may add deterministic manual-layout audit and safe conformance behavior only within `ki-repo-tools`; it must not alter unrelated skill contracts. The item excludes new CLI capabilities, release publication, package publication, tags, and unrelated repository conformance changes. Implementation must retain atomic per-repository commits and preserve unrelated work.
 
 ## Current state
+
+Implementation starts from Git Almanac `a7cad61bf2458de20075fb6479ce36e82494022d`, mgit `e4a970821513937dd20dc666982d6faaad9144f1`, tools-ki `0bd79f8ff9644700bcbf55ddf5fe3f414d0bc0ad`, and KI Agentic Harness `712976bb0de9bebd9c64d8307d67e8a2599a2fde`. Git Almanac, mgit, and KI Agentic Harness were clean. The tools-ki workspace contained concurrent, preserved `.gitignore` and `vitest.config.ts` conformance edits; its full KI audit passed with those edits present, and this delivery must neither claim nor stage them.
 
 All four repositories are clean. Their reshaping baselines are Git Almanac `bf68935f14f80ed2ec681aad179f1c258ca96850`, mgit `fd1a05a3bf774271912743630b8a2448dc219308`, tools-ki `0e4cbd2d387f72844cd4400961bd31916371ce66`, and KI Agentic Harness `712976bb0de9bebd9c64d8307d67e8a2599a2fde`. The three sibling repositories contain concurrent, unrelated roadmap and trade commits ahead of their remotes; those commits are baseline state and must not be rewritten or incorporated into item-specific commits.
 
