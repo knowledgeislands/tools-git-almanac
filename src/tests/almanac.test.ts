@@ -1,12 +1,15 @@
 import { execFileSync } from 'node:child_process'
 import {
   appendFileSync,
+  cpSync,
   existsSync,
   mkdirSync,
   mkdtempSync,
   readdirSync,
   readFileSync,
+  realpathSync,
   rmSync,
+  symlinkSync,
   writeFileSync
 } from 'node:fs'
 import { tmpdir } from 'node:os'
@@ -61,6 +64,7 @@ interface InvokeOptions {
   cwd?: string
   git?: GitExecutor
   now?: Date
+  timezone?: string
 }
 
 const invoke = async (args: string[], options: InvokeOptions = {}) => {
@@ -70,7 +74,7 @@ const invoke = async (args: string[], options: InvokeOptions = {}) => {
   const context: RunContext = {
     cwd: options.cwd ?? process.cwd(),
     now: () => options.now ?? fixedNow,
-    timezone: 'UTC',
+    timezone: options.timezone ?? 'UTC',
     isTTY: false,
     noColorEnvironment: false,
     stdout: (value) => {
@@ -272,6 +276,14 @@ describe('Git Almanac expanded command contract', () => {
   })
 
   test('builds compatible partial reports and refuses foreign or incompatible workspaces', async () => {
+    const freshPartial = repository('fresh-partial-report')
+    commit(freshPartial, { author: 'Partial', email: 'partial@example.com', date: '2026-08-26T12:00:00Z' })
+    expect((await invoke(['report', 'authors', freshPartial])).code).toBe(0)
+    const freshManifest = JSON.parse(
+      readFileSync(join(freshPartial, 'reports', 'git-almanac', 'manifest.json'), 'utf8')
+    ) as { sections: ReportSection[] }
+    expect(freshManifest.sections).toEqual(['authors'])
+
     const root = repository('report')
     commit(root, { author: 'Alice', email: 'alice@example.com', date: '2026-08-25T12:00:00Z' })
     commit(root, { author: 'Bob', email: 'bob@example.com', date: '2026-08-26T12:00:00Z' })
@@ -305,6 +317,106 @@ describe('Git Almanac expanded command contract', () => {
       'different repository, ref, filter, date, timezone, identity, or metric contract'
     )
 
+    writeFileSync(join(reportRoot, 'unowned.txt'), 'preserve me')
+    writeFileSync(join(reportRoot, 'stale-managed.txt'), 'remove me')
+    const staleManifest = JSON.parse(readFileSync(join(reportRoot, 'manifest.json'), 'utf8')) as {
+      managedPaths: string[]
+    }
+    staleManifest.managedPaths.push('stale-managed.txt')
+    writeFileSync(join(reportRoot, 'manifest.json'), `${JSON.stringify(staleManifest, null, 2)}\n`)
+
+    const rebuilt = await invoke(['report', root, '--since', '2026-08-26', '--until', '2026-08-26', '--theme', 'dark'])
+    expect(rebuilt.code).toBe(0)
+    const rebuiltManifest = JSON.parse(readFileSync(join(reportRoot, 'manifest.json'), 'utf8')) as {
+      contract: { interval: { since: string }; theme: string }
+      managedPaths: string[]
+    }
+    expect(rebuiltManifest.contract.interval.since).toBe('2026-08-26')
+    expect(rebuiltManifest.contract.theme).toBe('dark')
+    expect(rebuiltManifest.managedPaths).not.toContain('stale-managed.txt')
+    expect(existsSync(join(reportRoot, 'stale-managed.txt'))).toBe(false)
+    expect(readFileSync(join(reportRoot, 'unowned.txt'), 'utf8')).toBe('preserve me')
+
+    git(root, ['branch', 'report-ref', 'HEAD~1'])
+    const rebuiltSelectors = await invoke(
+      [
+        'report',
+        root,
+        '--ref',
+        'report-ref',
+        '--author',
+        'Alice',
+        '--path',
+        'activity.txt',
+        '--since',
+        '2026-08-25',
+        '--until',
+        '2026-08-25',
+        '--date',
+        'committer',
+        '--include-merges',
+        '--theme',
+        'light'
+      ],
+      { timezone: 'Europe/London' }
+    )
+    expect(rebuiltSelectors.code).toBe(0)
+    const selectorManifest = JSON.parse(readFileSync(join(reportRoot, 'manifest.json'), 'utf8')) as {
+      contract: {
+        ref: { selected: string }
+        filters: { author: string; paths: string[]; date: string; includeMerges: boolean; metric: string }
+        interval: { since: string; until: string; timezone: string }
+        countingPolicy: { identity: string; metric: string }
+        theme: string
+      }
+    }
+    expect(selectorManifest.contract).toMatchObject({
+      ref: { selected: 'report-ref' },
+      filters: {
+        author: 'Alice',
+        paths: ['activity.txt'],
+        date: 'committer',
+        includeMerges: true,
+        metric: 'commits'
+      },
+      interval: { since: '2026-08-25', until: '2026-08-25', timezone: 'Europe/London' },
+      countingPolicy: { identity: 'exact-raw-name-email', metric: 'commits' },
+      theme: 'light'
+    })
+    expect(readFileSync(join(reportRoot, 'unowned.txt'), 'utf8')).toBe('preserve me')
+
+    const incompatibleAfterRebuild = await invoke([
+      'report',
+      'authors',
+      root,
+      '--since',
+      '2026-08-25',
+      '--until',
+      '2026-08-26',
+      '--theme',
+      'dark'
+    ])
+    expect(incompatibleAfterRebuild.code).toBe(1)
+    expect(JSON.parse(readFileSync(join(reportRoot, 'manifest.json'), 'utf8'))).toEqual(selectorManifest)
+
+    const changedRepository = repository('report-changed-repository')
+    commit(changedRepository, {
+      author: 'Other Owner',
+      email: 'other@example.com',
+      date: '2026-08-26T12:00:00Z'
+    })
+    mkdirSync(join(changedRepository, 'reports'), { recursive: true })
+    cpSync(reportRoot, join(changedRepository, 'reports', 'git-almanac'), { recursive: true })
+
+    const rebuiltRepository = await invoke(['report', changedRepository])
+    expect(rebuiltRepository.code).toBe(0)
+    const changedRepositoryRoot = join(changedRepository, 'reports', 'git-almanac')
+    const changedRepositoryManifest = JSON.parse(
+      readFileSync(join(changedRepositoryRoot, 'manifest.json'), 'utf8')
+    ) as { contract: { repository: { root: string } } }
+    expect(changedRepositoryManifest.contract.repository.root).toBe(realpathSync(changedRepository))
+    expect(readFileSync(join(changedRepositoryRoot, 'unowned.txt'), 'utf8')).toBe('preserve me')
+
     const foreign = repository('foreign-report')
     mkdirSync(join(foreign, 'reports', 'git-almanac'), { recursive: true })
     writeFileSync(join(foreign, 'reports', 'git-almanac', 'foreign.txt'), 'do not overwrite')
@@ -333,6 +445,109 @@ describe('Git Almanac expanded command contract', () => {
     mkdirSync(join(reportFile, 'reports'), { recursive: true })
     writeFileSync(join(reportFile, 'reports', 'git-almanac'), 'not a directory')
     expect((await invoke(['report', reportFile])).code).toBe(1)
+  })
+
+  test('protects unowned, unsafe, and locked report workspaces without partial publication', async () => {
+    const collision = repository('report-unowned-collision')
+    commit(collision, {
+      author: 'Owner',
+      email: 'owner@example.com',
+      date: '2026-08-26T12:00:00Z'
+    })
+    expect((await invoke(['report', collision])).code).toBe(0)
+    const collisionRoot = join(collision, 'reports', 'git-almanac')
+    const collisionManifestPath = join(collisionRoot, 'manifest.json')
+    const collisionManifest = JSON.parse(readFileSync(collisionManifestPath, 'utf8')) as { managedPaths: string[] }
+    collisionManifest.managedPaths = collisionManifest.managedPaths.filter((path) => path !== 'authors.html')
+    writeFileSync(collisionManifestPath, `${JSON.stringify(collisionManifest, null, 2)}\n`)
+    const collisionManifestSource = readFileSync(collisionManifestPath, 'utf8')
+    const collisionAuthorsSource = readFileSync(join(collisionRoot, 'authors.html'), 'utf8')
+
+    const collisionResult = await invoke(['report', collision, '--theme', 'dark'])
+    expect(collisionResult.code).toBe(1)
+    expect(collisionResult.stderr).toContain('refusing to overwrite unowned report path: authors.html')
+    expect(readFileSync(collisionManifestPath, 'utf8')).toBe(collisionManifestSource)
+    expect(readFileSync(join(collisionRoot, 'authors.html'), 'utf8')).toBe(collisionAuthorsSource)
+    expect(readdirSync(join(collision, 'reports')).filter((entry) => entry.startsWith('.git-almanac'))).toEqual([])
+
+    const unsafe = repository('report-unsafe-manifest')
+    commit(unsafe, { author: 'Owner', email: 'owner@example.com', date: '2026-08-26T12:00:00Z' })
+    expect((await invoke(['report', unsafe])).code).toBe(0)
+    const unsafeRoot = join(unsafe, 'reports', 'git-almanac')
+    const unsafeManifestPath = join(unsafeRoot, 'manifest.json')
+    const unsafeManifest = JSON.parse(readFileSync(unsafeManifestPath, 'utf8')) as { managedPaths: string[] }
+    unsafeManifest.managedPaths.push('../outside.txt')
+    writeFileSync(unsafeManifestPath, `${JSON.stringify(unsafeManifest, null, 2)}\n`)
+    writeFileSync(join(unsafe, 'reports', 'outside.txt'), 'outside')
+    const unsafeManifestSource = readFileSync(unsafeManifestPath, 'utf8')
+
+    const unsafeResult = await invoke(['report', unsafe, '--theme', 'dark'])
+    expect(unsafeResult.code).toBe(1)
+    expect(unsafeResult.stderr).toContain('unrecognised manifest')
+    expect(readFileSync(unsafeManifestPath, 'utf8')).toBe(unsafeManifestSource)
+    expect(readFileSync(join(unsafe, 'reports', 'outside.txt'), 'utf8')).toBe('outside')
+
+    unsafeManifest.managedPaths[unsafeManifest.managedPaths.length - 1] = '/outside.txt'
+    writeFileSync(unsafeManifestPath, `${JSON.stringify(unsafeManifest, null, 2)}\n`)
+    expect((await invoke(['report', unsafe, '--theme', 'dark'])).stderr).toContain('unrecognised manifest')
+
+    const malformed = repository('report-malformed-contract')
+    commit(malformed, { author: 'Owner', email: 'owner@example.com', date: '2026-08-26T12:00:00Z' })
+    expect((await invoke(['report', malformed])).code).toBe(0)
+    const malformedManifestPath = join(malformed, 'reports', 'git-almanac', 'manifest.json')
+    const malformedManifest = JSON.parse(readFileSync(malformedManifestPath, 'utf8')) as { contract: unknown }
+    malformedManifest.contract = {}
+    writeFileSync(malformedManifestPath, `${JSON.stringify(malformedManifest, null, 2)}\n`)
+    const malformedManifestSource = readFileSync(malformedManifestPath, 'utf8')
+
+    const malformedResult = await invoke(['report', malformed, '--theme', 'dark'])
+    expect(malformedResult.code).toBe(1)
+    expect(malformedResult.stderr).toContain('unrecognised manifest')
+    expect(readFileSync(malformedManifestPath, 'utf8')).toBe(malformedManifestSource)
+
+    malformedManifest.contract = null
+    writeFileSync(malformedManifestPath, `${JSON.stringify(malformedManifest, null, 2)}\n`)
+    expect((await invoke(['report', malformed, '--theme', 'dark'])).stderr).toContain('unrecognised manifest')
+
+    const symbolic = repository('report-symbolic-owned-path')
+    commit(symbolic, { author: 'Owner', email: 'owner@example.com', date: '2026-08-26T12:00:00Z' })
+    expect((await invoke(['report', symbolic])).code).toBe(0)
+    const symbolicRoot = join(symbolic, 'reports', 'git-almanac')
+    rmSync(join(symbolicRoot, 'authors.html'))
+    symlinkSync(join(symbolicRoot, 'calendar.html'), join(symbolicRoot, 'authors.html'))
+    expect((await invoke(['report', symbolic, '--theme', 'dark'])).stderr).toContain('refusing symbolic report path')
+
+    const blockedAncestor = repository('report-blocked-owned-ancestor')
+    commit(blockedAncestor, { author: 'Owner', email: 'owner@example.com', date: '2026-08-26T12:00:00Z' })
+    expect((await invoke(['report', blockedAncestor])).code).toBe(0)
+    const blockedAncestorRoot = join(blockedAncestor, 'reports', 'git-almanac')
+    rmSync(join(blockedAncestorRoot, 'assets'), { recursive: true })
+    writeFileSync(join(blockedAncestorRoot, 'assets'), 'not a directory')
+    expect((await invoke(['report', blockedAncestor, '--theme', 'dark'])).stderr).toContain(
+      'refusing non-directory report path ancestor'
+    )
+
+    const nonFile = repository('report-non-file-owned-path')
+    commit(nonFile, { author: 'Owner', email: 'owner@example.com', date: '2026-08-26T12:00:00Z' })
+    expect((await invoke(['report', nonFile])).code).toBe(0)
+    const nonFileRoot = join(nonFile, 'reports', 'git-almanac')
+    rmSync(join(nonFileRoot, 'authors.html'))
+    mkdirSync(join(nonFileRoot, 'authors.html'))
+    expect((await invoke(['report', nonFile, '--theme', 'dark'])).stderr).toContain(
+      'refusing non-file report path owned by manifest'
+    )
+
+    const locked = repository('report-locked')
+    commit(locked, { author: 'Owner', email: 'owner@example.com', date: '2026-08-26T12:00:00Z' })
+    expect((await invoke(['report', locked])).code).toBe(0)
+    const lockedManifestPath = join(locked, 'reports', 'git-almanac', 'manifest.json')
+    const lockedManifestSource = readFileSync(lockedManifestPath, 'utf8')
+    mkdirSync(join(locked, 'reports', '.git-almanac.lock'))
+
+    const lockedResult = await invoke(['report', locked, '--theme', 'dark'])
+    expect(lockedResult.code).toBe(1)
+    expect(lockedResult.stderr).toContain('refusing concurrent report update')
+    expect(readFileSync(lockedManifestPath, 'utf8')).toBe(lockedManifestSource)
   })
 
   test('supports dark ignored reports, empty people views, and renderer guardrails', async () => {

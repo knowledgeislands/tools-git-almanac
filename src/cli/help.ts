@@ -54,7 +54,7 @@ export const renderHelp = (topic?: string): string => {
   }
   if (topic === 'ignore' || topic === 'init') return `Usage: git almanac ${topic} [repository]\n`
   if (topic === 'report') {
-    return `Usage: git almanac report [calendar|authors|contributors] [repository] [options]\n\n${commonOptions}\nReport output is managed under <repository-root>/reports/git-almanac/.\n`
+    return `Usage: git almanac report [calendar|authors|contributors] [repository] [options]\n\n${commonOptions}\nReport output is managed under <repository-root>/reports/git-almanac/.\nA complete report rebuilds managed views when its effective contract changes.\nA named partial report requires a compatible existing manifest.\n`
   }
   if (topic === 'calendar' || topic === 'authors' || topic === 'contributors') {
     return `Usage: git almanac ${topic} [repository] [options]\n\n${commonOptions}\nStandalone output: --format, --output, --output-dir, --no-color.\n`
