@@ -1,7 +1,10 @@
 .TH GIT-ALMANAC 1 "2026-08-27" "git-almanac 0.1.0" "User Commands"
 .SH NAME
+\&
+.PP
 git-almanac \- inspect local Git calendars, authors, contributors, and reports
 .SH SYNOPSIS
+\&
 .B git-almanac calendar
 .RI [ repository ]
 .RI [ options ]
@@ -32,6 +35,7 @@ git-almanac \- inspect local Git calendars, authors, contributors, and reports
 .B git-almanac completion
 .RI < bash | zsh >
 .SH DESCRIPTION
+\&
 .B git-almanac
 inspects commits reachable from one local Git ref without network requests
 or a forge account.
@@ -45,6 +49,7 @@ and exact raw Git
 .I Name <email>
 identities are preserved.
 .SH COMMANDS
+\&
 .TP
 .BR calendar " [" repository "]"
 Render selected activity as a terminal, HTML, SVG, or JSON
@@ -74,6 +79,7 @@ Initialise configuration and report ignore behavior without generating a report.
 .BR completion " <" bash | zsh ">"
 Write a sourceable completion definition to standard output.
 .SH SHARED HISTORY OPTIONS
+\&
 .TP
 .BI --author " pattern"
 Pass an author name or email pattern to Git.
@@ -109,6 +115,7 @@ Commits is the only current metric.
 Select the visual palette.
 The default is light.
 .SH STANDALONE OUTPUT OPTIONS
+\&
 .TP
 .BI --format " terminal|html|svg|json"
 Select a renderer.
@@ -132,6 +139,8 @@ Disable ANSI terminal color.
 An explicit format overrides output-extension inference.
 A format without an output path writes to standard output.
 .SH REPORT WORKSPACE
+\&
+.PP
 Reports live under
 .IR <repository-root>/reports/git-almanac/ .
 The workspace contains linked HTML pages, normalized JSON data,
@@ -145,6 +154,8 @@ identity policy, metric, theme, sections, and managed paths.
 Git Almanac refuses a non-empty directory without a valid manifest
 and refuses partial updates with an incompatible contract.
 .SH CONFIGURATION
+\&
+.PP
 Optional
 .I <repository-root>/.git-almanac.toml
 uses schema 1.
@@ -162,6 +173,8 @@ only when no tracked or foreign report content could be hidden;
 otherwise it uses
 .IR /reports/git-almanac/ .
 .SH COUNTING CONTRACT
+\&
+.PP
 Each commit object reachable from the selected ref is counted at most once.
 All authors are included unless filtered.
 Exact raw author identities remain separate.
@@ -171,12 +184,15 @@ and pathspecs are explicit in JSON and report manifests.
 Contributor percentages describe selected commit activity
 and are not productivity scores.
 .SH OUTPUTS
+\&
+.PP
 Terminal output preserves five distinguishable intensity states without color.
 HTML is self-contained and embeds an accessible SVG.
 Standalone SVG cells carry keyboard focus, date and count labels,
 and native hover details.
 JSON models use schemaVersion 1.
 .SH FILES
+\&
 .TP
 .I <repository-root>/.git-almanac.toml
 Optional repository-local defaults.
@@ -187,6 +203,7 @@ Managed static report workspace.
 .I <repository-root>/.gitignore
 Modified only by explicit ignore or init commands.
 .SH ENVIRONMENT
+\&
 .TP
 .B NO_COLOR
 Disable terminal ANSI color when the variable is present.
@@ -203,6 +220,8 @@ Override the installer manual directory.
 .B GIT_ALMANAC_VERSION
 Select the exact v-prefixed release for install.sh.
 .SH INSTALLATION
+\&
+.PP
 Install an immutable released asset with:
 .nf
 curl -fsSL https://raw.githubusercontent.com/knowledgeislands/tools-git-almanac/\
@@ -215,6 +234,7 @@ For local development, run:
 git almanac calendar
 .fi
 .SH EXIT STATUS
+\&
 .TP
 .B 0
 Success.
@@ -225,6 +245,7 @@ Repository, Git, configuration, report ownership, rendering, or output failure.
 .B 2
 Invalid git-almanac syntax or option value.
 .SH SEE ALSO
+\&
 .BR git (1),
 .BR git-log (1),
 .BR gitignore (5)
