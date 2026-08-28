@@ -88,12 +88,13 @@ Retain this item as the independent behavioral delivery record. Keep CLI-003 foc
 
 - `3f0c967 feat(report): rebuild changed complete reports` implements the transaction and adds report-contract, filesystem-safety, repository-identity, and publication-failure coverage.
 - `115112a docs(report): describe automatic complete rebuilds` reconciles the living decision, specification, guide, README, and manual.
+- `37c0e75 test(report): split filesystem safety cases` resolves the final KI audit's long-running-test finding without reducing coverage.
 - `./install.sh --link` refreshed the local executable and manual links; no repository, tap, release, tag, or publication mutation was performed.
 
 ### Verification
 
-- Focused report suite: 12 tests passed across `src/tests/almanac.test.ts` and `src/tests/report-transaction.test.ts`.
-- Complete suite: 50 tests passed with 100% statements, branches, functions, and lines.
+- Focused report suite: 15 tests passed across `src/tests/almanac.test.ts` and `src/tests/report-transaction.test.ts`.
+- Complete suite: 53 tests passed with 100% statements, branches, functions, and lines.
 - `bunx tsc --noEmit`, `bun run build`, `bunx biome check .`, `bunx knip`, `bun run ki:tools:lint-man`, `bash -n install.sh`, and `git diff --check` passed; Knip retained two existing configuration hints only.
 - Full `ki repo audit --repo .` passed all 17 declared skills.
 - A clean temporary clone passed changed interval, theme, date-field, merge-policy, and ref rebuilds; incompatible partial refusal left the manifest unchanged; unowned content survived; no transaction artifacts remained.
