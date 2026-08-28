@@ -4,7 +4,7 @@ area: CLI
 title: Reconcile tool documentation
 theme: cli
 horizon: next
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: a7cad61bf2458de20075fb6479ce36e82494022d
@@ -132,6 +132,10 @@ The approved documentation-only boundary held. The shared rule now turns the ori
 ### Mini recap
 
 CLI-003 established one portable manual-spacing contract, reconciled all three tool manuals and the one discovered help/manual omission, and recorded cross-repository verification without remote mutation. ALMANAC-CLI-004 remains the separate approved behavioral delivery for rebuilding changed complete reports.
+
+## Done
+
+Accepted by the user on 2026-08-28 after review of the delivered documentation reconciliation, verification evidence, and clean repository states. The done record is retained.
 
 ## Discussion
 
