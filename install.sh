@@ -104,7 +104,7 @@ if [[ -z "$requested_version" ]]; then
 fi
 
 printf '%s\n' "$requested_version" | grep -Eq '^v[0-9]+\.[0-9]+\.[0-9]+$' ||
-  die "expected exact version such as v1.0.1"
+  die "expected exact version such as v0.1.0"
 
 stage=$(mktemp -d "${TMPDIR:-/tmp}/git-almanac-install.XXXXXX") ||
   die 'could not create staging directory'

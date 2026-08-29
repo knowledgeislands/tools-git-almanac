@@ -4,7 +4,7 @@ All notable changes to Git Almanac will be documented here.
 
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.0.1] — in progress
+## [0.1.0] — in progress
 
 ### Added
 
