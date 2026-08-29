@@ -2,12 +2,9 @@
 # Its presence declares conformance with the Knowledge Islands repository standard.
 
 [repo]
-
 harnesses = ["knowledgeislands/ki-agentic-harness"]
 
-
 [skills.ki-repo]
-
 repository = "https://github.com/knowledgeislands/tools-git-almanac"
 title = "Git Almanac"
 description = "Inspect one local Git repository's calendars, authors, contributors, and reports offline."
@@ -16,62 +13,42 @@ supported_runtimes = ["claude-code", "claude-desktop", "chatgpt-codex"]
 visibility = "public"
 license = "MIT"
 
-
 [skills.ki-git]
-
 
 [skills.ki-authoring]
 
 [skills.ki-decision-records]
 
-
 [skills.ki-guides]
-
 
 [skills.ki-specs]
 
-
 [skills.ki-repo-project]
-
 
 [skills.ki-repo-tools]
 
-
 [skills.ki-engineering]
 
-
 [skills.ki-work]
-
 adapter = "roadmap"
-
 
 [skills.ki-work-roadmap]
 
-
 [skills.ki-work-roadmap.areas]
-
 CLI = "cli"
-
 
 [skills.ki-trades]
 
-
 [skills.ki-trades.routes."knowledgeislands/homebrew-tap"]
-
 export = ["work"]
-
 
 [skills.ki-tokenomics]
 
-
 [skills.ki-housekeeping-claude]
-
 
 [skills.ki-tokenomics-claude]
 
-
 [skills.ki-tokenomics-codex]
-
 
 [skills.ki-agora]
 
