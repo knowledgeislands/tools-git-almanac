@@ -5,8 +5,8 @@ Use this guide only after the current roadmap item is accepted and publication i
 ## Prepare the version
 
 1. Confirm every required gate passes on a clean checkout.
-2. Keep relevant `CHANGELOG.md` entries under `## [X.Y.Z] — in progress`, matching the tool-project changelog convention.
-3. Set the same version in `package.json` and the manual heading.
+2. Keep relevant `CHANGELOG.md` entries under `## [1.0.0] — in progress` as the curated V1 baseline while 0.x tags and releases remain recorded in Git history.
+3. Set the exact release version in `package.json`, the manual heading, and version tests.
 4. Commit the release candidate with an atomic Conventional Commit.
 
 ## Publish the immutable asset

@@ -4,7 +4,11 @@ All notable changes to Git Almanac will be documented here.
 
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.1.0] — in progress
+The changelog records the V1 release baseline; it does not retroactively track individual 0.x releases. Tags and commit history remain the record of the pre-V1 run-up.
+
+## [1.0.0] — in progress
+
+Pre-V1 work is summarized as one baseline. Separate 0.x release entries are not maintained.
 
 ### Added
 
