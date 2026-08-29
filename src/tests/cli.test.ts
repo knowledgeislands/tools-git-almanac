@@ -116,7 +116,7 @@ describe('Git Almanac CLI contract', () => {
     expect(help.stdout).toContain('git almanac calendar [repository]')
 
     const version = await invoke(['--version'])
-    expect(version.stdout).toMatch(/^git-almanac 0\.1\.0/)
+    expect(version.stdout).toMatch(/^git-almanac 1\.0\.0/)
 
     const bash = await invoke(['completion', 'bash'])
     expect(bash.stdout).toContain('complete -F _git_almanac git-almanac')
@@ -127,7 +127,7 @@ describe('Git Almanac CLI contract', () => {
 
     expect((await invoke(['help'])).stdout).toContain('git almanac calendar [repository]')
     expect((await invoke(['calendar', '--help'])).stdout).toContain('Usage: git almanac calendar')
-    expect((await invoke(['-V'])).stdout).toContain('git-almanac 0.1.0')
+    expect((await invoke(['-V'])).stdout).toContain('git-almanac 1.0.0')
     expect((await invoke(['calendar', '--format', 'json'])).code).toBe(0)
   })
 

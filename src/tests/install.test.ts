@@ -50,6 +50,6 @@ describe('development installer contract', () => {
     expect(resolve(executableDirectory, readlinkSync(executable))).toBe(join(repositoryRoot, 'bin', 'git-almanac'))
     expect(resolve(manualDirectory, readlinkSync(manual))).toBe(join(repositoryRoot, 'man', 'git-almanac.1'))
 
-    expect(execFileSync(executable, ['--version'], { encoding: 'utf8' }).trim()).toBe('git-almanac 0.1.0')
+    expect(execFileSync(executable, ['--version'], { encoding: 'utf8' }).trim()).toBe('git-almanac 1.0.0')
   })
 })

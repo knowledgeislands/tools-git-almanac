@@ -5,7 +5,7 @@ Use this guide only after the current roadmap item is accepted and publication i
 ## Prepare the version
 
 1. Confirm every required gate passes on a clean checkout.
-2. Move the relevant `CHANGELOG.md` entries from Unreleased to a dated semantic version.
+2. Keep relevant `CHANGELOG.md` entries under `## [X.Y.Z] — in progress`, matching the tool-project changelog convention.
 3. Set the same version in `package.json` and the manual heading.
 4. Commit the release candidate with an atomic Conventional Commit.
 
