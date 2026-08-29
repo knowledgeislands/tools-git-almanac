@@ -1,7 +1,7 @@
 {
   "name": "@knowledgeislands/git-almanac",
   "description": "Inspect one local Git repository's calendars, authors, contributors, and reports offline.",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": "kris@kris.me.uk",
   "bin": {
     "git-almanac": "dist/cli/cli.js"

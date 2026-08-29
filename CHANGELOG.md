@@ -4,7 +4,7 @@ All notable changes to Git Almanac will be documented here.
 
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and the project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [1.0.0] — in progress
+## [1.0.1] — in progress
 
 ### Added
 
@@ -20,3 +20,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and
 - Support author, path, ref, date-field, merge-policy, interval, theme, and output options.
 - Provide shell completion, a manual page, direct checkout execution, development linking, and release packaging.
 - Cover the CLI contract with deliberately dated temporary Git repositories and strict coverage gates.
+
+### Fixed
+
+- Install `mandoc` on Ubuntu release runners before linting the manual page.
