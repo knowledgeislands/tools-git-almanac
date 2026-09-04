@@ -1,12 +1,14 @@
 ---
-id: KI-GIT-ALMANAC-CLI-005
+id: ALMANAC-CLI-005
 area: CLI
+theme: cli
 title: Engineering and repository audit follow-up
 horizon: future
 status: draft
 blocks: []
 blocked_by: []
 baseline_ref: null
+candidate: true
 ---
 # Engineering and Repository Audit Follow-up
 
