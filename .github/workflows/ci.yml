@@ -43,6 +43,10 @@ jobs:
             ki repo skill add "$skill" --repo .
           done
           ki registry add --repo .
+          ki repo repair --repo .
+          project_key=${GITHUB_WORKSPACE//\//-}
+          mkdir -p "$HOME/.claude/projects/$project_key/memory"
+          touch "$HOME/.claude/projects/$project_key/memory/MEMORY.md"
           ki harness list
           {
             printf 'KI_CLI_INSTALL_DIR=%s\n' "$KI_CLI_INSTALL_DIR"
