@@ -1,5 +1,5 @@
 ---
-areas: { CLI: 4 }
+areas: { CLI: 5 }
 ---
 
 # Roadmap issue ledger
