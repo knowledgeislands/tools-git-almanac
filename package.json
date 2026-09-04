@@ -10,17 +10,17 @@
     "url": "https://github.com/knowledgeislands/tools-git-almanac/issues"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.5.10",
-    "@types/bun": "^1.3.14",
-    "@types/node": "^24.10.1",
-    "@vitest/coverage-v8": "^4.1.11",
+    "@biomejs/biome": "2.5.12",
+    "@types/bun": "^1.4.0",
+    "@types/node": "^26.4.1",
+    "@vitest/coverage-v8": "^5.0.0",
     "husky": "^9.1.7",
-    "knip": "^6.32.2",
-    "lint-staged": "^17.3.0",
-    "rumdl": "^0.2.60",
+    "knip": "^6.34.0",
+    "lint-staged": "^17.4.1",
+    "rumdl": "^0.2.64",
     "syncpack": "^15.3.3",
-    "typescript": "^7.0.0",
-    "vitest": "^4.1.11"
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.0"
   },
   "engines": {
     "node": ">=22"
@@ -47,7 +47,7 @@
       "bunx rumdl check --fix"
     ]
   },
-  "packageManager": "bun@1.3.14",
+  "packageManager": "bun@1.4.1",
   "private": false,
   "repository": {
     "type": "git",
