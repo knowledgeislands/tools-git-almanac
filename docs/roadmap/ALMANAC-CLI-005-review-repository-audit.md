@@ -5,30 +5,29 @@ area: CLI
 theme: cli
 horizon: future
 status: draft
-candidate: true
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-04T08:53:49Z
-updated_at: 2026-09-04T08:53:49Z
+updated_at: 2026-09-19T18:24:00Z
 ---
 
 ## Goal
 
-Discuss the unresolved engineering and repository audit findings before selecting remediation.
+Confirm the disposition of the now-resolved repository-audit findings without manufacturing additional delivery work.
 
 ## Context
 
-The estate audit reported two `ki-engineering` failures and one `ki-repo` failure.
+The baseline pass removed the retired roadmap field, added reviewable conformance and evidence declarations to all 20 accepted ALM requirements, refreshed current-compatible dependencies, and aligned the Biome schema. All 17 declared KI audits and the complete implementation gate now pass.
 
 ## Boundary
 
-This is a discussion proposal only. It is not accepted, prioritised, or implementation authority.
+This discussion proposal is not accepted, prioritised, or implementation authority. It does not create replacement work after the cited failures have been resolved.
 
 ## Shaping
 
-Resolve the exact criteria, distinguish deterministic maintenance from design choices, and define focused verification for any proposed repair.
+Review the passing evidence and choose an exact terminal Triage disposition. A duplicate or merged disposition should name the committed baseline as its retained target.
 
 ## Discussion
 
-Review the focused evidence before deciding whether to repair, defer, or record a justified exception.
+The original two engineering failures and one repository failure are no longer present. The record is ready for a human-approved terminal Triage disposition; until that exact approval, it remains an unadopted draft.
