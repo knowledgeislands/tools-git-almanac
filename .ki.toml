@@ -1,6 +1,8 @@
 # Knowledge Islands repository configuration.
 # Its presence declares conformance with the Knowledge Islands repository standard.
 
+# =============================================================================
+
 # -----------------------------------------------------------------------------
 # Foundation
 # -----------------------------------------------------------------------------
@@ -28,7 +30,7 @@ license = "MIT"
 [skills.ki-repo-tools]
 
 # -----------------------------------------------------------------------------
-# Governance runtime
+# Governance and runtime
 # -----------------------------------------------------------------------------
 
 [skills.ki-engineering]
@@ -49,9 +51,7 @@ license = "MIT"
 adapter = "roadmap"
 
 [skills.ki-work-roadmap]
-
-[skills.ki-work-roadmap.areas]
-CLI = "cli"
+areas.CLI = "cli"
 
 [skills.ki-housekeeping-claude]
 
@@ -66,12 +66,7 @@ CLI = "cli"
 # -----------------------------------------------------------------------------
 
 [skills.ki-trades]
-
-[skills.ki-trades.routes."knowledgeislands/homebrew-tap"]
-export = ["work"]
+routes."knowledgeislands/homebrew-tap" = { export = ["work"] }
 
 [skills.ki-agora]
-
-[skills.ki-agora.memberships.ki-all]
-home = "https://github.com/knowledgeislands/ki-agentic-harness"
-role = "maintainer"
+memberships.ki-all = { home = "https://github.com/knowledgeislands/ki-agentic-harness", role = "maintainer" }
