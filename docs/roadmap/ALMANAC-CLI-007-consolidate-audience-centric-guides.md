@@ -4,13 +4,13 @@ title: Consolidate audience-centric guides
 area: CLI
 theme: cli
 horizon: now
-status: ready
+status: awaiting-review
 blocks: []
 blocked_by: []
 transferred_from: ki-website
-baseline_ref: null
+baseline_ref: ea713229204e16cca9139d6fc2416f1ed403e4a4
 created_at: 2026-09-21T15:44:00Z
-updated_at: 2026-09-22T06:55:00Z
+updated_at: 2026-09-22T07:03:00Z
 ---
 
 ## Goal
@@ -62,18 +62,18 @@ The sweep of `README.md`, `docs/specs/`, `man/`, and `install.sh` found these fu
 
 ## Steps
 
-- [ ] Sweep `README.md`, `docs/specs/`, and any `man/` page for practical instruction that belongs in the collection.
-- [ ] Confirm every audience directory has an index that routes its own readers.
-- [ ] Place anything found under the audience that needs it, rather than under the audience that wrote it.
-- [ ] Add `docs/guides/user/README.md` so the user audience is routed rather than merely present.
-- [ ] Confirm the collection index routes by audience before anything else.
-- [ ] Rename `docs/guides/user/git-almanac.md` to `docs/guides/user/everyday-use.md` and narrow it to everyday inspection, selection, output, and reading the results.
-- [ ] Add `docs/guides/user/installation.md` covering the release installer, an exact version, the environment overrides, Homebrew once the tap accepts a formula, linking a checkout, the manual page, shell completion, and how to verify and remove an installation.
-- [ ] Add `docs/guides/user/reports.md` covering generating and refreshing the managed report, what the manifest owns, keeping report output out of Git, and recovering from an ownership or lock refusal.
-- [ ] Add `docs/guides/user/troubleshooting.md` covering exit statuses and the common failures a first-time reader hits, each with its recovery.
-- [ ] Give `docs/guides/developer/README.md` a scope statement and descriptions a contributor can choose from.
-- [ ] Reduce `README.md` to purpose, one credible example, and routes into the collection, leaving the detail to the guides it links.
-- [ ] Run `ki repo conform --skill ki-authoring --repo .` and then the guides, authoring, and full repository audits, repairing what they report.
+- [x] Sweep `README.md`, `docs/specs/`, and any `man/` page for practical instruction that belongs in the collection.
+- [x] Confirm every audience directory has an index that routes its own readers.
+- [x] Place anything found under the audience that needs it, rather than under the audience that wrote it.
+- [x] Add `docs/guides/user/README.md` so the user audience is routed rather than merely present.
+- [x] Confirm the collection index routes by audience before anything else.
+- [x] Rename `docs/guides/user/git-almanac.md` to `docs/guides/user/everyday-use.md` and narrow it to everyday inspection, selection, output, and reading the results.
+- [x] Add `docs/guides/user/installation.md` covering the release installer, an exact version, the environment overrides, Homebrew once the tap accepts a formula, linking a checkout, the manual page, shell completion, and how to verify and remove an installation.
+- [x] Add `docs/guides/user/reports.md` covering generating and refreshing the managed report, what the manifest owns, keeping report output out of Git, and recovering from an ownership or lock refusal.
+- [x] Add `docs/guides/user/troubleshooting.md` covering exit statuses and the common failures a first-time reader hits, each with its recovery.
+- [x] Give `docs/guides/developer/README.md` a scope statement and descriptions a contributor can choose from.
+- [x] Reduce `README.md` to purpose, one credible example, and routes into the collection, leaving the detail to the guides it links.
+- [x] Run `ki repo conform --skill ki-authoring --repo .` and then the guides, authoring, and full repository audits, repairing what they report.
 
 ## Files touched
 
@@ -112,6 +112,49 @@ This item is entirely guide impact: gaps are filled, stray practical material is
 ### Roadmap
 
 No further roadmap change is expected. `ALMANAC-CLI-006` remains independent; this item neither blocks nor is blocked by it.
+
+## Review
+
+### Delivered
+
+The approved boundary held: guide consolidation only. Immutable baseline `ea713229204e16cca9139d6fc2416f1ed403e4a4`. No file under `src/`, `man/`, or `docs/specs/` was changed, no behaviour changed, and `ALMANAC-CLI-005` and `ALMANAC-CLI-006` were not touched. The user audience now has an index and four task-shaped guides, the developer index states its scope, the collection index routes by audience, and `README.md` routes rather than duplicates.
+
+### Summary of changes
+
+- `docs/guides/README.md` — rewritten to route by audience first: one section per audience naming who it is for and what it covers, with the specification and decision corpora named as the instruments guides link to rather than restate.
+- `docs/guides/user/README.md` — new audience index. States the offline, read-mostly scope, names the five writing commands, gives a reading order for a first-time reader, and describes each guide in enough detail to choose one.
+- `docs/guides/user/everyday-use.md` — renamed from `git-almanac.md` by `git mv`, so no file is named after the tool rather than the task. Narrowed to discovery, selection, output, and reading results; report and ignore material moved out; new sections cover what the defaults mean, how to read calendar statistics and intensity bands, and why identities are never merged.
+- `docs/guides/user/installation.md` — new. Prerequisites, the release installer, pinning an exact version, directory overrides, Homebrew with its honest availability caveat, linking a checkout, the manual page, shell completion, verification, update and removal, and a recovery list keyed to the installer's own diagnostics.
+- `docs/guides/user/reports.md` — new. Building and refreshing the managed report, when a partial refresh is allowed, what the manifest owns and therefore protects, keeping output out of Git, and a recovery list keyed to each ownership, lock, and compatibility refusal in the source.
+- `docs/guides/user/troubleshooting.md` — new. Exit-status classification, then the failures a first-time reader hits, each with its recovery: command not found, missing repository, rejected selectors, an empty calendar that is not an error, refused formats, malformed command lines, invalid configuration, and results that surprise the reader.
+- `docs/guides/developer/README.md` — given a scope statement, a pointer to `AGENTS.md` for the conventions and to the specification for what must not break, and a two-to-three-sentence description of each guide in place of a bare link list.
+- `README.md` — reduced to purpose, install, one credible usage example, a condensed counting statement, and routes into the collection. The `Try locally`, `Output`, `Local report`, and `Configuration` tutorials were removed because the guides now own them.
+
+Material decisions: `man/git-almanac.1` and `docs/specs/git-almanac.md` were deliberately left where they are, being a reference manual and a behaviour specification rather than displaced guides; what the sweep took from them was the practical instruction they alone carried, namely shell completion and the failure classification. No `ki-specs` gap was found. No approved deviation from the plan was needed.
+
+### Verification
+
+Run from the repository root after the final edit:
+
+- `ki repo audit --skill ki-guides --concise --progress never` — `summary: KI REPO AUDIT on tools-git-almanac PASS · 1 skill`
+- `ki repo audit --skill ki-authoring --concise --progress never` — `summary: KI REPO AUDIT on tools-git-almanac PASS · 1 skill`
+- `ki repo audit --concise --progress never` — `summary: KI REPO AUDIT on tools-git-almanac PASS · 17 skills`
+- `ki repo conform --skill ki-authoring --repo . --concise --progress never` — `summary: KI REPO CONFORM on tools-git-almanac PASS · 1 skill`
+- Every relative Markdown link in `README.md` and `docs/**/*.md` was resolved against the filesystem; all resolve.
+
+Each documented diagnostic was checked against its source: the usage and error strings in `src/cli/parse.ts`, `src/cli/run.ts`, `src/core/dates.ts`, `src/git/adapter.ts`, `src/render/people.ts`, and `src/report/workspace.ts`, the lock path `reports/.git-almanac.lock`, and the installer's own messages in `install.sh`.
+
+### Outstanding concerns
+
+None blocking. Two notes for the reviewer. First, the guides use the repository's existing American spellings where they quote a flag, path, or diagnostic verbatim, while new prose is British; that mixture is deliberate rather than an oversight. Second, `docs/guides/user/everyday-use.md` was renamed, so any external citation of `docs/guides/user/git-almanac.md` at an unpinned ref would break — no such citation exists in `ki-website` today, and a pinned citation is unaffected.
+
+### Post-change review
+
+The goal is met: the user collection now covers installation, everyday use, reports, and recovery rather than the one document that happened to be written first, and every audience directory routes its own readers. Scope held exactly to documentation; regression risk to the tool is nil because no executable path changed, and the residual documentation risk is drift between a guide and the tool, which the definition of done already requires a change to keep aligned. The item is ready for acceptance review.
+
+### Mini recap
+
+Delivered the guide consolidation for `ALMANAC-CLI-007`: four user guides plus a user index, a scoped developer index, an audience-first collection index, and a README reduced to routes. Verified with the guides, authoring, and full repository audits, all passing, the full audit still at 17 skills. No outstanding failures. Learning worth routing, not promoted here: that a thin audience directory is usually a routing gap rather than a genuine absence of reader need, and that a sweep should distinguish a displaced guide from a reference manual or specification before moving anything.
 
 ## Discussion
 

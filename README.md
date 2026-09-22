@@ -4,107 +4,49 @@ Inspect one local Git repository's calendars, authors, contributors, and reports
 
 ![A sample Git Almanac SVG calendar](examples/git-almanac.svg)
 
-## Try locally
+## Install
 
-Install dependencies once and run the checkout directly:
+```bash
+curl -fsSL https://raw.githubusercontent.com/knowledgeislands/tools-git-almanac/main/install.sh | bash
+```
+
+The installer verifies the published SHA-256 manifest before replacing anything. To run this checkout instead of a release, link it:
 
 ```bash
 bun install
-./bin/git-almanac calendar
+./install.sh --link
 ```
 
-The repository argument is optional. Git Almanac discovers the repository containing the current directory, including from a nested directory.
+[Installation](docs/guides/user/installation.md) covers exact versions, install directories, Homebrew, the manual page, shell completion, and removal.
+
+## Use
 
 ```bash
-git almanac calendar /path/to/repository --path "packages/service with spaces"
-git almanac authors /path/to/repository
-git almanac contributors /path/to/repository --since 2026-01-01
+git almanac calendar
+git almanac authors
+git almanac contributors --since 2026-01-01
 ```
 
-## Output
+The repository argument is optional: Git Almanac discovers the repository containing the current directory, including from a nested directory. Single-file commands write to standard output unless `--output` is supplied, and an `.html`, `.svg`, or `.json` extension infers the format.
 
-Standalone commands write to standard output unless `--output` is supplied. HTML, SVG, and JSON extensions infer the format; explicit `--format` always wins.
-
-```bash
-git almanac calendar --no-color
-git almanac calendar --output activity.svg
-git almanac calendar --format html --theme dark > activity.html
-git almanac contributors --format json --output contributors.json
-```
-
-Use `--output-dir` when you deliberately want one combined calendar and one file for every exact author identity:
-
-```bash
-git almanac calendar --format svg --output-dir ./calendar-set
-```
-
-## Local report
-
-Generate the complete linked static report under `<repository-root>/reports/git-almanac/`:
+Build the complete linked static report under `<repository-root>/reports/git-almanac/`:
 
 ```bash
 git almanac report
 open reports/git-almanac/index.html
 ```
 
-A complete `report` run automatically rebuilds every managed section when its repository, ref, filters, interval, timezone, identity, metric, or theme contract changes. Refresh one compatible section with `report calendar`, `report authors`, or `report contributors`. The manifest protects foreign directories, records every owned path, preserves unowned files, and prevents incompatible partial updates.
+[Everyday use](docs/guides/user/everyday-use.md) covers history selection, output formats, and reading the results; [Reports](docs/guides/user/reports.md) covers the managed report and its manifest.
 
-Git Almanac warns when its report is not ignored. Add the narrowest safe rule, or initialise both configuration and ignore behavior:
+## What it counts
 
-```bash
-git almanac ignore
-git almanac init
-```
+By default Git Almanac counts each commit object reachable from `HEAD` once, excludes merge commits, preserves each exact raw Git `Name <email>` identity without guessing equivalence, groups by author date in the local timezone, and covers the 365 local calendar dates ending today. `--author`, `--path`, `--ref`, `--since`, `--until`, `--date`, and `--include-merges` make every deviation explicit.
 
-## Configuration
+Contributor percentages describe the selected commit history; they are not productivity scores. The durable behaviour contract lives in the [Git Almanac Specification](docs/specs/git-almanac.md), with product decisions in [Decision Records](docs/decisions/README.md).
 
-`.git-almanac.toml` is optional and safe to commit. Built-in defaults apply first, repository configuration second, and CLI arguments last.
+## Guides
 
-```bash
-git almanac config init
-git almanac config show
-git almanac config check
-```
-
-The initial schema supports `ref`, `since`, `until`, `date`, `include_merges`, `metric`, `theme`, `author`, and `paths`. `commits` is the only current metric.
-
-## Counting contract
-
-By default Git Almanac:
-
-- discovers the repository containing the current directory;
-- uses commits reachable from `HEAD`;
-- preserves each exact raw Git `Name <email>` author identity;
-- includes all authors and excludes merge commits;
-- groups commits by author date in the local timezone;
-- counts each commit object once;
-- covers 365 local calendar dates ending today; and
-- reads history with one argument-safe `git log` traversal.
-
-`--author`, `--path`, `--ref`, `--since`, `--until`, `--date`, and `--include-merges` make deviations explicit. Contributor percentages describe the selected commit history; they are not productivity scores.
-
-The durable behavior contract lives in the [Git Almanac Specification](docs/specs/git-almanac.md), with product decisions in [Decision Records](docs/decisions/README.md).
-
-## Install
-
-Link the checkout executable and manual without publishing:
-
-```bash
-./install.sh --link
-git almanac calendar
-```
-
-After the first immutable release:
-
-```bash
-curl -fsSL https://raw.githubusercontent.com/knowledgeislands/tools-git-almanac/main/install.sh | bash
-brew tap knowledgeislands/tap
-brew install git-almanac
-```
-
-The release installer verifies the published SHA-256 manifest before replacing an installed executable. Homebrew becomes available only after the tap independently accepts the prepared formula handoff for an immutable release.
-
-[Guides](docs/guides/README.md) cover everyday use, local development, and release preparation.
+[Guides](docs/guides/README.md) are grouped by audience: [user guides](docs/guides/user/README.md) for installing, inspecting, reporting, and troubleshooting, and [developer guides](docs/guides/developer/README.md) for local development, the definition of done, and releasing.
 
 ## Why Git Almanac
 
