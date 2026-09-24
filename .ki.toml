@@ -69,4 +69,5 @@ areas.CLI = "cli"
 routes."knowledgeislands/homebrew-tap" = { export = ["work"] }
 
 [skills.ki-agora]
-memberships.ki-all = { home = "https://github.com/knowledgeislands/ki-agentic-harness", role = "maintainer" }
+memberships.ki-all = { home = "https://github.com/knowledgeislands/ki-arcadia-principal", role = "product" }
+memberships.ki-tools = { home = "https://github.com/knowledgeislands/ki-arcadia-principal", role = "product" }
