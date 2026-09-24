@@ -10,7 +10,7 @@ blocked_by: []
 transferred_from: ki-website
 baseline_ref: ea713229204e16cca9139d6fc2416f1ed403e4a4
 created_at: 2026-09-21T15:44:00Z
-updated_at: 2026-09-22T07:03:00Z
+updated_at: 2026-09-24T09:14:00Z
 ---
 
 ## Goal
@@ -27,7 +27,7 @@ KI Website now declares, for every page it publishes under `apps/site/src/guidan
 
 That is a pull, not an obligation: KI Website derives, it does not own. This repository decides what its guides say and when they change.
 
-Separately, `ki-guides` is being asked to require audience directories under `docs/guides/` rather than permitting a flat collection (`ki-agentic-harness` `KI-HARNESS-GOV-083`). If that lands, this repository's collection has to satisfy it.
+Separately, `KI-HARNESS-GOV-083` has clarified `ki-guides`: audience directories are recommended when stable reader groups make a collection easier to navigate, while flat and mixed collections remain valid. This item therefore stands on this repository's own readers and routing needs, not a universal Harness requirement.
 
 ## Boundary
 
@@ -93,7 +93,7 @@ All three must pass, and the full audit must still report every one of its 17 sk
 
 ## Dependencies / blocks
 
-Nothing blocks this. `KI-HARNESS-GOV-083` in `ki-agentic-harness` proposes making audience directories a `ki-guides` requirement; this collection already groups by audience, so that change should confirm the arrangement rather than force one.
+Nothing blocks this. `KI-HARNESS-GOV-083` is advisory rather than a universal migration requirement; this collection's existing audience grouping remains a repository-local choice supported by its readers.
 
 ## Documentation impact
 
@@ -119,7 +119,7 @@ No further roadmap change is expected. `ALMANAC-CLI-006` remains independent; th
 
 The approved boundary held: guide consolidation only. Immutable baseline `ea713229204e16cca9139d6fc2416f1ed403e4a4`. No file under `src/`, `man/`, or `docs/specs/` was changed, no behaviour changed, and `ALMANAC-CLI-005` and `ALMANAC-CLI-006` were not touched. The user audience now has an index and four task-shaped guides, the developer index states its scope, the collection index routes by audience, and `README.md` routes rather than duplicates.
 
-### Summary of changes
+### Change Summary
 
 - `docs/guides/README.md` — rewritten to route by audience first: one section per audience naming who it is for and what it covers, with the specification and decision corpora named as the instruments guides link to rather than restate.
 - `docs/guides/user/README.md` — new audience index. States the offline, read-mostly scope, names the five writing commands, gives a reading order for a first-time reader, and describes each guide in enough detail to choose one.
