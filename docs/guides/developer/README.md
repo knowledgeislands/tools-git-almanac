@@ -2,7 +2,7 @@
 
 These guides are for anyone changing this repository: adding behaviour, fixing a defect, or publishing a release. They assume you have a checkout rather than an installed build, and they describe this repository's own working practice rather than general Git or TypeScript advice.
 
-The working conventions themselves — engineering boundaries, commit style, and documentation split — live in [AGENTS.md](../../../AGENTS.md); these guides cover the procedures those conventions imply. Behaviour you must not break while changing the tool is in the [Git Almanac Specification](../../specs/git-almanac.md).
+The working conventions themselves — engineering boundaries, commit style, and documentation split — live in root `AGENTS.md`; these guides cover the procedures those conventions imply. Behaviour you must not break while changing the tool is in the Git Almanac Specification at `docs/specs/git-almanac.md`.
 
 ## Set up and iterate
 

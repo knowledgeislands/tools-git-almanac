@@ -89,4 +89,4 @@ Set `NO_COLOR` in the environment or pass `--no-color` to disable ANSI colour. T
 
 ## Still stuck
 
-The [Git Almanac Specification](../../specs/git-almanac.md) states the behaviour each command is required to have, with the exit-status classification in `ALM-020`. `man git-almanac` documents every option and environment variable. If the tool's actual behaviour disagrees with the specification, the specification is authoritative and the defect is in the tool.
+The Git Almanac Specification at `docs/specs/git-almanac.md` states the behaviour each command is required to have, with the exit-status classification in `ALM-020`. `man git-almanac` documents every option and environment variable. If the tool's actual behaviour disagrees with the specification, the specification is authoritative and the defect is in the tool.

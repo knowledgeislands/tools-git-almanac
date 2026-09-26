@@ -64,4 +64,4 @@ Git Almanac refuses rather than guesses when it cannot prove it owns what it is 
 - **`refusing concurrent report update while lock exists`** — another report run holds `reports/.git-almanac.lock`. Wait for it to finish. If no run is active, the previous one was interrupted; delete the lock file and rerun.
 - **A partial refresh is refused as incompatible** — the selectors have moved on. Run the complete `git almanac report`.
 
-The behaviour behind each refusal is fixed by requirements `ALM-013` to `ALM-015` in the [Git Almanac Specification](../../specs/git-almanac.md); [Troubleshooting](troubleshooting.md) covers the failures that are not specific to reports.
+The behaviour behind each refusal is fixed by requirements `ALM-013` to `ALM-015` in the Git Almanac Specification at `docs/specs/git-almanac.md`; [Troubleshooting](troubleshooting.md) covers the failures that are not specific to reports.

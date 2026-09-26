@@ -6,9 +6,6 @@
   "bin": {
     "git-almanac": "dist/cli/cli.js"
   },
-  "bugs": {
-    "url": "https://github.com/knowledgeislands/tools-git-almanac/issues"
-  },
   "devDependencies": {
     "@biomejs/biome": "2.5.14",
     "@commitlint/cli": "^21.2.3",

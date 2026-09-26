@@ -97,4 +97,4 @@ Edit `.git-almanac.toml` to set durable `ref`, `since`, `until`, `date`, `includ
 
 - [Reports](reports.md) — build and maintain the linked static report under the repository root.
 - [Troubleshooting](troubleshooting.md) — what an exit status means and how to recover from a refusal.
-- [Git Almanac Specification](../../specs/git-almanac.md) — the normative contract behind every behaviour described here.
+- Git Almanac Specification (`docs/specs/git-almanac.md`) — the normative contract behind every behaviour described here.
