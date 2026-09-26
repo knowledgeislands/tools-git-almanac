@@ -4,13 +4,13 @@ title: Consolidate audience-centric guides
 area: CLI
 theme: cli
 horizon: now
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 transferred_from: ki-website
 baseline_ref: ea713229204e16cca9139d6fc2416f1ed403e4a4
 created_at: 2026-09-21T15:44:00Z
-updated_at: 2026-09-24T09:14:00Z
+updated_at: 2026-09-26T18:12:48Z
 ---
 
 ## Goal
@@ -155,6 +155,10 @@ The goal is met: the user collection now covers installation, everyday use, repo
 ### Mini recap
 
 Delivered the guide consolidation for `ALMANAC-CLI-007`: four user guides plus a user index, a scoped developer index, an audience-first collection index, and a README reduced to routes. Verified with the guides, authoring, and full repository audits, all passing, the full audit still at 17 skills. No outstanding failures. Learning worth routing, not promoted here: that a thin audience directory is usually a routing gap rather than a genuine absence of reader need, and that a sweep should distinguish a displaced guide from a reference manual or specification before moving anything.
+
+## Done
+
+Accepted 2026-09-26 by repository owner on review packet above.
 
 ## Discussion
 
