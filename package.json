@@ -32,9 +32,11 @@
   ],
   "homepage": "https://github.com/knowledgeislands/tools-git-almanac#readme",
   "keywords": [
+    "bun",
     "calendar",
     "cli",
     "git",
+    "typescript",
     "visualization"
   ],
   "license": "MIT",
