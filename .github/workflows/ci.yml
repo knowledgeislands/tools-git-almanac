@@ -39,14 +39,11 @@ jobs:
           test "$(command -v ki)" = "$KI_CLI_INSTALL_DIR/ki"
           test "$(ki --version)" = "${KI_VERSION#v}"
           ki bootstrap
-          for skill in ki-housekeeping-claude ki-tokenomics ki-tokenomics-claude ki-tokenomics-codex; do
+          for skill in ki-binding ki-binding-claude ki-binding-chatgpt ki-housekeeping-claude ki-housekeeping-chatgpt ki-tokenomics ki-tokenomics-claude ki-tokenomics-chatgpt; do
             ki repo skill add "$skill" --repo .
           done
           ki registry add --repo .
           ki repo repair --repo .
-          project_key=${GITHUB_WORKSPACE//\//-}
-          mkdir -p "$HOME/.claude/projects/$project_key/memory"
-          touch "$HOME/.claude/projects/$project_key/memory/MEMORY.md"
           ki harness list
           {
             printf 'KI_CLI_INSTALL_DIR=%s\n' "$KI_CLI_INSTALL_DIR"
