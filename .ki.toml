@@ -11,6 +11,8 @@
 harnesses = ["knowledgeislands/ki-agentic-harness"]
 
 [skills.ki-repo]
+repo_type = "project"
+primary_shape = "ki-repo-tools"
 repository = "https://github.com/knowledgeislands/tools-git-almanac"
 title = "Git Almanac"
 description = "Inspect one local Git repository's calendars, authors, contributors, and reports offline."
