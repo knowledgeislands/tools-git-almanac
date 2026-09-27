@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-04T08:53:49Z
-updated_at: 2026-09-19T18:24:00Z
+updated_at: 2026-09-27T23:21:41Z
 ---
 
 ## Goal
@@ -31,3 +31,8 @@ Review the passing evidence and choose an exact terminal Triage disposition. A d
 ## Discussion
 
 The original two engineering failures and one repository failure are no longer present. The record is ready for a human-approved terminal Triage disposition; until that exact approval, it remains an unadopted draft.
+
+### Pickup checkpoint — 2026-09-28
+
+- **Resolved evidence:** commit `539cb49` updated `biome.json`, dependencies, and `docs/specs/git-almanac.md` with conformance evidence for the accepted ALM requirements. On local `main` `c15f30596534204489910260d1be23335b675094`, a fresh `ki repo audit --repo .` passed. The earlier implementation and complete-gate claims in this record remain historical; this checkpoint did not rerun executable tests, TypeScript, or Biome.
+- **Remaining and pickup:** this is still a draft at `future`, while its existing Shaping and Discussion call for a terminal Triage disposition. The owner must reconcile that mismatch and approve the proper disposition route after reviewing the evidence; do not infer adoption, closure, or replacement delivery from the passing audit. Before any work is assigned, reconcile destination branch, any linked tasks and live ownership, and retained worktrees. Missing task evidence does not release ownership or lift a hold. This checkpoint is guidance, not an execution block or resumption authority. Retain any later Done record until explicit pruning.

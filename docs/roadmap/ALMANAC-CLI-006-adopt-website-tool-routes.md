@@ -9,7 +9,7 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-17T21:05:58Z
-updated_at: 2026-09-17T21:05:58Z
+updated_at: 2026-09-27T23:21:41Z
 ---
 
 # ALMANAC-CLI-006: Adopt website tool routes
@@ -49,3 +49,9 @@ Accept a positional `vX.Y.Z` argument in addition to `GIT_ALMANAC_VERSION`, per 
 ### Related
 
 Originating repository and item: `knowledgeislands/ki-website` `KI-WEB-SITE-007`. That item is done and this one does not block it. The route contract is documented at `docs/guides/tool-routes.md` in that repository.
+
+### Pickup checkpoint — 2026-09-28
+
+- **Delivered and changed elsewhere:** website commit `022b6f2` established tool routes; later commit `ec5022b` merged tools into the projects registry. Current `knowledgeislands/ki-website/apps/site/src/_data/projects.json5` declares `git-almanac` at `v0.1.0` with an installer pinned to the `v0.1.0` tag. Its current `docs/guides/developer/tool-routes.md` defines `/projects/<tool>/` and `/install/<tool>`, which map this registry entry to `/projects/git-almanac/` and `/install/git-almanac`. The `/tooling/git-almanac/` route and `docs/guides/tool-routes.md` location stated above are superseded. This was checked in the local website checkout, not against a live deployment.
+- **Already present locally:** `install.sh` accepts positional `vX.Y.Z`, retains `GIT_ALMANAC_VERSION`, and uses the latest release when neither is supplied; `src/tests/install.test.ts` checks the positional usage text. Commit `b22400e` already contained that interface before this item was captured in `61de117`. Local `v0.1.0` is a Git tag. `docs/guides/developer/releasing.md` still names the retired `/tooling/git-almanac/` route. No new release handoff or remote deployment was verified in this audit.
+- **Remaining and pickup:** reconcile this item's proposed route and handoff scope with the current website registry, release automation, and local release guide before deciding any follow-up. It remains unadopted Triage; only a later approved disposition or adopted plan may change that. Reconcile destination branch, any linked tasks and live ownership, and retained worktrees before further work; missing task evidence does not release ownership or lift a hold. This checkpoint is guidance, not an execution block or resumption authority. Owner review and acceptance govern closure, and any later Done record remains until explicit pruning.
