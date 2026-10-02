@@ -2,13 +2,13 @@
 
 All notable changes to Git Almanac will be documented here.
 
-This changelog records the V1 release baseline. It does not retroactively track individual 0.x releases; tags and commit history remain the record of the pre-V1 run-up.
+This is the consolidated Pre-1.0 baseline for the current command surface and notable changes. It is updated as the tool evolves; tags, GitHub releases and commit history retain the exact 0.x snapshots.
 
-## [1.0.0] — in progress
+## Pre-1.0 baseline
 
-Pre-V1 work is summarized as one baseline. Separate 0.x release entries are not maintained.
+Separate 0.x release entries are not maintained here.
 
-### Shipped commands
+### Command surface
 
 #### General
 

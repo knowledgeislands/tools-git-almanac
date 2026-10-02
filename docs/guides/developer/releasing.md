@@ -5,7 +5,7 @@ Use this guide only after the candidate satisfies the [definition of done](defin
 ## Prepare the version
 
 1. Confirm every required gate passes on a clean checkout.
-2. Keep relevant `CHANGELOG.md` entries under the curated V1 baseline while pre-1.0 tags remain recorded in Git history.
+2. Before 1.0, update the consolidated Pre-1.0 command and behaviour baseline in `CHANGELOG.md`; tags and releases retain the exact 0.x snapshots. From 1.0 onward, add a dated release entry.
 3. Set the exact release version in `package.json`, the manual heading, and version tests.
 4. Commit the release candidate as one atomic Conventional Commit.
 
