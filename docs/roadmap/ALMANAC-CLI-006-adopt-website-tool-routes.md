@@ -1,7 +1,7 @@
 ---
 id: ALMANAC-CLI-006
 area: CLI
-title: Adopt website tool routes
+title: Align website releases
 theme: cli
 horizon: triage
 status: draft
@@ -9,49 +9,49 @@ blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-17T21:05:58Z
-updated_at: 2026-09-27T23:21:41Z
+updated_at: 2026-10-03T03:01:43Z
 ---
 
-# ALMANAC-CLI-006: Adopt website tool routes
+# ALMANAC-CLI-006: Align website releases
 
 ## Goal
 
-Keep the website's advertised `git-almanac` version matching what this repository has released, and align this installer's version-pinning interface with the other Knowledge Islands tools.
+Make future Git Almanac releases eligible for the shared verified Homebrew-tap-to-website update path, with accurate release guidance and an explicit receiver policy.
 
 ## Context
 
-`knowledgeislands/ki-website` delivered `KI-WEB-SITE-007`, which gives every released Knowledge Islands tool the same two public routes: `/tooling/<tool>/` for people and `/install/<tool>/` for machines. Both are generated from one website-owned registry.
+The website already lists Git Almanac at `/projects/git-almanac/` and redirects `/install/git-almanac` to the `v0.1.0` installer. The live page returns HTTP 200 and the installer route returns HTTP 302 to that pinned tag. The website registry, Homebrew formula, and latest Git Almanac release all currently name `v0.1.0`.
 
-`git-almanac` now has a product page at `https://knowledgeislands.info/tooling/git-almanac/` and a stable installer endpoint at `https://knowledgeislands.info/install/git-almanac`, which redirects to `https://raw.githubusercontent.com/knowledgeislands/tools-git-almanac/v0.1.0/install.sh`. The registry currently advertises `v0.1.0`.
+An existing website entry now receives a `tool-release-published` event after Homebrew tap validates and merges a new formula. The website independently verifies the release and opens a version-update pull request; it does not create a roadmap item or merge the pull request. First-time entries and maturity changes remain manual website decisions.
 
-The website does not discover releases. It advances only when this repository hands it the new version, which keeps the public recommendation deliberate — but it also means a release that is not handed over leaves the site advertising an older version.
+The website receiver requires GitHub to report the source release as immutable. GitHub currently reports release immutability disabled for `tools-git-almanac`, and its existing `v0.1.0` release is mutable. Enabling the repository setting protects only future releases, so a future version must prove the automated route end to end.
 
-This installer also accepts an explicit version only through `GIT_ALMANAC_VERSION`, while `ki` and `git-almanac` accept a positional `vX.Y.Z`. That inconsistency is the subject of `tools-ki` `KI-TOOL-CLI-076`.
+The installer already accepts positional `vX.Y.Z`, retains `GIT_ALMANAC_VERSION`, and defaults to the latest release when neither is supplied. No installer interface work remains here. The local release guide still names the retired `/tooling/git-almanac/` route.
 
 ## Boundary
 
-This does not move release authority, installer behaviour, artifact hosting, or checksum verification to the website. The website is an indirection layer over what this repository publishes.
+This item does not publish a release, change the installer interface, move artifact or formula authority, or decide whether website version-update pull requests should auto-merge. That receiver policy must be settled with the website owner before changing its automation.
 
-Do not remove the latest-release default from the installer. Pinning is an explicit opt-in; an unpinned `curl | sh` must keep working.
+Do not weaken the website's immutable-release check merely to advance a mutable release. The current `v0.1.0` advertisement needs no version change.
 
 ## Discussion
 
-### The release handoff
+### Remaining local work
 
-Add a named release follow-up: after publishing a release intended for general recommendation, hand `ki-website` an item naming the exact version and the immutable installer target `https://raw.githubusercontent.com/knowledgeislands/tools-git-almanac/v0.1.0/install.sh` with the new tag substituted. The website updates its registry entry and ships.
+Update `docs/guides/developer/releasing.md` to name `/projects/git-almanac/`, explain the tap-triggered website event for existing entries, and keep manual handoffs for first-time entries or maturity changes. Enable GitHub release immutability for this repository before the next release, then verify that a future validated formula causes the expected website update. The setting change and any release require their own explicit authority.
 
-The website verifies declared routes before deployment and reports upstream drift as a warning rather than a failure, so an outstanding handoff is visible without breaking anyone's build.
+The first website update is not yet testable without a newer immutable Git Almanac release. Website pull-request merge policy is a separate cross-repository decision; the current bot leaves proposed updates open for CI and review.
 
-### Version pinning
+### Already satisfied
 
-Accept a positional `vX.Y.Z` argument in addition to `GIT_ALMANAC_VERSION`, per the interface proposed in `tools-ki` `KI-TOOL-CLI-076`. Keep `GIT_ALMANAC_VERSION` working as an alias. Follow that item rather than deciding the interface here.
+The website routes and `v0.1.0` pins are live, and the positional installer argument predates this item. Neither needs duplicate implementation.
 
 ### Related
 
-Originating repository and item: `knowledgeislands/ki-website` `KI-WEB-SITE-007`. That item is done and this one does not block it. The route contract is documented at `docs/guides/tool-routes.md` in that repository.
+Originating repository and item: `knowledgeislands/ki-website` `KI-WEB-SITE-007`, now done. The current route and release-event contract lives at `docs/guides/developer/tool-routes.md` in that repository. Homebrew tap owns formula validation and release-event dispatch.
 
-### Pickup checkpoint — 2026-09-28
+### Reconciliation — 2026-10-03
 
-- **Delivered and changed elsewhere:** website commit `022b6f2` established tool routes; later commit `ec5022b` merged tools into the projects registry. Current `knowledgeislands/ki-website/apps/site/src/_data/projects.json5` declares `git-almanac` at `v0.1.0` with an installer pinned to the `v0.1.0` tag. Its current `docs/guides/developer/tool-routes.md` defines `/projects/<tool>/` and `/install/<tool>`, which map this registry entry to `/projects/git-almanac/` and `/install/git-almanac`. The `/tooling/git-almanac/` route and `docs/guides/tool-routes.md` location stated above are superseded. This was checked in the local website checkout, not against a live deployment.
-- **Already present locally:** `install.sh` accepts positional `vX.Y.Z`, retains `GIT_ALMANAC_VERSION`, and uses the latest release when neither is supplied; `src/tests/install.test.ts` checks the positional usage text. Commit `b22400e` already contained that interface before this item was captured in `61de117`. Local `v0.1.0` is a Git tag. `docs/guides/developer/releasing.md` still names the retired `/tooling/git-almanac/` route. No new release handoff or remote deployment was verified in this audit.
-- **Remaining and pickup:** reconcile this item's proposed route and handoff scope with the current website registry, release automation, and local release guide before deciding any follow-up. It remains unadopted Triage; only a later approved disposition or adopted plan may change that. Reconcile destination branch, any linked tasks and live ownership, and retained worktrees before further work; missing task evidence does not release ownership or lift a hold. This checkpoint is guidance, not an execution block or resumption authority. Owner review and acceptance govern closure, and any later Done record remains until explicit pruning.
+- **Confirmed:** the live page returns 200, the installer route redirects to the pinned `v0.1.0` installer, and the local website registry and tap formula match the latest Git Almanac release. `install.sh` already accepts a positional version; commit `b22400e` predates this item.
+- **Unresolved:** the release guide names the retired route; repository release immutability is disabled; a future release has not exercised the verified tap-to-website update; and website PR acceptance policy remains separate from this repository's authority.
+- **Lifecycle:** this is still unadopted Triage, not implementation approval. Adopt and plan only the bounded remaining work after resolving the receiver-policy question. Do not infer task availability or release authority from this checkpoint.
