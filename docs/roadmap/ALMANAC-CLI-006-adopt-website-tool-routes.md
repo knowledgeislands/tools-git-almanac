@@ -4,12 +4,12 @@ area: CLI
 title: Align website releases
 theme: cli
 horizon: next
-status: ready
+status: awaiting-review
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: 86dc0b1331c2b46bf75fada04b2aceab89026aea
 created_at: 2026-09-17T21:05:58Z
-updated_at: 2026-10-03T03:53:12Z
+updated_at: 2026-10-03T03:54:26Z
 ---
 
 # ALMANAC-CLI-006: Align website releases
@@ -24,9 +24,9 @@ The website already lists Git Almanac at `/projects/git-almanac/` and redirects 
 
 An existing website entry now receives a `tool-release-published` event after Homebrew tap validates and merges a new formula. The website independently verifies the release and opens a version-update pull request; it does not create a roadmap item or merge the pull request. First-time entries and maturity changes remain manual website decisions.
 
-The website receiver requires GitHub to report the source release as immutable. GitHub currently reports release immutability disabled for `tools-git-almanac`, and its existing `v0.1.0` release is mutable. Enabling the repository setting protects only future releases, so a future version must prove the automated route end to end.
+The website receiver requires GitHub to report the source release as immutable. At intake, GitHub reported release immutability disabled for `tools-git-almanac`, and its existing `v0.1.0` release is mutable. Enabling the repository setting protects only future releases, so a future version must prove the automated route end to end.
 
-The installer already accepts positional `vX.Y.Z`, retains `GIT_ALMANAC_VERSION`, and defaults to the latest release when neither is supplied. No installer interface work remains here. The local release guide still names the retired `/tooling/git-almanac/` route.
+The installer already accepts positional `vX.Y.Z`, retains `GIT_ALMANAC_VERSION`, and defaults to the latest release when neither is supplied. No installer interface work remains here. At intake, the local release guide named the retired `/tooling/git-almanac/` route.
 
 ## Boundary
 
@@ -36,13 +36,13 @@ Do not weaken the website's immutable-release check merely to advance a mutable 
 
 ## Current state
 
-The website entry, installer route, formula and latest release are aligned at `v0.1.0`. The remaining local gaps are the retired route in the release guide and disabled repository release immutability. A future published release is required to exercise the live downstream path.
+The website entry, installer route, formula and latest release are aligned at `v0.1.0`. The guide and repository immutability setting are now corrected. A future published release is required to exercise the live downstream path.
 
 ## Steps
 
-- [ ] Enable and verify GitHub release immutability for this repository, without changing the existing release.
-- [ ] Correct the release guide's website route and describe the tap-owned, CI-gated downstream handoff accurately.
-- [ ] Run repository and tool gates; record the future-release integration check as a release-time check, not a simulated release.
+- [x] Enable and verify GitHub release immutability for this repository, without changing the existing release.
+- [x] Correct the release guide's website route and describe the tap-owned, CI-gated downstream handoff accurately.
+- [x] Run repository and tool gates; record the future-release integration check as a release-time check, not a simulated release.
 
 ## Files touched
 
@@ -78,11 +78,37 @@ Update the release guide and carry the first live handoff check there.
 
 This item records local delivery and the unexercised live handoff explicitly.
 
+## Review
+
+### Delivered
+
+The approved local release-handoff alignment is complete from baseline `86dc0b1331c2b46bf75fada04b2aceab89026aea`. GitHub now reports repository release immutability enabled. No release was published and no tap or website repository was changed.
+
+### Change Summary
+
+`docs/guides/developer/releasing.md` now uses the live project route, requires an immutable new release, and makes the tap-to-website handoff an explicit release-time check. This item records the setting change and evidence.
+
+### Verification
+
+`gh api repos/knowledgeislands/tools-git-almanac/immutable-releases --jq .enabled` returned `true`. `ki repo audit --repo .`, `bun run test:coverage`, `bun run build`, `bunx biome check`, and `bun run ki:tools:lint-man` all passed.
+
+### Outstanding concerns
+
+The existing `v0.1.0` release remains mutable; the setting is not retroactive. The first live downstream update awaits an authorised future immutable release. Automatic tap updates and website PR acceptance remain receiver-owned work.
+
+### Post-change review
+
+The local eligibility blockers are removed without changing installer behaviour or claiming an untested end-to-end event. The guide preserves repository boundaries and makes deferred integration evidence visible at release time. Ready for human acceptance of this bounded item.
+
+### Mini recap
+
+Enabled release immutability, corrected and clarified release guidance, and passed all local gates. Carry the live event check into the next release and the shared acceptance policy into tap and website governance.
+
 ## Discussion
 
-### Remaining local work
+### Original local work
 
-Update `docs/guides/developer/releasing.md` to name `/projects/git-almanac/`, explain the tap-triggered website event for existing entries, and keep manual handoffs for first-time entries or maturity changes. Enable GitHub release immutability for this repository before the next release, then verify that a future validated formula causes the expected website update. The setting change and any release require their own explicit authority.
+The original local work was to correct `docs/guides/developer/releasing.md`, enable GitHub release immutability, and retain the live website-update check for the next authorised release. The first two are delivered above; publication was not part of this item.
 
 The first website update is not yet testable without a newer immutable Git Almanac release. Website pull-request merge policy is a separate cross-repository decision; the current bot leaves proposed updates open for CI and review.
 
@@ -97,5 +123,5 @@ Originating repository and item: `knowledgeislands/ki-website` `KI-WEB-SITE-007`
 ### Reconciliation — 2026-10-03
 
 - **Confirmed:** the live page returns 200, the installer route redirects to the pinned `v0.1.0` installer, and the local website registry and tap formula match the latest Git Almanac release. `install.sh` already accepts a positional version; commit `b22400e` predates this item.
-- **Unresolved:** the release guide names the retired route; repository release immutability is disabled; a future release has not exercised the verified tap-to-website update; and website PR acceptance policy remains separate from this repository's authority.
+- **At intake:** the release guide named the retired route, repository release immutability was disabled, a future release had not exercised the verified tap-to-website update, and website PR acceptance policy remained separate from this repository's authority.
 - **Lifecycle:** adopted into Next and approved for the bounded local plan above. This does not authorise publication or a downstream receiver change.

@@ -11,6 +11,8 @@ Use this guide only after the candidate satisfies the [definition of done](defin
 
 ## Publish the immutable asset
 
+Confirm that GitHub release immutability is enabled for this repository before publishing. It protects only releases created after the setting was enabled; an older mutable release is not retroactively made immutable.
+
 Create and push the exact `vX.Y.Z` tag only with explicit publication authority. The tag-triggered release workflow:
 
 1. reruns coverage, build, and manual gates;
@@ -19,15 +21,15 @@ Create and push the exact `vX.Y.Z` tag only with explicit publication authority.
 4. publishes `SHA256SUMS`; and
 5. creates the GitHub release.
 
-Verify a clean installation against the exact tag before treating the release as complete.
+Verify a clean installation against the exact tag and confirm that GitHub reports the new release as immutable before treating the release as complete.
 
 ## Complete downstream distribution
 
 Hand the immutable release to `knowledgeislands/homebrew-tap`. The tap owns `Formula/git-almanac.rb` and independently verifies the release URL and checksum, Node runtime dependency, executable and manual installation, version output, and tap CI. This repository neither writes nor decides the tap's formula.
 
-After the validated formula reaches the tap's `main` branch, the tap dispatches a verified tool-release event to explicitly enrolled consumers. An existing KI Website entry advances through the website's ordinary pull-request review. This repository stores no shared release-App credentials and does not duplicate tap or website verification.
+After the validated formula reaches the tap's `main` branch, the tap dispatches a verified tool-release event to explicitly enrolled consumers. Confirm that the existing KI Website entry receives an update pull request, passes its checks, and reaches its intended disposition before closing the downstream release handoff. The current website receiver opens a pull request rather than merging it automatically; do not report the handoff as complete merely because the event was sent. This repository stores no shared release-App credentials and does not duplicate tap or website verification.
 
-A first-time website entry, a maturity change, or a consumer not enrolled in automation remains an explicit receiver-owned handoff. Supply the exact tag, immutable asset URL, and expected `/tooling/git-almanac/` and `/install/git-almanac` routes without transferring release authority.
+A first-time website entry, a maturity change, or a consumer not enrolled in automation remains an explicit receiver-owned handoff. Supply the exact tag, immutable asset URL, and expected `/projects/git-almanac/` and `/install/git-almanac` routes without transferring release authority.
 
 ## Recover from a failed release
 
