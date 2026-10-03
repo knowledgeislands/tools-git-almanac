@@ -4,12 +4,12 @@ area: CLI
 title: Align website releases
 theme: cli
 horizon: next
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 86dc0b1331c2b46bf75fada04b2aceab89026aea
 created_at: 2026-09-17T21:05:58Z
-updated_at: 2026-10-03T03:54:26Z
+updated_at: 2026-10-03T07:30:08Z
 ---
 
 # ALMANAC-CLI-006: Align website releases
@@ -103,6 +103,10 @@ The local eligibility blockers are removed without changing installer behaviour 
 ### Mini recap
 
 Enabled release immutability, corrected and clarified release guidance, and passed all local gates. Carry the live event check into the next release and the shared acceptance policy into tap and website governance.
+
+## Done
+
+Accepted 2026-10-03 by Kris Brown on the review packet above.
 
 ## Discussion
 

@@ -4,12 +4,12 @@ area: CLI
 title: Unversion input config
 theme: cli
 horizon: next
-status: awaiting-review
+status: done
 blocks: []
 blocked_by: []
 baseline_ref: 1322b6cd88da62f6e5f7ddedef9b1b56458bcda8
 created_at: 2026-10-03T04:00:16Z
-updated_at: 2026-10-03T06:48:49Z
+updated_at: 2026-10-03T07:30:08Z
 ---
 
 ## Goal
@@ -92,6 +92,10 @@ The approved input/output boundary is preserved. Read-only commands do not rewri
 ### Mini recap
 
 Git Almanac now writes unversioned input, reads recognised legacy v1 input, and offers guarded explicit repair; all local gates passed. No further learning route is needed beyond the updated specification and guides.
+
+## Done
+
+Accepted 2026-10-03 by Kris Brown on the review packet above.
 
 ## Discussion
 
