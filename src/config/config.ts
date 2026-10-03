@@ -1,4 +1,5 @@
-import { readFile, writeFile } from 'node:fs/promises'
+import { randomUUID } from 'node:crypto'
+import { lstat, open, readFile, rename, unlink, writeFile } from 'node:fs/promises'
 import { join } from 'node:path'
 
 import { dateRange, parseDateKey } from '../core/dates.js'
@@ -6,9 +7,7 @@ import type { AlmanacConfig, ConfigurableOption, HistoryOptions, HistoryRequest 
 
 export const CONFIG_NAME = '.git-almanac.toml'
 
-export const CONFIG_TEMPLATE = `schema = 1
-
-# Repository-local defaults. CLI options always win.
+export const CONFIG_TEMPLATE = `# Repository-local defaults. CLI options always win.
 ref = "HEAD"
 date = "author"
 include_merges = false
@@ -88,9 +87,9 @@ export const parseConfig = (source: string, path = CONFIG_NAME): AlmanacConfig =
     'theme'
   ])
   for (const key of values.keys()) if (!known.has(key)) throw configError(path, `unknown key ${key}`)
-  if (values.get('schema') !== '1') throw configError(path, 'schema must be 1')
+  if (values.has('schema') && values.get('schema') !== '1') throw configError(path, 'schema must be 1 when present')
 
-  const config: AlmanacConfig = { schema: 1 }
+  const config: AlmanacConfig = {}
   const stringKeys = ['author', 'ref', 'since', 'until'] as const
   for (const key of stringKeys) {
     const raw = values.get(key)
@@ -172,7 +171,6 @@ const quote = (value: string): string => JSON.stringify(value)
 
 export const renderConfig = (options: HistoryOptions): string =>
   [
-    'schema = 1',
     `ref = ${quote(options.ref)}`,
     ...(options.since ? [`since = ${quote(options.since)}`] : []),
     ...(options.until ? [`until = ${quote(options.until)}`] : []),
@@ -191,4 +189,50 @@ export const initializeConfig = async (root: string): Promise<'created' | 'exist
   if (existing) return 'existing'
   await writeFile(path, CONFIG_TEMPLATE, { encoding: 'utf8', flag: 'wx' })
   return 'created'
+}
+
+export interface ConfigRepair {
+  path: string
+  before: string
+  after: string
+  removedLine: string
+}
+
+export const previewConfigRepair = async (root: string): Promise<ConfigRepair | null> => {
+  const path = join(root, CONFIG_NAME)
+  const before = await readFile(path, 'utf8')
+  parseConfig(before, path)
+  const match = /^[ \t]*schema[ \t]*=[ \t]*1(?:[ \t]*#.*)?(?:\r?\n|$)/m.exec(before)
+  if (!match) return null
+  const after = before.slice(0, match.index) + before.slice(match.index + match[0].length)
+  parseConfig(after, path)
+  return { path, before, after, removedLine: match[0].trimEnd() }
+}
+
+export const applyConfigRepair = async (repair: ConfigRepair, beforePublish?: () => Promise<void>): Promise<void> => {
+  const sourceStat = await lstat(repair.path)
+  if (!sourceStat.isFile() || sourceStat.nlink !== 1) throw configError(repair.path, 'repair requires a regular file')
+  if ((await readFile(repair.path, 'utf8')) !== repair.before) {
+    throw configError(repair.path, 'configuration changed since repair preview; inspect it again')
+  }
+  const temporary = `${repair.path}.${randomUUID()}.tmp`
+  let created = false
+  try {
+    const output = await open(temporary, 'wx', sourceStat.mode)
+    created = true
+    try {
+      await output.writeFile(repair.after, 'utf8')
+    } finally {
+      await output.close()
+    }
+    if (beforePublish) await beforePublish()
+    const currentStat = await lstat(repair.path)
+    if (currentStat.ino !== sourceStat.ino || (await readFile(repair.path, 'utf8')) !== repair.before) {
+      throw configError(repair.path, 'configuration changed since repair preview; inspect it again')
+    }
+    await rename(temporary, repair.path)
+    created = false
+  } finally {
+    if (created) await unlink(temporary)
+  }
 }

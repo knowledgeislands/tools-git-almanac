@@ -16,7 +16,7 @@ export type ParsedCommand =
   | { command: 'completion'; shell: 'bash' | 'zsh' }
   | { command: 'calendar' | 'authors' | 'contributors'; request: HistoryRequest }
   | { command: 'report'; section: ReportSection | 'all'; request: HistoryRequest }
-  | { command: 'config'; action: 'init' | 'show' | 'check'; repository: string }
+  | { command: 'config'; action: 'init' | 'show' | 'check' | 'repair'; repository: string; apply: boolean }
   | { command: 'ignore'; repository: string }
   | { command: 'init'; repository: string }
 
@@ -191,10 +191,17 @@ export const parseArgs = (args: string[], cwd: string): ParsedCommand => {
   if (args[0] === 'config') {
     if (args.includes('--help') || args.includes('-h')) return { command: 'help', topic: 'config' }
     const action = args[1]
-    if (action !== 'init' && action !== 'show' && action !== 'check') {
-      throw usageError('config requires one action: init, show, or check')
+    if (action !== 'init' && action !== 'show' && action !== 'check' && action !== 'repair') {
+      throw usageError('config requires one action: init, show, check, or repair')
     }
-    return { command: 'config', action, repository: parseRepositoryOnly(args.slice(2), cwd, `config ${action}`) }
+    const rest = args.slice(2)
+    const apply = action === 'repair' && rest.at(-1) === '--apply'
+    return {
+      command: 'config',
+      action,
+      repository: parseRepositoryOnly(apply ? rest.slice(0, -1) : rest, cwd, `config ${action}`),
+      apply
+    }
   }
   if (args[0] === 'ignore' || args[0] === 'init') {
     if (args.includes('--help') || args.includes('-h')) return { command: 'help', topic: args[0] }

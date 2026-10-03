@@ -70,7 +70,7 @@ git almanac config check
 git almanac config show
 ```
 
-`config show` prints the effective defaults, which is the quickest way to see whether the file you are editing is the one being read: configuration is looked up at the repository root, not the current directory. `config init` never overwrites an existing file, so a configuration that will not validate must be corrected or removed by hand.
+`config show` prints the effective defaults, which is the quickest way to see whether the file you are editing is the one being read: configuration is looked up at the repository root, not the current directory. `config init` never overwrites an existing file. A valid legacy `schema = 1` field can be previewed with `config repair` and removed with `config repair --apply`; other invalid configuration must be corrected or removed by hand.
 
 ## The report refuses or warns
 

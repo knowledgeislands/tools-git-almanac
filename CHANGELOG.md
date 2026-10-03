@@ -30,6 +30,7 @@ Separate 0.x release entries are not maintained here.
 - `git almanac config init [repository]`
 - `git almanac config show [repository]`
 - `git almanac config check [repository]`
+- `git almanac config repair [repository] [--apply]`
 - `git almanac ignore [repository]`
 - `git almanac init [repository]`
 
@@ -46,7 +47,7 @@ Separate 0.x release entries are not maintained here.
 - Calendar views render terminal, self-contained HTML, accessible SVG, and stable versioned JSON output, with explicit format precedence and output-extension inference.
 - Calendar directory output produces combined and per-author assets from the same selected history.
 - Managed reports build protected `reports/git-almanac/` workspaces with versioned manifests, linked pages, normalized data, and contributor assets.
-- Repository configuration follows built-in → repository → CLI precedence; initialization and ignore commands add only the narrowest safe report rule.
+- Repository configuration follows built-in → repository → CLI precedence. New files omit a schema field; known legacy files can be explicitly previewed and repaired. Initialization and ignore commands add only the narrowest safe report rule.
 
 ### Distribution baseline
 

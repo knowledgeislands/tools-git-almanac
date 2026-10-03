@@ -134,7 +134,6 @@ export interface HistoryRequest {
 }
 
 export interface AlmanacConfig {
-  schema: 1
   author?: string
   paths?: string[]
   ref?: string

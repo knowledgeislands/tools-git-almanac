@@ -89,6 +89,8 @@ git almanac config show
 git almanac config check
 ```
 
+New configuration has no schema field. Older files with `schema = 1` remain readable. `config check` points out a legacy marker; `git almanac config repair` previews its exact removal without writing, and `git almanac config repair --apply` makes that change explicitly. Unknown schema values or invalid settings are refused rather than guessed into the current shape.
+
 Edit `.git-almanac.toml` to set durable `ref`, `since`, `until`, `date`, `include_merges`, `metric`, `theme`, `author`, or `paths` defaults. Built-in defaults apply first, repository configuration second, and CLI arguments last, so an explicit option always wins over the file.
 
 `config init` never replaces an existing configuration; it validates what is already there. Run `git almanac init` to set up configuration and report ignore behaviour together without generating a report.

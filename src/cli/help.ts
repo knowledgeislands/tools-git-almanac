@@ -15,7 +15,7 @@ export const HELP = `Usage:
   git almanac authors [repository] [options]
   git almanac contributors [repository] [options]
   git almanac report [calendar|authors|contributors] [repository] [options]
-  git almanac config <init|show|check> [repository]
+  git almanac config <init|show|check|repair> [repository] [--apply]
   git almanac ignore [repository]
   git almanac init [repository]
   git almanac completion <bash|zsh>
@@ -28,7 +28,7 @@ Commands:
   authors        List exact raw Name <email> author identities
   contributors   Rank exact identities by selected commit activity and share
   report         Build all or one view under reports/git-almanac/
-  config         Initialise, show, or validate .git-almanac.toml
+  config         Initialise, show, validate, or repair .git-almanac.toml
   ignore         Add the narrowest safe report rule to .gitignore
   init           Initialise configuration and report ignore rules
 
@@ -50,7 +50,7 @@ output path writes to stdout. Report commands own their canonical workspace.
 export const renderHelp = (topic?: string): string => {
   if (!topic) return HELP
   if (topic === 'config') {
-    return `Usage: git almanac config <init|show|check> [repository]\n\nRepository-local configuration is optional; CLI arguments always win.\n`
+    return `Usage: git almanac config <init|show|check|repair> [repository] [--apply]\n\nRepository-local configuration is optional; CLI arguments always win.\nRepair previews legacy schema removal; only repair --apply writes.\n`
   }
   if (topic === 'ignore' || topic === 'init') return `Usage: git almanac ${topic} [repository]\n`
   if (topic === 'report') {

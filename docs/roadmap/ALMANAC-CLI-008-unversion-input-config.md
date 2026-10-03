@@ -4,12 +4,12 @@ area: CLI
 title: Unversion input config
 theme: cli
 horizon: next
-status: ready
+status: awaiting-review
 blocks: []
 blocked_by: []
-baseline_ref: null
+baseline_ref: 1322b6cd88da62f6e5f7ddedef9b1b56458bcda8
 created_at: 2026-10-03T04:00:16Z
-updated_at: 2026-10-03T06:43:44Z
+updated_at: 2026-10-03T06:48:49Z
 ---
 
 ## Goal
@@ -30,9 +30,9 @@ Input parsing and examples require a version field. Output contract versions are
 
 ## Steps
 
-- [ ] Audit config parsing, init/capture paths and examples; accept the current shape without a schema field.
-- [ ] Read only recognised legacy `schema = 1` shape. Add `config repair [repository]` as a read-only exact-change preview and `config repair [repository] --apply` as the explicit repair; revalidate the candidate and refuse a changed file before writing.
-- [ ] Check generated JSON identities and flexible additive-field consumers, then update tests, help, completion, manual and user guidance as affected.
+- [x] Audit config parsing, init/capture paths and examples; accept the current shape without a schema field.
+- [x] Read only recognised legacy `schema = 1` shape. Add `config repair [repository]` as a read-only exact-change preview and `config repair [repository] --apply` as the explicit repair; revalidate the candidate and refuse a changed file before writing.
+- [x] Check generated JSON identities and flexible additive-field consumers, then update tests, help, completion, manual and user guidance as affected.
 
 ## Files touched
 
@@ -66,6 +66,32 @@ Explain unversioned input and explicit repair.
 ### Roadmap
 
 Record delivered behaviour and verification here.
+
+## Review
+
+### Delivered
+
+Against baseline `1322b6cd88da62f6e5f7ddedef9b1b56458bcda8`, newly initialized and shown configuration omits the schema field. Recognised legacy input remains readable; repair previews the exact removed line and requires explicit `--apply`. Generated activity, people and manifest contracts remain independently at v1. No release or push is included.
+
+### Change Summary
+
+Updated the config parser and writer, added guarded repair and CLI routing, expanded focused tests, and aligned help, manual, specification, user guides and changelog. Top-level shell completion lists commands rather than config subactions, so no completion definition changed.
+
+### Verification
+
+`bun run test:coverage` passed 55 tests at 100% statement, branch, function and line coverage. `bun run build`, `bunx biome check`, `bun run ki:tools:lint-man`, `ki repo audit --repo .` (21 skills), and `git diff --check` passed. Tests cover unversioned initialization, legacy reads and explicit repair, changed-file refusal, unknown schema rejection, output v1 and additive manifest tolerance.
+
+### Outstanding concerns
+
+None within this item. Acceptance and any release remain separate decisions.
+
+### Post-change review
+
+The approved input/output boundary is preserved. Read-only commands do not rewrite configuration; explicit repair refuses an invalid or changed source. The new command and public documentation align, with low regression risk supported by the full local gate.
+
+### Mini recap
+
+Git Almanac now writes unversioned input, reads recognised legacy v1 input, and offers guarded explicit repair; all local gates passed. No further learning route is needed beyond the updated specification and guides.
 
 ## Discussion
 

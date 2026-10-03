@@ -1,11 +1,20 @@
 import { execFileSync } from 'node:child_process'
-import { mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { linkSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 
 import { afterAll, describe, expect, test } from 'vitest'
 
-import { applyConfig, CONFIG_NAME, CONFIG_TEMPLATE, loadConfig, parseConfig, renderConfig } from '../config/config.js'
+import {
+  applyConfig,
+  applyConfigRepair,
+  CONFIG_NAME,
+  CONFIG_TEMPLATE,
+  loadConfig,
+  parseConfig,
+  previewConfigRepair,
+  renderConfig
+} from '../config/config.js'
 import { authorFileSlug } from '../core/contributors.js'
 import { executeGit, type GitExecutor } from '../git/adapter.js'
 import { ensureReportIgnored } from '../repository/ignore.js'
@@ -47,8 +56,7 @@ afterAll(() => {
 
 describe('repository configuration edge contract', () => {
   test('parses every supported value, comments, escapes, and arrays', () => {
-    const config = parseConfig(`schema = 1
-author = "A\\"#B" # trailing comment
+    const config = parseConfig(`author = "A\\"#B" # trailing comment
 paths = ["src", "space path"]
 ref = "main"
 since = "2026-08-25"
@@ -69,7 +77,9 @@ theme = "dark"
       metric: 'commits',
       theme: 'dark'
     })
-    expect(parseConfig(CONFIG_TEMPLATE)).toMatchObject({ schema: 1, paths: [] })
+    expect(parseConfig(CONFIG_TEMPLATE)).toMatchObject({ paths: [] })
+    expect(CONFIG_TEMPLATE).not.toContain('schema =')
+    expect(parseConfig('schema = 1\nref = "HEAD"\n')).toMatchObject({ ref: 'HEAD' })
     expect(authorFileSlug('😀')).toMatch(/^author-[a-f0-9]{8}$/)
   })
 
@@ -96,7 +106,6 @@ theme = "dark"
     const base = request()
     base.supplied.add('theme')
     const options = applyConfig(base, {
-      schema: 1,
       author: 'Alice',
       paths: ['src'],
       ref: 'main',
@@ -123,13 +132,48 @@ theme = "dark"
     const invalid = request()
     invalid.options.until = '2026-08-26'
     invalid.supplied.add('until')
-    expect(() => applyConfig(invalid, { schema: 1, since: '2026-08-27' })).toThrow('after until')
-    expect(applyConfig(request(), { schema: 1, theme: 'dark' })).toMatchObject({
+    expect(() => applyConfig(invalid, { since: '2026-08-27' })).toThrow('after until')
+    expect(applyConfig(request(), { theme: 'dark' })).toMatchObject({
       since: null,
       until: null,
       theme: 'dark'
     })
     expect(applyConfig(request(), null).ref).toBe('HEAD')
+  })
+
+  test('previews legacy field removal and only applies an unchanged known configuration', async () => {
+    const root = repository()
+    const path = join(root, CONFIG_NAME)
+    const legacy = '# Keep this comment\nschema = 1 # old marker\nref = "main"\n'
+    writeFileSync(path, legacy)
+    const repair = await previewConfigRepair(root)
+    expect(repair).not.toBeNull()
+    expect(readFileSync(path, 'utf8')).toBe(legacy)
+    expect(repair?.removedLine).toBe('schema = 1 # old marker')
+    expect(repair?.after).toBe('# Keep this comment\nref = "main"\n')
+    if (!repair) throw new Error('expected repair')
+    writeFileSync(path, `${legacy}theme = "dark"\n`)
+    await expect(applyConfigRepair(repair)).rejects.toThrow('changed since repair preview')
+    expect(readFileSync(path, 'utf8')).toContain('theme = "dark"')
+    const refreshed = await previewConfigRepair(root)
+    if (!refreshed) throw new Error('expected refreshed repair')
+    const linked = join(root, 'linked-config')
+    linkSync(path, linked)
+    await expect(applyConfigRepair(refreshed)).rejects.toThrow('regular file')
+    rmSync(linked)
+    await expect(
+      applyConfigRepair(refreshed, async () => {
+        writeFileSync(path, `${legacy}theme = "light"\n`)
+      })
+    ).rejects.toThrow('changed since repair preview')
+    expect(readFileSync(path, 'utf8')).toContain('theme = "light"')
+    const finalPreview = await previewConfigRepair(root)
+    if (!finalPreview) throw new Error('expected final preview')
+    await applyConfigRepair(finalPreview)
+    expect(readFileSync(path, 'utf8')).not.toContain('schema =')
+    expect(await previewConfigRepair(root)).toBeNull()
+    writeFileSync(path, 'schema = 2\n')
+    await expect(previewConfigRepair(root)).rejects.toThrow('schema must be 1')
   })
 
   test('surfaces non-file configuration and Git ignore inspection failures', async () => {

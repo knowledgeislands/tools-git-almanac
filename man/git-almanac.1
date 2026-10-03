@@ -66,8 +66,8 @@ Rank exact identities by selected commit activity and report their shares.
 Build all or one compatible static view under
 .IR reports/git-almanac/ .
 .TP
-.BR config " <" init | show | check "> [" repository "]"
-Create, display, or validate optional repository-local defaults.
+.BR config " <" init | show | check | repair "> [" repository "] [--apply]"
+Create, display, validate, or repair optional repository-local defaults.
 .TP
 .BR ignore " [" repository "]"
 Add the narrowest safe report rule to the repository-root
@@ -169,7 +169,10 @@ unsafe managed paths, and collisions with unowned paths.
 .PP
 Optional
 .I <repository-root>/.git-almanac.toml
-uses schema 1.
+has no required schema field.
+Known legacy files with
+.B schema = 1
+remain readable; other schema values are rejected.
 Built-in defaults apply first, repository configuration second,
 and CLI arguments last.
 Supported keys are ref, since, until, date, include_merges, metric,
@@ -177,6 +180,10 @@ theme, author, and paths.
 .PP
 .B config init
 does not replace an existing configuration.
+.B config repair
+previews removal of a known legacy schema line without writing;
+.B --apply
+performs that exact repair after rechecking the file.
 .B ignore
 uses
 .I /reports/

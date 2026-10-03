@@ -256,6 +256,7 @@ describe('Git Almanac expanded command contract', () => {
     expect(first.code).toBe(0)
     expect(readFileSync(join(broad, '.gitignore'), 'utf8')).toBe('/reports/\n')
     expect(existsSync(join(broad, '.git-almanac.toml'))).toBe(true)
+    expect(readFileSync(join(broad, '.git-almanac.toml'), 'utf8')).not.toContain('schema =')
     const second = await invoke(['init', broad])
     expect(second.code).toBe(0)
     expect(readFileSync(join(broad, '.gitignore'), 'utf8')).toBe('/reports/\n')
@@ -273,6 +274,27 @@ describe('Git Almanac expanded command contract', () => {
     const ignored = await invoke(['ignore', narrow])
     expect(ignored.code).toBe(0)
     expect(readFileSync(join(narrow, '.gitignore'), 'utf8')).toBe('/reports/git-almanac/\n')
+  })
+
+  test('previews and explicitly repairs known legacy configuration without implicit writes', async () => {
+    const root = repository('legacy-config')
+    const path = join(root, '.git-almanac.toml')
+    const source = 'schema = 1\nref = "HEAD"\n'
+    writeFileSync(path, source)
+    expect((await invoke(['config', 'check', root])).stdout).toContain('config repair')
+    const preview = await invoke(['config', 'repair', root])
+    expect(preview.code).toBe(0)
+    expect(preview.stdout).toContain('Would remove')
+    expect(readFileSync(path, 'utf8')).toBe(source)
+    const applied = await invoke(['config', 'repair', root, '--apply'])
+    expect(applied.code).toBe(0)
+    expect(applied.stdout).toContain('Updated')
+    expect(readFileSync(path, 'utf8')).toBe('ref = "HEAD"\n')
+    expect((await invoke(['config', 'check', root])).stdout).not.toContain('config repair')
+    expect((await invoke(['config', 'repair', root])).stdout).toContain('No legacy schema field')
+    writeFileSync(path, 'schema = 2\n')
+    expect((await invoke(['config', 'repair', root, '--apply'])).code).toBe(1)
+    expect(readFileSync(path, 'utf8')).toBe('schema = 2\n')
   })
 
   test('builds compatible partial reports and refuses foreign or incompatible workspaces', async () => {
@@ -309,6 +331,10 @@ describe('Git Almanac expanded command contract', () => {
     expect(readdirSync(join(reportRoot, 'assets', 'contributors'))).toHaveLength(2)
     expect(readFileSync(join(reportRoot, 'contributors.html'), 'utf8')).toContain('assets/contributors/')
 
+    const manifestPath = join(reportRoot, 'manifest.json')
+    const additiveManifest = { ...JSON.parse(readFileSync(manifestPath, 'utf8')), futureNote: 'additive' }
+    expect(additiveManifest.schemaVersion).toBe(1)
+    writeFileSync(manifestPath, `${JSON.stringify(additiveManifest, null, 2)}\n`)
     const partial = await invoke(['report', 'authors', ...contract])
     expect(partial.code).toBe(0)
     const incompatible = await invoke(['report', 'calendar', root, '--since', '2026-08-26', '--until', '2026-08-26'])

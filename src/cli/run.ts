@@ -1,7 +1,15 @@
 import { mkdir, writeFile } from 'node:fs/promises'
 import { extname, join, resolve } from 'node:path'
 
-import { applyConfig, CONFIG_NAME, initializeConfig, loadConfig, renderConfig } from '../config/config.js'
+import {
+  applyConfig,
+  applyConfigRepair,
+  CONFIG_NAME,
+  initializeConfig,
+  loadConfig,
+  previewConfigRepair,
+  renderConfig
+} from '../config/config.js'
 import { buildActivityModel } from '../core/activity.js'
 import { buildAuthorCalendars, buildPeopleModel, type PeopleInput } from '../core/contributors.js'
 import { collectHistory, executeGit, type GitExecutor, resolveRepository } from '../git/adapter.js'
@@ -137,11 +145,27 @@ const selectedReportSections = (section: ReportSection | 'all'): ReportSection[]
   section === 'all' ? ['calendar', 'authors', 'contributors'] : [section]
 
 const runConfigurationCommand = async (
-  action: 'init' | 'show' | 'check',
+  action: 'init' | 'show' | 'check' | 'repair',
   repositoryArgument: string,
-  context: RunContext
+  context: RunContext,
+  apply = false
 ): Promise<number> => {
   const repository = await resolveRepository(repositoryArgument, context.cwd, context.git)
+  if (action === 'repair') {
+    const repair = await previewConfigRepair(repository.root)
+    if (!repair) {
+      context.stdout(`No legacy schema field in ${join(repository.root, CONFIG_NAME)}\n`)
+      return 0
+    }
+    context.stdout(`${apply ? 'Removing' : 'Would remove'} from ${repair.path}:\n- ${repair.removedLine}\n`)
+    if (apply) {
+      await applyConfigRepair(repair)
+      context.stdout(`Updated ${repair.path}\n`)
+    } else {
+      context.stdout('Run config repair --apply to write this change.\n')
+    }
+    return 0
+  }
   if (action === 'init') {
     const result = await initializeConfig(repository.root)
     context.stdout(`${result === 'created' ? 'Created' : 'Validated existing'} ${join(repository.root, CONFIG_NAME)}\n`)
@@ -152,6 +176,9 @@ const runConfigurationCommand = async (
     context.stdout(
       config ? `Valid ${join(repository.root, CONFIG_NAME)}\n` : `No ${CONFIG_NAME}; built-in defaults are valid\n`
     )
+    if (config && (await previewConfigRepair(repository.root))) {
+      context.stdout('Legacy schema field can be removed: run config repair to preview the change.\n')
+    }
     return 0
   }
   context.stdout(renderConfig(applyConfig(defaultRequest(repository.root), config)))
@@ -185,7 +212,7 @@ export const run = async (args: string[], context: RunContext = defaultContext()
       return 0
     }
     if (parsed.command === 'config') {
-      return await runConfigurationCommand(parsed.action, parsed.repository, context)
+      return await runConfigurationCommand(parsed.action, parsed.repository, context, parsed.apply)
     }
     if (parsed.command === 'ignore') return await runIgnoreCommand(parsed.repository, context)
     if (parsed.command === 'init') {
