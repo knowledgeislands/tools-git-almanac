@@ -4,12 +4,12 @@ area: CLI
 title: Unversion input config
 theme: cli
 horizon: next
-status: draft
+status: ready
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-10-03T04:00:16Z
-updated_at: 2026-10-03T04:00:16Z
+updated_at: 2026-10-03T06:43:44Z
 ---
 
 ## Goal
@@ -31,7 +31,7 @@ Input parsing and examples require a version field. Output contract versions are
 ## Steps
 
 - [ ] Audit config parsing, init/capture paths and examples; accept the current shape without a schema field.
-- [ ] Read only recognised legacy `schema = 1` shape and offer an explicit previewed removal/repair path.
+- [ ] Read only recognised legacy `schema = 1` shape. Add `config repair [repository]` as a read-only exact-change preview and `config repair [repository] --apply` as the explicit repair; revalidate the candidate and refuse a changed file before writing.
 - [ ] Check generated JSON identities and flexible additive-field consumers, then update tests, help, completion, manual and user guidance as affected.
 
 ## Files touched
@@ -47,7 +47,7 @@ Run the repository audit, coverage, build, Biome and manual gates. Test unversio
 
 ## Dependencies / blocks
 
-No external dependency. Set the repair command's exact interaction in the Ready plan before implementation.
+No external dependency. The explicit `--apply` action must show the exact removal and must never prompt or write during a read-only command.
 
 ## Documentation impact
 
