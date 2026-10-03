@@ -3,13 +3,13 @@ id: ALMANAC-CLI-006
 area: CLI
 title: Align website releases
 theme: cli
-horizon: triage
-status: draft
+horizon: next
+status: ready
 blocks: []
 blocked_by: []
 baseline_ref: null
 created_at: 2026-09-17T21:05:58Z
-updated_at: 2026-10-03T03:01:43Z
+updated_at: 2026-10-03T03:53:12Z
 ---
 
 # ALMANAC-CLI-006: Align website releases
@@ -34,6 +34,50 @@ This item does not publish a release, change the installer interface, move artif
 
 Do not weaken the website's immutable-release check merely to advance a mutable release. The current `v0.1.0` advertisement needs no version change.
 
+## Current state
+
+The website entry, installer route, formula and latest release are aligned at `v0.1.0`. The remaining local gaps are the retired route in the release guide and disabled repository release immutability. A future published release is required to exercise the live downstream path.
+
+## Steps
+
+- [ ] Enable and verify GitHub release immutability for this repository, without changing the existing release.
+- [ ] Correct the release guide's website route and describe the tap-owned, CI-gated downstream handoff accurately.
+- [ ] Run repository and tool gates; record the future-release integration check as a release-time check, not a simulated release.
+
+## Files touched
+
+- `docs/guides/developer/releasing.md`
+- `docs/roadmap/ALMANAC-CLI-006-adopt-website-tool-routes.md`
+- GitHub repository release-immutability setting
+
+## Verify
+
+- Query the repository's immutable-release setting and require `enabled: true`.
+- Run `ki repo audit --repo .`, `bun run test:coverage`, `bun run build`, `bunx biome check`, and `bun run ki:tools:lint-man`.
+- Confirm the guide names `/projects/git-almanac/` and does not claim a release or downstream PR was exercised.
+
+## Dependencies / blocks
+
+No code dependency blocks this local work. The next authorised immutable release is required for the first live end-to-end tap-to-website verification. Website auto-merge policy and tap automation are governed by their respective repositories.
+
+## Documentation impact
+
+### Decision Records
+
+No new local decision record; downstream acceptance policy belongs to the receiving repositories.
+
+### Specifications
+
+No change to Git Almanac behaviour or contract.
+
+### Guides
+
+Update the release guide and carry the first live handoff check there.
+
+### Roadmap
+
+This item records local delivery and the unexercised live handoff explicitly.
+
 ## Discussion
 
 ### Remaining local work
@@ -54,4 +98,4 @@ Originating repository and item: `knowledgeislands/ki-website` `KI-WEB-SITE-007`
 
 - **Confirmed:** the live page returns 200, the installer route redirects to the pinned `v0.1.0` installer, and the local website registry and tap formula match the latest Git Almanac release. `install.sh` already accepts a positional version; commit `b22400e` predates this item.
 - **Unresolved:** the release guide names the retired route; repository release immutability is disabled; a future release has not exercised the verified tap-to-website update; and website PR acceptance policy remains separate from this repository's authority.
-- **Lifecycle:** this is still unadopted Triage, not implementation approval. Adopt and plan only the bounded remaining work after resolving the receiver-policy question. Do not infer task availability or release authority from this checkpoint.
+- **Lifecycle:** adopted into Next and approved for the bounded local plan above. This does not authorise publication or a downstream receiver change.
