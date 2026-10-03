@@ -2,6 +2,8 @@
 
 Use this checklist before presenting a Git Almanac change for review. Release publication has additional requirements in [Release Git Almanac](releasing.md).
 
+The `ki-repo-tools` change-readiness checklist owns cross-tool documentation, verification, and authority questions; the checks below apply them to Almanac's read-only Git and reporting boundaries.
+
 ## Confirm the change
 
 - Repository inspection remains read-only unless the change explicitly affects report, configuration, ignore, or output files.

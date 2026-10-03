@@ -2,12 +2,15 @@
 
 Use this guide only after the candidate satisfies the [definition of done](definition-of-done.md) and publication is explicitly authorised.
 
+The `ki-repo-tools` release-readiness checklist owns common release checks; this guide supplies Almanac's exact package, asset, and downstream procedure.
+
 ## Prepare the version
 
 1. Confirm every required gate passes on a clean checkout.
 2. Before 1.0, update the consolidated Pre-1.0 command and behaviour baseline in `CHANGELOG.md`; tags and releases retain the exact 0.x snapshots. From 1.0 onward, add a dated release entry.
 3. Set the exact release version in `package.json`, the manual heading, and version tests.
-4. Commit the release candidate as one atomic Conventional Commit.
+4. Compare CLI help, generated Bash and Zsh completions, the README, user guides, manual, and changelog against the candidate executable; keep commands, options, and installation guidance aligned.
+5. Commit the release candidate as one atomic Conventional Commit.
 
 ## Publish the immutable asset
 
