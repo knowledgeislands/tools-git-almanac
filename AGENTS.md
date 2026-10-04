@@ -2,21 +2,15 @@
 
 This repository contains the standalone Git Almanac command-line tool.
 
-## Engineering
+## Governing sources
 
-- Use TypeScript with arrow functions, explicit types, cohesive modules, and dependency-conscious boundaries.
+Use `ki-engineering` for TypeScript/Bun design and toolchain, `ki-repo-tools` for the shared CLI, distribution, change-readiness and release-readiness contracts, `ki-git` for Git hygiene and commit/publication authority, and `ki-authoring` for Markdown, TOML and durable knowledge placement. The selected work lifecycle belongs to `ki-work` and `ki-work-roadmap`.
+
+Use the [definition of done](docs/guides/developer/definition-of-done.md) for Almanac's checks and executable verification gate, and [Release Git Almanac](docs/guides/developer/releasing.md) for its version sources, artifact and publication procedure.
+
+## Local boundaries
+
 - Invoke Git with argument arrays and never interpolate repository input into a shell command.
 - Keep collection, normalization, statistics, and rendering separate.
 - Drive tests through the in-process CLI seam and temporary Git repositories.
 - Keep the inspected repository read-only and perform no network requests.
-
-## Workflow
-
-- Use the repository roadmap lifecycle for multi-step work.
-- Use atomic Conventional Commits and stage only intended paths.
-- Run the focused test while iterating and the complete gate before review.
-- Do not push, publish, release, or edit a sibling repository without explicit approval.
-
-## Documentation
-
-Use the installed ki-authoring conventions for Markdown and TOML. Specifications record what the CLI does, guides explain how to use or maintain it, and roadmap items record delivery state.
