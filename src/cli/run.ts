@@ -145,27 +145,11 @@ const selectedReportSections = (section: ReportSection | 'all'): ReportSection[]
   section === 'all' ? ['calendar', 'authors', 'contributors'] : [section]
 
 const runConfigurationCommand = async (
-  action: 'init' | 'show' | 'check' | 'repair',
+  action: 'init' | 'show' | 'check',
   repositoryArgument: string,
-  context: RunContext,
-  apply = false
+  context: RunContext
 ): Promise<number> => {
   const repository = await resolveRepository(repositoryArgument, context.cwd, context.git)
-  if (action === 'repair') {
-    const repair = await previewConfigRepair(repository.root)
-    if (!repair) {
-      context.stdout(`No legacy schema field in ${join(repository.root, CONFIG_NAME)}\n`)
-      return 0
-    }
-    context.stdout(`${apply ? 'Removing' : 'Would remove'} from ${repair.path}:\n- ${repair.removedLine}\n`)
-    if (apply) {
-      await applyConfigRepair(repair)
-      context.stdout(`Updated ${repair.path}\n`)
-    } else {
-      context.stdout('Run config repair --apply to write this change.\n')
-    }
-    return 0
-  }
   if (action === 'init') {
     const result = await initializeConfig(repository.root)
     context.stdout(`${result === 'created' ? 'Created' : 'Validated existing'} ${join(repository.root, CONFIG_NAME)}\n`)
@@ -177,12 +161,116 @@ const runConfigurationCommand = async (
       config ? `Valid ${join(repository.root, CONFIG_NAME)}\n` : `No ${CONFIG_NAME}; built-in defaults are valid\n`
     )
     if (config && (await previewConfigRepair(repository.root))) {
-      context.stdout('Legacy schema field can be removed: run config repair to preview the change.\n')
+      context.stdout('Legacy schema field can be removed: run repair to preview the change.\n')
     }
     return 0
   }
   context.stdout(renderConfig(applyConfig(defaultRequest(repository.root), config)))
   return 0
+}
+
+const runRepair = async (repositoryArgument: string, apply: boolean, context: RunContext): Promise<number> => {
+  const repository = await resolveRepository(repositoryArgument, context.cwd, context.git)
+  const repair = await previewConfigRepair(repository.root)
+  if (!repair) {
+    context.stdout(`No legacy schema field in ${join(repository.root, CONFIG_NAME)}\n`)
+    return 0
+  }
+  context.stdout(`${apply ? 'Removing' : 'Would remove'} from ${repair.path}:\n- ${repair.removedLine}\n`)
+  if (apply) {
+    await applyConfigRepair(repair)
+    context.stdout(`Updated ${repair.path}\n`)
+  } else {
+    context.stdout('Run repair --apply to write this change.\n')
+  }
+  return 0
+}
+
+interface EnvironmentInspection {
+  git: boolean
+  repository: boolean
+  configuration: 'valid' | 'absent' | 'invalid' | 'unavailable'
+  root?: string
+  issue?: string
+}
+
+const inspectEnvironment = async (repositoryArgument: string, context: RunContext): Promise<EnvironmentInspection> => {
+  let gitAvailable = false
+  try {
+    gitAvailable = (await context.git(['--version'], context.cwd)).exitCode === 0
+  } catch {
+    // Diagnosis must remain available when the Git executable is missing.
+  }
+  if (!gitAvailable) return { git: false, repository: false, configuration: 'unavailable' }
+  try {
+    const repository = await resolveRepository(repositoryArgument, context.cwd, context.git)
+    try {
+      const config = await loadConfig(repository.root)
+      return { git: true, repository: true, configuration: config ? 'valid' : 'absent', root: repository.root }
+    } catch (error) {
+      return {
+        git: true,
+        repository: true,
+        configuration: 'invalid',
+        root: repository.root,
+        issue: String(error)
+      }
+    }
+  } catch (error) {
+    return {
+      git: true,
+      repository: false,
+      configuration: 'unavailable',
+      issue: String(error)
+    }
+  }
+}
+
+const runDiag = async (repository: string, full: boolean, json: boolean, context: RunContext): Promise<number> => {
+  const inspection = await inspectEnvironment(repository, context)
+  const report = {
+    schema: 'git-almanac/diag/v1',
+    version: VERSION,
+    git: inspection.git ? 'available' : 'unavailable',
+    repository: inspection.repository ? 'available' : 'unavailable',
+    configuration: inspection.configuration,
+    ...(full ? { details: { root: inspection.root ?? null, issue: inspection.issue ?? null } } : {})
+  }
+  if (json) {
+    context.stdout(`${JSON.stringify(report)}\n`)
+  } else {
+    context.stdout(`Git Almanac ${report.version}\n`)
+    context.stdout(`git: ${report.git}\nrepository: ${report.repository}\nconfiguration: ${report.configuration}\n`)
+    if (full) {
+      context.stdout(`repository root: ${inspection.root ?? 'unavailable'}\n`)
+      if (inspection.issue) context.stdout(`detail: ${inspection.issue}\n`)
+    } else {
+      context.stdout('Local paths and error details omitted; use diag --full to include them.\n')
+    }
+  }
+  return 0
+}
+
+const runDoctor = async (repository: string, json: boolean, context: RunContext): Promise<number> => {
+  const inspection = await inspectEnvironment(repository, context)
+  const checks = [
+    { name: 'git', ok: inspection.git, action: 'Install Git and retry.' },
+    { name: 'repository', ok: inspection.repository, action: 'Run inside a local Git repository or name one.' },
+    {
+      name: 'configuration',
+      ok: inspection.configuration === 'valid' || inspection.configuration === 'absent',
+      action: 'Correct invalid .git-almanac.toml; use repair for a recognised legacy schema field.'
+    }
+  ]
+  const healthy = checks.every((check) => check.ok)
+  if (json) {
+    context.stdout(`${JSON.stringify({ schema: 'git-almanac/doctor/v1', healthy, checks })}\n`)
+  } else {
+    for (const check of checks)
+      context.stdout(`${check.ok ? 'ok' : 'fail'} ${check.name}${check.ok ? '' : `: ${check.action}`}\n`)
+    context.stdout(healthy ? 'Git Almanac is ready.\n' : 'Git Almanac needs attention.\n')
+  }
+  return healthy ? 0 : 1
 }
 
 const runIgnoreCommand = async (repositoryArgument: string, context: RunContext): Promise<number> => {
@@ -211,8 +299,11 @@ export const run = async (args: string[], context: RunContext = defaultContext()
       context.stdout(renderCompletion(parsed.shell))
       return 0
     }
+    if (parsed.command === 'diag') return await runDiag(parsed.repository, parsed.full, parsed.json, context)
+    if (parsed.command === 'doctor') return await runDoctor(parsed.repository, parsed.json, context)
+    if (parsed.command === 'repair') return await runRepair(parsed.repository, parsed.apply, context)
     if (parsed.command === 'config') {
-      return await runConfigurationCommand(parsed.action, parsed.repository, context, parsed.apply)
+      return await runConfigurationCommand(parsed.action, parsed.repository, context)
     }
     if (parsed.command === 'ignore') return await runIgnoreCommand(parsed.repository, context)
     if (parsed.command === 'init') {

@@ -164,7 +164,7 @@ _Evidence:_ `src/tests/report-transaction.test.ts` passes staged replacement, ro
 
 ### ALM-016 — Configuration precedence
 
-Optional `<repository-root>/.git-almanac.toml` MUST omit a schema field when newly written, accept the recognised legacy `schema = 1` form, reject unknown or malformed values, and apply built-in defaults before repository defaults and CLI arguments. Configuration MUST NOT be required for ordinary commands. `config repair` MUST preview legacy-field removal without writing; only an explicit `--apply` may perform the validated change.
+Optional `<repository-root>/.git-almanac.toml` MUST omit a schema field when newly written, accept the recognised legacy `schema = 1` form, reject unknown or malformed values, and apply built-in defaults before repository defaults and CLI arguments. Configuration MUST NOT be required for ordinary commands. Root `repair` MUST preview legacy-field removal without writing; only an explicit `--apply` may perform the validated change.
 
 _Conformance:_ conforming
 
@@ -196,7 +196,7 @@ _Evidence:_ `src/tests/config.test.ts` passes idempotent narrow ignore-rule sele
 
 ### ALM-019 — Local read-only inspection
 
-Analytical commands MUST perform no network request and MUST NOT mutate inspected Git history, configuration, refs, index, or working files. Only explicit `report`, `config init`, `config repair --apply`, `ignore`, `init`, or output options may write their documented targets.
+Analytical commands MUST perform no network request and MUST NOT mutate inspected Git history, configuration, refs, index, or working files. Only explicit `report`, `config init`, `repair --apply`, `ignore`, `init`, or output options may write their documented targets.
 
 _Conformance:_ conforming
 

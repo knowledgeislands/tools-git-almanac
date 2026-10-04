@@ -10,6 +10,7 @@ The `ki-repo-tools` change-readiness checklist owns cross-tool documentation, ve
 - Collection, normalisation, statistics, and rendering remain separate, and Git is invoked through argument arrays rather than interpolated shell input.
 - Accepted behaviour and relevant failure paths are covered through the in-process CLI seam using disposable Git repositories.
 - Public help, the README, user and developer guides, specifications, `man/git-almanac.1`, completion, and the V1 changelog baseline remain aligned where affected.
+- Root `help`, `diag`, and `doctor` stay covered; diagnostics redact local paths unless `--full` is explicit, while `doctor` remains read-only.
 - Removed behaviour leaves no obsolete documentation, compatibility branch, or unreachable implementation.
 
 ## Verify the repository

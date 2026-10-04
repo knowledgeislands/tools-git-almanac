@@ -26,6 +26,22 @@ git-almanac \- inspect local Git calendars, authors, contributors, and reports
 .RI < init | show | check >
 .RI [ repository ]
 .PP
+.B git-almanac repair
+.RI [ repository ]
+.RI [ --apply ]
+.PP
+.B git-almanac diag
+.RI [ repository ]
+.RI [ --full ]
+.RI [ --json ]
+.PP
+.B git-almanac doctor
+.RI [ repository ]
+.RI [ --json ]
+.PP
+.B git-almanac help
+.RI [ command ]
+.PP
 .B git-almanac ignore
 .RI [ repository ]
 .PP
@@ -66,8 +82,21 @@ Rank exact identities by selected commit activity and report their shares.
 Build all or one compatible static view under
 .IR reports/git-almanac/ .
 .TP
-.BR config " <" init | show | check | repair "> [" repository "] [--apply]"
-Create, display, validate, or repair optional repository-local defaults.
+.BR config " <" init | show | check "> [" repository "]"
+Create, display, or validate optional repository-local defaults.
+.TP
+.BR repair " [" repository "] [--apply]"
+Preview removal of a recognised legacy configuration marker; apply only on
+request.
+.TP
+.BR doctor " [" repository "] [--json]"
+Evaluate Git, repository discovery, and configuration without changing files.
+.TP
+.BR diag " [" repository "] [--full] [--json]"
+Print share-safe environment facts; full output includes local paths.
+.TP
+.BR help " [" command "]"
+Show general or command-specific usage.
 .TP
 .BR ignore " [" repository "]"
 Add the narrowest safe report rule to the repository-root
@@ -180,7 +209,7 @@ theme, author, and paths.
 .PP
 .B config init
 does not replace an existing configuration.
-.B config repair
+.B repair
 previews removal of a known legacy schema line without writing;
 .B --apply
 performs that exact repair after rechecking the file.

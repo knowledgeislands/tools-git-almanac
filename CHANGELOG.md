@@ -14,6 +14,9 @@ Separate 0.x release entries are not maintained here.
 
 - `git almanac --help`
 - `git almanac --version`
+- `git almanac help [command]`
+- `git almanac diag [repository] [--full] [--json]`
+- `git almanac doctor [repository] [--json]`
 
 #### History views
 
@@ -30,7 +33,7 @@ Separate 0.x release entries are not maintained here.
 - `git almanac config init [repository]`
 - `git almanac config show [repository]`
 - `git almanac config check [repository]`
-- `git almanac config repair [repository] [--apply]`
+- `git almanac repair [repository] [--apply]`
 - `git almanac ignore [repository]`
 - `git almanac init [repository]`
 

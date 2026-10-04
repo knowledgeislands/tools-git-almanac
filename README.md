@@ -25,9 +25,14 @@ bun install
 git almanac calendar
 git almanac authors
 git almanac contributors --since 2026-01-01
+git almanac doctor
+git almanac diag
+git almanac help report
 ```
 
 The repository argument is optional: Git Almanac discovers the repository containing the current directory, including from a nested directory. Single-file commands write to standard output unless `--output` is supplied, and an `.html`, `.svg`, or `.json` extension infers the format.
+
+`doctor` checks Git, repository discovery, and configuration without changing files. `diag` prints share-safe facts by default; `--full` includes local paths. `repair` previews a recognised legacy configuration marker and requires `--apply` to change it.
 
 Build the complete linked static report under `<repository-root>/reports/git-almanac/`:
 

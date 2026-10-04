@@ -14,9 +14,12 @@ export type ParsedCommand =
   | { command: 'help'; topic?: string }
   | { command: 'version' }
   | { command: 'completion'; shell: 'bash' | 'zsh' }
+  | { command: 'diag'; repository: string; full: boolean; json: boolean }
+  | { command: 'doctor'; repository: string; json: boolean }
+  | { command: 'repair'; repository: string; apply: boolean }
   | { command: 'calendar' | 'authors' | 'contributors'; request: HistoryRequest }
   | { command: 'report'; section: ReportSection | 'all'; request: HistoryRequest }
-  | { command: 'config'; action: 'init' | 'show' | 'check' | 'repair'; repository: string; apply: boolean }
+  | { command: 'config'; action: 'init' | 'show' | 'check'; repository: string }
   | { command: 'ignore'; repository: string }
   | { command: 'init'; repository: string }
 
@@ -158,6 +161,8 @@ const parseRepositoryOnly = (args: string[], cwd: string, command: string): stri
 
 export const parseArgs = (args: string[], cwd: string): ParsedCommand => {
   if (args.length === 0 || args[0] === '--help' || args[0] === '-h' || args[0] === 'help') {
+    if (args[0] !== 'help' && args.length > 1) throw usageError('help accepts no additional arguments')
+    if (args[0] === 'help' && args.length > 2) throw usageError('help accepts at most one topic')
     return { command: 'help', ...(args[0] === 'help' && args[1] ? { topic: args[1] } : {}) }
   }
   if (args[0] === '--version' || args[0] === '-V') {
@@ -170,6 +175,21 @@ export const parseArgs = (args: string[], cwd: string): ParsedCommand => {
       throw usageError('completion requires exactly one supported shell: bash or zsh')
     }
     return { command: 'completion', shell }
+  }
+  if (args[0] === 'diag' || args[0] === 'doctor' || args[0] === 'repair') {
+    if (args.includes('--help') || args.includes('-h')) return { command: 'help', topic: args[0] }
+    const action = args[0]
+    const full = action === 'diag' && args.includes('--full')
+    const json = action !== 'repair' && args.includes('--json')
+    const apply = action === 'repair' && args.includes('--apply')
+    const rest = args.slice(1).filter((argument) => !['--full', '--json', '--apply'].includes(argument))
+    if (action !== 'diag' && args.includes('--full')) throw usageError('--full is only supported by diag')
+    if (action === 'repair' && args.includes('--json')) throw usageError('--json is not supported by repair')
+    if (action !== 'repair' && args.includes('--apply')) throw usageError('--apply is only supported by repair')
+    const repository = parseRepositoryOnly(rest, cwd, action)
+    if (action === 'diag') return { command: 'diag', repository, full, json }
+    if (action === 'doctor') return { command: 'doctor', repository, json }
+    return { command: 'repair', repository, apply }
   }
   if (['calendar', 'authors', 'contributors'].includes(args[0] as string)) {
     if (args.includes('--help') || args.includes('-h')) return { command: 'help', topic: args[0] }
@@ -191,16 +211,13 @@ export const parseArgs = (args: string[], cwd: string): ParsedCommand => {
   if (args[0] === 'config') {
     if (args.includes('--help') || args.includes('-h')) return { command: 'help', topic: 'config' }
     const action = args[1]
-    if (action !== 'init' && action !== 'show' && action !== 'check' && action !== 'repair') {
-      throw usageError('config requires one action: init, show, check, or repair')
+    if (action !== 'init' && action !== 'show' && action !== 'check') {
+      throw usageError('config requires init, show, or check; use root repair for legacy configuration')
     }
-    const rest = args.slice(2)
-    const apply = action === 'repair' && rest.at(-1) === '--apply'
     return {
       command: 'config',
       action,
-      repository: parseRepositoryOnly(apply ? rest.slice(0, -1) : rest, cwd, `config ${action}`),
-      apply
+      repository: parseRepositoryOnly(args.slice(2), cwd, `config ${action}`)
     }
   }
   if (args[0] === 'ignore' || args[0] === 'init') {

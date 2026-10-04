@@ -1,5 +1,5 @@
 import { execFileSync } from 'node:child_process'
-import { appendFileSync, mkdirSync, mkdtempSync, readFileSync, rmSync } from 'node:fs'
+import { appendFileSync, mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 
@@ -126,9 +126,60 @@ describe('Git Almanac CLI contract', () => {
     expect(zsh.stdout).toContain('compdef _git_almanac git-almanac')
 
     expect((await invoke(['help'])).stdout).toContain('git almanac calendar [repository]')
+    expect((await invoke(['help', 'diag'])).stdout).toContain('diag [repository] [--full]')
+    expect((await invoke(['help', 'repair'])).stdout).toContain('repair [repository] [--apply]')
+    expect((await invoke(['help', 'doctor'])).stdout).toContain('doctor [repository] [--json]')
+    expect((await invoke(['help', 'completion'])).stdout).toContain('completion <bash|zsh>')
+    expect((await invoke(['config', 'repair'])).code).toBe(2)
+    expect((await invoke(['repair', '--json'])).code).toBe(2)
+    expect((await invoke(['doctor', '--full'])).code).toBe(2)
+    expect((await invoke(['diag', '--apply'])).code).toBe(2)
+    expect((await invoke(['--help', 'diag'])).code).toBe(2)
+    expect((await invoke(['help', 'diag', 'extra'])).code).toBe(2)
+    expect((await invoke(['doctor', '--help'])).stdout).toContain('Usage: git almanac doctor')
+    expect(bash.stdout).toContain('diag) options="--full --json --help"')
+    expect(zsh.stdout).toContain('repair) _values')
     expect((await invoke(['calendar', '--help'])).stdout).toContain('Usage: git almanac calendar')
     expect((await invoke(['-V'])).stdout).toContain('git-almanac 0.1.0')
     expect((await invoke(['calendar', '--format', 'json'])).code).toBe(0)
+  })
+
+  test('reports share-safe facts and evaluates local readiness without writing', async () => {
+    const root = repository('health')
+    const config = join(root, '.git-almanac.toml')
+    const diag = await invoke(['diag', root, '--json'])
+    expect(diag.code).toBe(0)
+    expect(JSON.parse(diag.stdout)).toMatchObject({
+      schema: 'git-almanac/diag/v1',
+      git: 'available',
+      repository: 'available',
+      configuration: 'absent'
+    })
+    expect(diag.stdout).not.toContain(root)
+    expect((await invoke(['doctor', root])).code).toBe(0)
+    writeFileSync(config, 'ref = "HEAD"\n')
+    expect(JSON.parse((await invoke(['diag', root, '--json'])).stdout).configuration).toBe('valid')
+
+    const full = await invoke(['diag', root, '--full', '--json'])
+    expect(JSON.parse(full.stdout).details.root).toBe(realpathSync(root))
+    writeFileSync(config, 'schema = 2\n')
+    const unhealthy = await invoke(['doctor', root, '--json'])
+    expect(unhealthy.code).toBe(1)
+    expect(JSON.parse(unhealthy.stdout)).toMatchObject({ healthy: false })
+    const safe = await invoke(['diag', root, '--json'])
+    expect(safe.code).toBe(0)
+    expect(safe.stdout).not.toContain(root)
+    const invalidDetail = await invoke(['diag', root, '--full'])
+    expect(invalidDetail.stdout).toContain('detail:')
+    expect(invalidDetail.stdout).toContain(root)
+
+    const missing = await invoke(['diag', join(root, 'missing'), '--full', '--json'])
+    expect(JSON.parse(missing.stdout)).toMatchObject({ repository: 'unavailable', details: { root: null } })
+
+    const noGit: GitExecutor = async () => ({ stdout: '', stderr: 'unavailable', exitCode: 1 })
+    expect((await invoke(['doctor', root], { git: noGit })).code).toBe(1)
+    expect((await invoke(['diag', root], { git: noGit })).code).toBe(0)
+    expect((await invoke(['diag', root, '--full'], { git: noGit })).stdout).toContain('repository root: unavailable')
   })
 
   test('constructs a usable default process context', async () => {
