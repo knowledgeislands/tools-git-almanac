@@ -19,8 +19,8 @@ curl -fsSL https://raw.githubusercontent.com/knowledgeislands/tools-git-almanac/
 To install an exact release rather than the latest, pass the v-prefixed tag, or set `GIT_ALMANAC_VERSION` when piping the script:
 
 ```bash
-./install.sh v0.1.0
-GIT_ALMANAC_VERSION=v0.1.0 curl -fsSL https://raw.githubusercontent.com/knowledgeislands/tools-git-almanac/main/install.sh | bash
+./install.sh v0.2.0
+GIT_ALMANAC_VERSION=v0.2.0 curl -fsSL https://raw.githubusercontent.com/knowledgeislands/tools-git-almanac/main/install.sh | bash
 ```
 
 By default the executable lands in `~/.local/bin` and the manual in `~/.local/share/man/man1`. Override either directory:
