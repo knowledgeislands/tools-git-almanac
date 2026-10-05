@@ -60,7 +60,7 @@
     "clean": "rm -rf dist node_modules",
     "ki:deps:update": "bun update --latest",
     "ki:tools:lint-man": "mandoc -T lint man/git-almanac.1",
-    "prepare": "husky",
+    "prepare": "husky && bun install --frozen-lockfile --cwd tooling/boundaries",
     "test": "vitest run",
     "test:coverage": "vitest run --coverage",
     "test:watch": "vitest"
