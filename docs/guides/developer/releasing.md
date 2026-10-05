@@ -26,6 +26,8 @@ The exact-version installer accepts `GIT_ALMANAC_INSTALL_DIR` and `GIT_ALMANAC_M
 
 The downstream handoff identifies `knowledgeislands/homebrew-tap`, `Formula/git-almanac.rb`, the exact released tag, the `git-almanac-vX.Y.Z.tar.gz` asset URL and checksum, its Node runtime dependency, and the `/projects/git-almanac/` and `/install/git-almanac` website routes. Follow the shared checklist through the actual formula and consumer outcome.
 
+After publication, the release workflow's `Notify Homebrew tap` job sends a `tool-release-published` dispatch to `knowledgeislands/homebrew-tap` through the `ki-tools-release-bot` GitHub App; the tap then opens the exact formula pull request and squash-merges it automatically once its required checks pass. The job is skipped until the `KI_TOOLS_RELEASE_BOT_APP_ID` variable and `KI_TOOLS_RELEASE_BOT_PRIVATE_KEY` secret are available to this repository at organisation or repository level (not as `release`-environment secrets); the tap's daily scheduled intake still picks up a published immutable release without the dispatch.
+
 ## Recover from a failed release
 
 Correct the source on `main`, update the package, manual heading and version tests for the next patch, then repeat this procedure under the shared release-recovery policy.
