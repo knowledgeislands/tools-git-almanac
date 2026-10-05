@@ -4,11 +4,12 @@ Use this guide to change or evaluate Git Almanac without installing a release.
 
 ## Prepare the checkout
 
-The declared toolchain provides Bun 1.3.14 and Node 24.19.0 through `mise.toml`.
+The exact Bun and Node versions are declared in `mise.toml`; `package.json` repeats the Bun package-manager pin for dependency installation.
 
 ```bash
 mise install
 bun install
+bun install --frozen-lockfile --cwd tooling/boundaries
 ```
 
 Run source directly:
@@ -47,17 +48,11 @@ For read-only acceptance, fingerprint `git status --porcelain=v2 --branch` befor
 
 ## Run the complete gate
 
-```bash
-bunx tsc --noEmit
-bun run test:coverage
-bun run build
-bunx biome check
-bun run ki:tools:lint-man
-bash -n install.sh
-ki repo audit --repo .
-```
+Run the complete verification gate in the [definition of done](definition-of-done.md). Keep that guide as the single command list so local development and release preparation exercise the same checks.
 
 Tests drive the in-process `run(args, context)` boundary and deliberately dated temporary Git repositories. Product coverage is held at 100% statements, branches, functions, and lines.
+
+The suite also enforces `.dependency-cruiser.ts`: core counting and types stay below I/O, renderers stay independent of repository writes, the executable stays thin, and CLI acceptance tests use `run` with its documented Git-executor and diagnostic-environment fixture ports. Focused configuration and rendering tests may exercise those modules' exported contracts. The isolated `tooling/boundaries` install holds a TypeScript compiler dependency-cruiser supports; the checker proves it read a resolved, type-aware graph and that each prohibited crossing fails in a temporary fixture, without writing product source.
 
 ## Verify the built CLI
 

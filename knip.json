@@ -1,8 +1,7 @@
 {
   "$schema": "https://unpkg.com/knip@6/schema.json",
-  "entry": ["bin/git-almanac", "src/cli/cli.ts", "src/**/*.test.ts"],
+  "entry": ["bin/git-almanac", "src/cli/cli.ts", "src/**/*.test.ts", ".dependency-cruiser.ts"],
   "ignore": [".claude/skills/**", ".agents/skills/**"],
   "ignoreBinaries": ["mandoc"],
-  "ignoreDependencies": ["lint-staged", "syncpack"],
   "ignoreExportsUsedInFile": true
 }

@@ -6,7 +6,18 @@
     "useIgnoreFile": true
   },
   "files": {
-    "includes": ["src/**", "bin/**", "tests/**", "*.ts", "*.json", "!.claude/skills", "!.agents/skills"],
+    "includes": [
+      "src/**",
+      "bin/**",
+      "tests/**",
+      "scripts/**",
+      "tooling/**",
+      "*.ts",
+      "*.json",
+      ".dependency-cruiser.ts",
+      "!.claude/skills",
+      "!.agents/skills"
+    ],
     "ignoreUnknown": true
   },
   "formatter": {

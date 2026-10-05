@@ -1,6 +1,6 @@
 # Troubleshoot Git Almanac
 
-Use this guide when a command fails, refuses, or produces something you did not expect. Every diagnostic Git Almanac prints names the value it rejected or the destination it protected, so the message itself is usually the fastest route to the fix.
+Use this guide when a command fails, refuses, or produces something you did not expect. Ordinary command errors identify invalid options or protected destinations; share-safe `diag` and `doctor` report failure categories and next actions without exposing local paths or configuration values.
 
 ## Compare diagnostic facts and health
 
@@ -97,4 +97,4 @@ Set `NO_COLOR` in the environment or pass `--no-color` to disable ANSI colour. T
 
 ## Still stuck
 
-The Git Almanac Specification at `docs/specs/git-almanac.md` states the behaviour each command is required to have, with the exit-status classification in `ALM-020`. `man git-almanac` documents every option and environment variable. If the tool's actual behaviour disagrees with the specification, the specification is authoritative and the defect is in the tool.
+Run `git almanac help <command>` or `man git-almanac` to check the accepted options and expected outcome. Include the command, exit status and share-safe `git almanac diag` output when reporting an unexpected result. Review any `--full` output privately before deciding whether to share it.

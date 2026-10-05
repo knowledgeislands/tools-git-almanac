@@ -1,7 +1,7 @@
 ---
 id: PDR-ALMANAC-001
 title: 'Git Almanac command and report contract'
-date: 2026-08-28
+date: 2026-10-05
 status: current
 decision_type: product
 decision_type_url: https://knowledgeislands.info/specifications/decision-records/pdr
@@ -12,15 +12,15 @@ decision_depends_on: ["GDR-ALMANAC-001"]
 
 ## Context
 
-Git Almanac begins with a trustworthy local activity-calendar engine, while its intended surface also inventories author identities, ranks contribution activity, and assembles those views into a coherent report. These views share repository discovery, history selectors, counting semantics, and normalized data. Standalone commands must remain pipe-friendly, while multi-file output requires a predictable owned workspace and safeguards against overwriting unrelated files.
+Git Almanac combines a local activity-calendar engine with author inventories, contribution rankings, and a coherent static report. These views share repository discovery, history selectors, counting semantics, and normalized data. Standalone commands remain pipe-friendly, while multi-file output requires a predictable owned workspace and safeguards against overwriting unrelated files.
 
 ## Decision
 
 Git Almanac adopts the following product contract:
 
 - `git-almanac` is the executable, naturally invoked as `git almanac`, and `ALMANAC` is the stable roadmap scope.
-- `calendar`, `authors`, and `contributors` are standalone local-history views; `report` assembles all or one named view; `config`, `ignore`, and `init` manage optional repository-local defaults and report hygiene.
-- Shared history options select one repository, ref, date interval, date field, author pattern, pathspec set, and merge policy. `commits` is the only accepted metric until another metric receives its own semantics and verification.
+- `calendar`, `authors`, and `contributors` are standalone local-history views; `report` assembles all or one named view; `config`, `ignore`, and `init` manage optional repository-local defaults and report hygiene, while `repair` previews a recognised configuration repair and writes only with explicit `--apply`.
+- Shared history options select one repository, ref, date interval, date field, author pattern, pathspec set, and merge policy. `commits` is the only accepted metric, with one counting contract shared across the views.
 - Author identity is the exact raw Git `Name <email>` pair. Git Almanac does not guess identity equivalence or apply a separate mailmap policy.
 - Single-file commands write to standard output unless `--output` is present. A recognised output extension infers HTML, SVG, or JSON when `--format` is absent; an explicit format wins. Calendar sets require `--output-dir`.
 - Managed static reports live under `<repository-root>/reports/git-almanac/`. A versioned manifest records the effective repository, revision, selectors, timezone, identity, metric, theme, sections, and managed paths. A complete report rebuilds all managed sections when that contract changes, removes stale owned paths, and preserves unowned files. Partial updates require a compatible manifest; missing, invalid, or unsafe ownership prevents overwrite.

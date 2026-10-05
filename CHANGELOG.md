@@ -62,3 +62,4 @@ Separate 0.x release entries are not maintained here.
 - Bash and Zsh completion definitions
 - Platform-independent Node 22 release archive and `SHA256SUMS`
 - GitHub release verification for coverage, build, manual lint, packaging, and publication
+- Candidate tags are validated against the package version before dependency installation, tests or builds; architectural dependency gates are tested against deliberate isolated violations and a resolved, type-aware source graph.

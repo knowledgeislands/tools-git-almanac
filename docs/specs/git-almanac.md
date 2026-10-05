@@ -1,6 +1,6 @@
 # Git Almanac — ALM
 
-This Specification defines the as-built local Git inspection, output, configuration, and report contract. See the [Specifications index](index.md) for the identifier scheme.
+This Specification defines the as-built local Git inspection, output, configuration, and report contract established by [PDR-ALMANAC-001](../decisions/PDR-ALMANAC-001-git-almanac-command-and-report-contract.md). See the [Specifications index](index.md) for the identifier scheme.
 
 ## Repository and history
 
@@ -206,13 +206,13 @@ _Evidence:_ `src/tests/almanac.test.ts` passes read-only Git adapter and unchang
 
 ### ALM-020 — Failure classification
 
-The CLI MUST return status 2 for malformed syntax or option values and status 1 for repository, Git, configuration, ownership, rendering, or output failures. Diagnostics MUST name the rejected value or protected destination.
+The CLI MUST return status 2 for malformed syntax or option values and status 1 for repository, Git, configuration, ownership, rendering, or output failures. Ordinary command errors MUST identify invalid options or protected destinations. Share-safe `diag` and `doctor` MUST instead report the failure category and action without exposing configuration values or local paths; only explicit `diag --full` may include paths.
 
 _Conformance:_ conforming
 
 _Verify:_ error tests assert status and diagnostic families for dates, refs, commands, formats, metrics, Git data, output, configuration, and report ownership.
 
-_Evidence:_ `src/tests/cli.test.ts`, `src/tests/config.test.ts`, and `src/tests/report-transaction.test.ts` pass status and diagnostic-family assertions.
+_Evidence:_ `src/tests/cli.test.ts`, `src/tests/config.test.ts`, and `src/tests/report-transaction.test.ts` pass status, diagnostic-family and share-safe invalid-configuration assertions.
 
 ## Explicit non-goals
 

@@ -1,6 +1,6 @@
 # Git Almanac user guides
 
-These guides are for anyone running `git almanac` against a repository. Git Almanac reads one local repository, makes no network request, and needs no forge account, so everything here works offline against history you already have. It never rewrites that history: only `report`, `config init`, `ignore`, `init`, and an explicit `--output` path write anything at all.
+These guides are for anyone running `git almanac` against a repository. Git Almanac reads one local repository, makes no network request, and needs no forge account, so everything here works offline against history you already have. It never rewrites that history: only `report`, `config init`, `repair --apply`, `ignore`, `init`, and explicit output options write their documented files.
 
 Read [Installation](installation.md) and [Everyday use](everyday-use.md) in order the first time. After that, come back to whichever guide matches the task in front of you.
 

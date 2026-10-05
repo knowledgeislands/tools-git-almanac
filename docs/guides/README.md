@@ -2,7 +2,7 @@
 
 Git Almanac inspects one local Git repository's calendars, authors, contributors, and reports without a network request or a forge account. These guides explain how to install it, use it, and change it.
 
-[Specifications](../specs/index.md) define what the tool does and [Decision Records](../decisions/README.md) record why it does it that way. Guides never restate a requirement; they link to it and explain how to act on it.
+Specifications define what the tool does and Decision Records record why it does it that way. Guides name those concerns without depending on documents outside this collection, and explain how to act on the product's observable behaviour.
 
 Start with the audience you belong to.
 

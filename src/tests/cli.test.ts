@@ -128,7 +128,7 @@ describe('Git Almanac CLI contract', () => {
     expect(help.stdout).toContain('git almanac calendar [repository]')
 
     const version = await invoke(['--version'])
-    expect(version.stdout).toMatch(/^git-almanac 0\.1\.0/)
+    expect(version.stdout).toMatch(/^git-almanac 0\.2\.0/)
 
     const bash = await invoke(['completion', 'bash'])
     expect(bash.stdout).toContain('complete -F _git_almanac git-almanac')
@@ -152,7 +152,7 @@ describe('Git Almanac CLI contract', () => {
     expect(bash.stdout).toContain('diag) options="--full --json --help"')
     expect(zsh.stdout).toContain('repair) _values')
     expect((await invoke(['calendar', '--help'])).stdout).toContain('Usage: git almanac calendar')
-    expect((await invoke(['-V'])).stdout).toContain('git-almanac 0.1.0')
+    expect((await invoke(['-V'])).stdout).toContain('git-almanac 0.2.0')
     expect((await invoke(['calendar', '--format', 'json'])).code).toBe(0)
   })
 
@@ -164,7 +164,7 @@ describe('Git Almanac CLI contract', () => {
     expect(JSON.parse(diag.stdout)).toMatchObject({
       schema: 'git-almanac/diag/v1',
       tool: 'git-almanac',
-      version: '0.1.0',
+      version: '0.2.0',
       installation: 'unknown',
       runtime: { name: 'node' },
       git: 'available',

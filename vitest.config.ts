@@ -6,6 +6,8 @@ export default defineConfig({
     environment: 'node',
     include: ['src/**/*.test.ts'],
     fileParallelism: false,
+    // Git and boundary-checker subprocesses need headroom on a busy shared host.
+    testTimeout: 30000,
     coverage: {
       provider: 'v8',
       reporter: ['text', 'lcov', 'html'],

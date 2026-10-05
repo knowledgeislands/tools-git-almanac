@@ -14,11 +14,12 @@ Apply the `ki-repo-tools` release-readiness checklist for shared candidate, chan
 
 Publish by creating and pushing the candidate's `vX.Y.Z` tag. The tag-triggered release workflow:
 
-1. reruns coverage, build, and manual gates;
-2. builds the platform-independent Node executable;
-3. packages the executable and manual as `git-almanac-vX.Y.Z.tar.gz`;
-4. publishes `SHA256SUMS`; and
-5. creates the GitHub release.
+1. rejects a malformed tag or package-version mismatch before installing dependencies, testing or building;
+2. reruns the architecture, coverage, build, and manual gates;
+3. builds the platform-independent Node executable;
+4. packages the executable and manual as `git-almanac-vX.Y.Z.tar.gz`;
+5. publishes `SHA256SUMS`; and
+6. creates the GitHub release.
 
 The exact-version installer accepts `GIT_ALMANAC_INSTALL_DIR` and `GIT_ALMANAC_MAN_INSTALL_DIR` for the disposable executable and manual destinations required by the shared release checklist.
 
