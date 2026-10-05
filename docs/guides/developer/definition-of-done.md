@@ -9,7 +9,7 @@ Apply the `ki-repo-tools` change-readiness checklist for shared documentation, v
 - Repository inspection remains read-only unless the change explicitly affects report, configuration, ignore, or output files.
 - Collection, normalisation, statistics, and rendering remain separate, and Git is invoked through argument arrays rather than interpolated shell input.
 - Accepted behaviour and relevant failure paths are covered through the in-process CLI seam using disposable Git repositories.
-- Root `help`, `diag`, and `doctor` stay covered; diagnostics redact local paths unless `--full` is explicit, while `doctor` remains read-only.
+- Root `help`, `diag`, and `doctor` stay covered; diagnostics redact local paths unless `--full` is explicit, while `doctor` remains read-only. Isolated fixtures prove shared context, executing runtime, linked checkout/receipt/unknown provenance, additive v1 JSON, optional/invalid configuration, dependent skips, actionable failures and three-unit verdict/count consistency.
 
 ## Verify the repository
 

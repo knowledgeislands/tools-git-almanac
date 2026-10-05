@@ -30,6 +30,7 @@ import type {
   Theme
 } from '../types.js'
 import { VERSION } from '../version.js'
+import { type DiagnosticEnvironment, diagnosticEnvironment, renderDiagnosticContext } from './diagnostics.js'
 import { HELP, renderCompletion, renderHelp } from './help.js'
 import { isUsageError, parseArgs, usageError } from './parse.js'
 
@@ -43,6 +44,7 @@ export interface RunContext {
   stderr: (value: string) => void
   writeOutput: (path: string, value: string) => Promise<void>
   git: GitExecutor
+  environment?: DiagnosticEnvironment
 }
 
 export const defaultContext = (): RunContext => ({
@@ -54,7 +56,8 @@ export const defaultContext = (): RunContext => ({
   stdout: (value) => process.stdout.write(value),
   stderr: (value) => process.stderr.write(value),
   writeOutput: async (path, value) => writeFile(path, value, 'utf8'),
-  git: executeGit
+  git: executeGit,
+  environment: diagnosticEnvironment()
 })
 
 const renderCalendar = (model: ActivityModel, format: OutputFormat, theme: Theme, color: boolean): string => {
@@ -207,41 +210,56 @@ const inspectEnvironment = async (repositoryArgument: string, context: RunContex
     try {
       const config = await loadConfig(repository.root)
       return { git: true, repository: true, configuration: config ? 'valid' : 'absent', root: repository.root }
-    } catch (error) {
+    } catch {
       return {
         git: true,
         repository: true,
         configuration: 'invalid',
         root: repository.root,
-        issue: String(error)
+        issue: 'Configuration validation failed; run git almanac config check for local parser details.'
       }
     }
-  } catch (error) {
+  } catch {
     return {
       git: true,
       repository: false,
       configuration: 'unavailable',
-      issue: String(error)
+      issue: 'Repository discovery failed; run inside a local Git repository or name one.'
     }
   }
 }
 
 const runDiag = async (repository: string, full: boolean, json: boolean, context: RunContext): Promise<number> => {
   const inspection = await inspectEnvironment(repository, context)
+  const environment = context.environment ?? diagnosticEnvironment()
   const report = {
     schema: 'git-almanac/diag/v1',
+    tool: 'git-almanac',
     version: VERSION,
+    installation: environment.installation,
+    platform: environment.platform,
+    architecture: environment.architecture,
+    runtime: environment.runtime,
     git: inspection.git ? 'available' : 'unavailable',
     repository: inspection.repository ? 'available' : 'unavailable',
     configuration: inspection.configuration,
-    ...(full ? { details: { root: inspection.root ?? null, issue: inspection.issue ?? null } } : {})
+    ...(full
+      ? {
+          details: {
+            executable: environment.executable,
+            root: inspection.root ?? null,
+            issue: inspection.issue ?? null
+          }
+        }
+      : {})
   }
   if (json) {
     context.stdout(`${JSON.stringify(report)}\n`)
   } else {
-    context.stdout(`Git Almanac ${report.version}\n`)
-    context.stdout(`git: ${report.git}\nrepository: ${report.repository}\nconfiguration: ${report.configuration}\n`)
+    context.stdout(renderDiagnosticContext(environment, report.version, report.configuration))
+    context.stdout(`git: ${report.git}\nrepository: ${report.repository}\n`)
     if (full) {
+      context.stdout(`executable: ${environment.executable ?? 'unavailable'}\n`)
       context.stdout(`repository root: ${inspection.root ?? 'unavailable'}\n`)
       if (inspection.issue) context.stdout(`detail: ${inspection.issue}\n`)
     } else {
@@ -253,22 +271,39 @@ const runDiag = async (repository: string, full: boolean, json: boolean, context
 
 const runDoctor = async (repository: string, json: boolean, context: RunContext): Promise<number> => {
   const inspection = await inspectEnvironment(repository, context)
-  const checks = [
-    { name: 'git', ok: inspection.git, action: 'Install Git and retry.' },
-    { name: 'repository', ok: inspection.repository, action: 'Run inside a local Git repository or name one.' },
+  const environment = context.environment ?? diagnosticEnvironment()
+  const checks: { name: string; ok: boolean; status: 'pass' | 'fail' | 'skipped'; action: string }[] = [
+    { name: 'git', ok: inspection.git, status: inspection.git ? 'pass' : 'fail', action: 'Install Git and retry.' },
+    {
+      name: 'repository',
+      ok: inspection.repository,
+      status: !inspection.git ? 'skipped' : inspection.repository ? 'pass' : 'fail',
+      action: 'Run inside a local Git repository or name one.'
+    },
     {
       name: 'configuration',
       ok: inspection.configuration === 'valid' || inspection.configuration === 'absent',
+      status: !inspection.repository ? 'skipped' : inspection.configuration === 'invalid' ? 'fail' : 'pass',
       action: 'Correct invalid .git-almanac.toml; use repair for a recognised legacy schema field.'
     }
   ]
-  const healthy = checks.every((check) => check.ok)
+  const summary = { pass: 0, warn: 0, fail: 0, skipped: 0 }
+  for (const check of checks) summary[check.status] += 1
+  const healthy = summary.fail === 0
+  const scope =
+    'Git availability, repository discovery and configuration validity (read-only); package updates are not checked'
   if (json) {
-    context.stdout(`${JSON.stringify({ schema: 'git-almanac/doctor/v1', healthy, checks })}\n`)
+    context.stdout(
+      `${JSON.stringify({ schema: 'git-almanac/doctor/v1', tool: 'git-almanac', version: VERSION, installation: environment.installation, platform: environment.platform, architecture: environment.architecture, runtime: environment.runtime, configuration: inspection.configuration, scope, verdict: healthy ? 'healthy' : 'unhealthy', summary, healthy, checks })}\n`
+    )
   } else {
+    context.stdout(renderDiagnosticContext(environment, VERSION, inspection.configuration))
+    context.stdout(`Scope: ${scope}\n`)
     for (const check of checks)
-      context.stdout(`${check.ok ? 'ok' : 'fail'} ${check.name}${check.ok ? '' : `: ${check.action}`}\n`)
-    context.stdout(healthy ? 'Git Almanac is ready.\n' : 'Git Almanac needs attention.\n')
+      context.stdout(`${check.status} ${check.name}${check.status === 'fail' ? `: ${check.action}` : ''}\n`)
+    context.stdout(
+      `Checks: pass=${summary.pass} warn=${summary.warn} fail=${summary.fail} skipped=${summary.skipped}\nVerdict: ${healthy ? 'healthy' : 'unhealthy'}\n`
+    )
   }
   return healthy ? 0 : 1
 }

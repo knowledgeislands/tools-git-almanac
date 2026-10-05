@@ -45,6 +45,8 @@ Separate 0.x release entries are not maintained here.
 ### Behaviours
 
 - Omitted repository arguments discover the Git repository containing the current directory; inspection remains local, offline, and read-only.
+- `diag` and `doctor` share tool/version, proven local/release/unknown installation mode, host platform/architecture, executing runtime and configuration-state context. Diagnostics remain share-safe unless `--full` explicitly includes paths and error details; generated diagnostic contracts remain v1 with additive fields.
+- `doctor` reports the three-unit read-only Git, repository and configuration check scope, verdict and pass/warn/fail/skipped counts. Unavailable prerequisites skip dependent checks; absent optional configuration remains healthy. Package updates are not checked.
 - Author, path, ref, date-field, merge-policy, interval, metric, and theme options share one normalized reachable-history contract.
 - Author views preserve exact raw Git identities, while contributor views rank selected commit activity and shares deterministically.
 - Calendar views render terminal, self-contained HTML, accessible SVG, and stable versioned JSON output, with explicit format precedence and output-extension inference.

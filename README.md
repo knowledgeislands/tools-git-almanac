@@ -32,7 +32,7 @@ git almanac help report
 
 The repository argument is optional: Git Almanac discovers the repository containing the current directory, including from a nested directory. Single-file commands write to standard output unless `--output` is supplied, and an `.html`, `.svg`, or `.json` extension infers the format.
 
-`doctor` checks Git, repository discovery, and configuration without changing files. `diag` prints share-safe facts by default; `--full` includes local paths. `repair` previews a recognised legacy configuration marker and requires `--apply` to change it.
+`doctor` checks Git, repository discovery, and configuration without changing files, with a verdict and pass/warn/fail/skipped counts; absent optional configuration is healthy. Both `doctor` and `diag` identify the tool/version, proven local/release/unknown installation mode, host platform/architecture, executing runtime, and configuration state. `diag` prints share-safe facts by default; `--full` includes local paths and error details. Health does not assess package updates. `repair` previews a recognised legacy configuration marker and requires `--apply` to change it.
 
 Build the complete linked static report under `<repository-root>/reports/git-almanac/`:
 

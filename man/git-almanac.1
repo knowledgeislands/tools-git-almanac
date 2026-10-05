@@ -91,9 +91,16 @@ request.
 .TP
 .BR doctor " [" repository "] [--json]"
 Evaluate Git, repository discovery, and configuration without changing files.
+Show execution context, check scope, verdict and pass/warn/fail/skipped counts.
+Unavailable prerequisites skip dependent checks. Absent optional configuration
+is healthy; package updates are not checked.
 .TP
 .BR diag " [" repository "] [--full] [--json]"
-Print share-safe environment facts; full output includes local paths.
+Print tool/version, installation mode, host platform/architecture, executing
+runtime and configuration state. Full output includes local paths and error
+details. Installation is local for an identified development checkout, release
+for an installed package with receipt evidence, or unknown when provenance
+cannot be established. JSON diagnostic and doctor contracts remain v1.
 .TP
 .BR help " [" command "]"
 Show general or command-specific usage.

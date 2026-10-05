@@ -64,9 +64,9 @@ export const renderHelp = (topic?: string): string => {
   if (topic === 'repair')
     return 'Usage: git almanac repair [repository] [--apply]\n\nPreview recognised legacy schema removal; --apply writes the validated change.\n'
   if (topic === 'diag')
-    return 'Usage: git almanac diag [repository] [--full] [--json]\n\nPrint local facts without private paths by default.\n'
+    return 'Usage: git almanac diag [repository] [--full] [--json]\n\nPrint tool, installation, platform, runtime and configuration facts.\nPaths and error details require --full.\n'
   if (topic === 'doctor')
-    return 'Usage: git almanac doctor [repository] [--json]\n\nCheck local Git, repository, and configuration health without writing.\n'
+    return 'Usage: git almanac doctor [repository] [--json]\n\nReport environment context and check Git, repository and configuration health without writing.\nInclude verdict and pass/warn/fail/skipped counts; package updates are not checked.\n'
   if (topic === 'completion') return 'Usage: git almanac completion <bash|zsh>\n\nPrint shell completion source.\n'
   if (topic === 'ignore' || topic === 'init') return `Usage: git almanac ${topic} [repository]\n`
   if (topic === 'report') {

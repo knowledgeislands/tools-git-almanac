@@ -1,10 +1,20 @@
 import { execFileSync } from 'node:child_process'
-import { appendFileSync, mkdirSync, mkdtempSync, readFileSync, realpathSync, rmSync, writeFileSync } from 'node:fs'
+import {
+  appendFileSync,
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  realpathSync,
+  rmSync,
+  symlinkSync,
+  writeFileSync
+} from 'node:fs'
 import { tmpdir } from 'node:os'
 import { dirname, join } from 'node:path'
 
 import { afterAll, describe, expect, test } from 'vitest'
 
+import { type DiagnosticEnvironment, diagnosticEnvironment } from '../cli/diagnostics.js'
 import { defaultContext, type RunContext, run } from '../cli/run.js'
 import { executeGit, type GitExecutor } from '../git/adapter.js'
 import type { ActivityModel } from '../types.js'
@@ -71,6 +81,7 @@ interface InvokeOptions {
   noColorEnvironment?: boolean
   git?: GitExecutor
   outputError?: unknown
+  environment?: DiagnosticEnvironment
 }
 
 const invoke = async (args: string[], options: InvokeOptions = {}): Promise<Invocation> => {
@@ -93,7 +104,8 @@ const invoke = async (args: string[], options: InvokeOptions = {}): Promise<Invo
       if (options.outputError) throw options.outputError
       written.set(path, value)
     },
-    git: options.git ?? executeGit
+    git: options.git ?? executeGit,
+    environment: options.environment
   }
   const code = await run(args, context)
   return { code, stdout, stderr, written }
@@ -151,12 +163,30 @@ describe('Git Almanac CLI contract', () => {
     expect(diag.code).toBe(0)
     expect(JSON.parse(diag.stdout)).toMatchObject({
       schema: 'git-almanac/diag/v1',
+      tool: 'git-almanac',
+      version: '0.1.0',
+      installation: 'unknown',
+      runtime: { name: 'node' },
       git: 'available',
       repository: 'available',
       configuration: 'absent'
     })
     expect(diag.stdout).not.toContain(root)
-    expect((await invoke(['doctor', root])).code).toBe(0)
+    const healthy = await invoke(['doctor', root])
+    expect(healthy.code).toBe(0)
+    for (const label of ['Tool', 'Version', 'Installation', 'Platform', 'Architecture', 'Runtime', 'Configuration']) {
+      expect(healthy.stdout).toContain(`${label}:`)
+      expect((await invoke(['diag', root])).stdout).toContain(`${label}:`)
+    }
+    expect(healthy.stdout).toContain('Checks: pass=3 warn=0 fail=0 skipped=0')
+    expect(healthy.stdout).toContain('Verdict: healthy')
+    expect(healthy.stdout).toContain('package updates are not checked')
+    expect(healthy.stdout).not.toContain(root)
+    expect(JSON.parse((await invoke(['doctor', root, '--json'])).stdout)).toMatchObject({
+      configuration: 'absent',
+      verdict: 'healthy',
+      summary: { pass: 3, warn: 0, fail: 0, skipped: 0 }
+    })
     writeFileSync(config, 'ref = "HEAD"\n')
     expect(JSON.parse((await invoke(['diag', root, '--json'])).stdout).configuration).toBe('valid')
 
@@ -165,21 +195,107 @@ describe('Git Almanac CLI contract', () => {
     writeFileSync(config, 'schema = 2\n')
     const unhealthy = await invoke(['doctor', root, '--json'])
     expect(unhealthy.code).toBe(1)
-    expect(JSON.parse(unhealthy.stdout)).toMatchObject({ healthy: false })
+    expect(JSON.parse(unhealthy.stdout)).toMatchObject({
+      healthy: false,
+      verdict: 'unhealthy',
+      summary: { pass: 2, warn: 0, fail: 1, skipped: 0 }
+    })
+    const invalidDoctor = await invoke(['doctor', root])
+    expect(invalidDoctor.stdout).toContain('Correct invalid .git-almanac.toml')
+    expect(invalidDoctor.stdout).not.toContain(root)
+    expect(readFileSync(config, 'utf8')).toBe('schema = 2\n')
     const safe = await invoke(['diag', root, '--json'])
     expect(safe.code).toBe(0)
     expect(safe.stdout).not.toContain(root)
     const invalidDetail = await invoke(['diag', root, '--full'])
     expect(invalidDetail.stdout).toContain('detail:')
     expect(invalidDetail.stdout).toContain(root)
+    writeFileSync(config, 'since = "secret-token-do-not-share"\n')
+    const privateConfig = await invoke(['diag', root, '--full', '--json'])
+    expect(privateConfig.stdout).not.toContain('secret-token-do-not-share')
+    expect(JSON.parse(privateConfig.stdout).configuration).toBe('invalid')
+    expect((await invoke(['doctor', root])).stdout).not.toContain('secret-token-do-not-share')
 
     const missing = await invoke(['diag', join(root, 'missing'), '--full', '--json'])
     expect(JSON.parse(missing.stdout)).toMatchObject({ repository: 'unavailable', details: { root: null } })
+    expect(JSON.parse((await invoke(['doctor', join(root, 'missing'), '--json'])).stdout)).toMatchObject({
+      summary: { pass: 1, warn: 0, fail: 1, skipped: 1 },
+      checks: [{ status: 'pass' }, { status: 'fail' }, { status: 'skipped' }]
+    })
 
     const noGit: GitExecutor = async () => ({ stdout: '', stderr: 'unavailable', exitCode: 1 })
     expect((await invoke(['doctor', root], { git: noGit })).code).toBe(1)
+    expect(JSON.parse((await invoke(['doctor', root, '--json'], { git: noGit })).stdout)).toMatchObject({
+      verdict: 'unhealthy',
+      summary: { pass: 0, warn: 0, fail: 1, skipped: 2 }
+    })
     expect((await invoke(['diag', root], { git: noGit })).code).toBe(0)
     expect((await invoke(['diag', root, '--full'], { git: noGit })).stdout).toContain('repository root: unavailable')
+  })
+
+  test('detects actual linked checkout provenance, runtime and packaged receipts without guessing copies', async () => {
+    const root = repository('provenance')
+    mkdirSync(join(root, 'bin'))
+    mkdirSync(join(root, 'src', 'cli'), { recursive: true })
+    mkdirSync(join(root, 'dist', 'cli'), { recursive: true })
+    const executable = join(root, 'bin', 'git-almanac')
+    writeFileSync(executable, '#!/usr/bin/env bun\n')
+    writeFileSync(join(root, 'src', 'cli', 'run.ts'), '// source\n')
+    writeFileSync(join(root, 'dist', 'cli', 'cli.js'), '// compiled\n')
+    symlinkSync(executable, join(root, 'linked-cli'))
+    const local = diagnosticEnvironment(join(root, 'linked-cli'), { node: '24.0.0', bun: '1.4.0' })
+    expect(local).toMatchObject({
+      installation: 'local',
+      runtime: { name: 'bun', version: '1.4.0' },
+      executable: realpathSync(executable)
+    })
+    expect(diagnosticEnvironment(join(root, 'dist', 'cli', 'cli.js')).installation).toBe('local')
+    const safe = await invoke(['diag', root, '--json'], { environment: local })
+    expect(JSON.parse(safe.stdout)).toMatchObject({ installation: 'local', runtime: local.runtime })
+    expect(safe.stdout).not.toContain(root)
+    expect(
+      JSON.parse((await invoke(['diag', root, '--json', '--full'], { environment: local })).stdout).details.executable
+    ).toBe(local.executable)
+    expect((await invoke(['doctor', root], { environment: local })).stdout).toContain('Installation: local')
+
+    const copied = join(root, 'copy')
+    writeFileSync(copied, '// arbitrary copy\n')
+    expect(diagnosticEnvironment(copied).installation).toBe('unknown')
+    rmSync(join(root, 'src', 'cli', 'run.ts'))
+    expect(diagnosticEnvironment(executable).installation).toBe('unknown')
+    rmSync(join(root, '.git'), { recursive: true })
+    expect(diagnosticEnvironment(executable).installation).toBe('unknown')
+    writeFileSync(join(root, 'INSTALL_RECEIPT.json'), '{}\n')
+    expect(diagnosticEnvironment(executable).installation).toBe('release')
+    const unavailable = diagnosticEnvironment(join(root, 'absent'))
+    expect(unavailable.executable).toBeNull()
+    expect((await invoke(['diag', '--full'], { environment: unavailable })).stdout).toContain('executable: unavailable')
+    expect(
+      diagnosticEnvironment(copied, { node: '24.0.0' }, { platform: 'darwin', architecture: 'x64' })
+    ).toMatchObject({
+      platform: 'macos',
+      architecture: 'x86_64',
+      runtime: { name: 'node', version: '24.0.0' }
+    })
+    expect(
+      diagnosticEnvironment(copied, { node: '24.0.0' }, { platform: 'win32', architecture: 'AMD64' })
+    ).toMatchObject({
+      platform: 'windows',
+      architecture: 'x86_64'
+    })
+    expect(
+      diagnosticEnvironment(copied, { node: '24.0.0' }, { platform: 'freebsd', architecture: 'riscv64' })
+    ).toMatchObject({
+      platform: 'freebsd',
+      architecture: 'riscv64'
+    })
+    const originalArgv = process.argv
+    process.argv = [originalArgv[0] as string]
+    try {
+      expect(diagnosticEnvironment().installation).toBe('unknown')
+    } finally {
+      process.argv = originalArgv
+    }
   })
 
   test('constructs a usable default process context', async () => {

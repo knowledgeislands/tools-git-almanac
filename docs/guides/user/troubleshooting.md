@@ -2,6 +2,14 @@
 
 Use this guide when a command fails, refuses, or produces something you did not expect. Every diagnostic Git Almanac prints names the value it rejected or the destination it protected, so the message itself is usually the fastest route to the fix.
 
+## Compare diagnostic facts and health
+
+Use `git almanac diag` to collect share-safe tool/version, installation mode, host platform and architecture, executing runtime, and configuration state. `git almanac doctor` starts with the same context and then evaluates three read-only check units: Git availability, repository discovery and configuration validity. Missing prerequisites skip dependent checks. An absent optional `.git-almanac.toml` is healthy; an invalid file is a failure with a next action. Doctor reports its scope, healthy/unhealthy verdict and pass/warn/fail/skipped counts, and never checks available package upgrades.
+
+Installation `local` identifies an actual direct or linked development checkout; `release` requires installed-package receipt evidence. A copied executable whose provenance cannot be established reports `unknown`, even when its version is known. Platform names include `macos`, `linux`, and `windows`; AMD64/x64 is normalised to `x86_64` and AArch64 to `arm64`. The runtime is the Node or Bun interpreter executing this command, not another executable found on `PATH`.
+
+Both commands support `--json`; each retains its own v1 contract with additive context fields. `diag --full` additionally includes the resolved executable, repository root and error details for private troubleshooting. Review full output before sharing it; default output omits local identities, paths and configuration contents. Neither command writes configuration or repairs the repository.
+
 ## Read the exit status
 
 - **0** — success.
