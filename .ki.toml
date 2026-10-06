@@ -15,6 +15,7 @@ repo_type = "project"
 primary_shape = "ki-repo-tools"
 repository = "https://github.com/knowledgeislands/tools-git-almanac"
 title = "Git Almanac"
+capital = "https://github.com/knowledgeislands/ki-arcadia-principal"
 description = "Inspect one local Git repository's calendars, authors, contributors, and reports offline."
 repo_code = "ALMANAC"
 supported_runtimes = ["claude-code", "claude-desktop", "chatgpt-codex"]
@@ -77,11 +78,3 @@ auto_memory = "disabled"
 # -----------------------------------------------------------------------------
 
 [skills.ki-trades]
-
-[skills.ki-trades.routes."knowledgeislands/homebrew-tap"]
-export = ["work"]
-
-[skills.ki-trades.routes."knowledgeislands/ki-agentic-harness"]
-export = ["work", "knowledge"]
-import = ["knowledge"]
-standing.export.knowledge = ["shared-capability-maintenance"]
