@@ -4,6 +4,10 @@ Use this guide after completing the [definition of done](definition-of-done.md).
 
 Apply the `ki-repo-tools` release-readiness checklist for shared candidate, changelog, documentation, immutability and downstream requirements, and `ki-git` for commit and publication authority. This guide supplies Almanac's version sources, artifact and publication procedure.
 
+## When to release
+
+Release timing follows the `ki-repo-tools` [release-on-demand policy](https://github.com/knowledgeislands/ki-agentic-harness/blob/main/skills/repo-structure/ki-repo-tools/references/standards-release-readiness.md#release-on-demand): hold releases by default and do not release after each change, and close delivered work without waiting for a release. The steps below apply only once a release is due under that policy.
+
 ## Prepare the version
 
 1. Set the exact release version in `package.json`, the manual heading, and version tests.
