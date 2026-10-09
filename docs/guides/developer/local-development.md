@@ -1,6 +1,6 @@
 # Local development
 
-Use this guide to change or evaluate Git Almanac without installing a release.
+Use this guide to change or evaluate Git Almanac without installing a release: you prepare the checkout, run the source directly, link it into your path and exercise its behavior against a real repository.
 
 ## Prepare the checkout
 
