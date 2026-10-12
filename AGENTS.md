@@ -1,4 +1,4 @@
-# Working in Git Almanac
+# Working in git almanac
 
 This repository contains the standalone Git Almanac command-line tool.
 

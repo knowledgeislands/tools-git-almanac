@@ -1,4 +1,4 @@
-# Git Almanac
+# git almanac
 
 Inspect one local Git repository's calendars, authors, contributors, and reports without a network request or forge account.
 
