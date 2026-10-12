@@ -1,6 +1,6 @@
 # Git Almanac — ALM
 
-This Specification defines the as-built local Git inspection, output, configuration, and report contract established by [PDR-KI-ALMANAC-001](../decisions/PDR-KI-ALMANAC-001-git-almanac-command-and-report-contract.md). See the [Specifications index](index.md) for the identifier scheme.
+This Specification defines the as-built local Git inspection, output, configuration, and report contract established by [PDR-KI-TOOL-GIT-ALMANAC-001](../decisions/PDR-KI-TOOL-GIT-ALMANAC-001-git-almanac-command-and-report-contract.md). See the [Specifications index](index.md) for the identifier scheme.
 
 ## Repository and history
 

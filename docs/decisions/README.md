@@ -4,5 +4,5 @@ Git Almanac keeps significant product, architecture, governance, and operational
 
 <!-- ki-decision-records: adoption-root -->
 
-1. [GDR-KI-ALMANAC-001](GDR-KI-ALMANAC-001-adopting-decision-records.md) — adopting Decision Records.
-2. [PDR-KI-ALMANAC-001](PDR-KI-ALMANAC-001-git-almanac-command-and-report-contract.md) — Git Almanac command and report contract.
+1. [GDR-KI-TOOL-GIT-ALMANAC-001](GDR-KI-TOOL-GIT-ALMANAC-001-adopting-decision-records.md) — adopting Decision Records.
+2. [PDR-KI-TOOL-GIT-ALMANAC-001](PDR-KI-TOOL-GIT-ALMANAC-001-git-almanac-command-and-report-contract.md) — Git Almanac command and report contract.

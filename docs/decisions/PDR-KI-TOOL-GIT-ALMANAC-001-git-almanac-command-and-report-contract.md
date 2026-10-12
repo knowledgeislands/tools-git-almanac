@@ -1,14 +1,14 @@
 ---
-id: PDR-KI-ALMANAC-001
+id: PDR-KI-TOOL-GIT-ALMANAC-001
 title: 'Git Almanac command and report contract'
 date: 2026-10-05
 status: current
 decision_type: product
 decision_type_url: https://knowledgeislands.info/specifications/decision-records/pdr
-decision_depends_on: ["GDR-KI-ALMANAC-001"]
+decision_depends_on: ["GDR-KI-TOOL-GIT-ALMANAC-001"]
 ---
 
-# PDR-KI-ALMANAC-001: Git Almanac command and report contract
+# PDR-KI-TOOL-GIT-ALMANAC-001: Git Almanac command and report contract
 
 ## Context
 
@@ -33,4 +33,4 @@ Every analytical command can reuse one argument-safe Git history traversal and o
 
 ## References
 
-- [GDR-KI-ALMANAC-001](GDR-KI-ALMANAC-001-adopting-decision-records.md) — establishes the Decision Record collection governing this product record.
+- [GDR-KI-TOOL-GIT-ALMANAC-001](GDR-KI-TOOL-GIT-ALMANAC-001-adopting-decision-records.md) — establishes the Decision Record collection governing this product record.
