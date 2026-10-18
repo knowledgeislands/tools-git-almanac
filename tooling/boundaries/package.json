@@ -4,7 +4,7 @@
   "private": true,
   "description": "Isolated development checker: dependency-cruiser needs a supported TypeScript compiler rather than Almanac's TypeScript 7. Not a workspace or release payload.",
   "dependencies": {
-    "dependency-cruiser": "^18.5.0",
+    "dependency-cruiser": "^18.6.0",
     "typescript": "^6.0.3"
   }
 }
