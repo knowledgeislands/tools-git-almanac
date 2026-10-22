@@ -18,7 +18,7 @@ Apply the `ki-repo-tools` change-readiness checklist for shared documentation, v
 Run focused tests while iterating, then the complete gate:
 
 ```sh
-bun install --frozen-lockfile --cwd tooling/boundaries
+bun install --frozen-lockfile --cwd tooling/depcruise
 bunx tsc --noEmit
 bun run test:coverage
 bun run build

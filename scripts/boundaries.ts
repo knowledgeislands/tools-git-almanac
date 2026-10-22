@@ -11,7 +11,7 @@ const root = resolve(import.meta.dirname, '..')
 
 // Resolve the checker from its own install root: the root TypeScript 7 compiler
 // is outside dependency-cruiser's supported range and can produce an empty graph.
-const checker = resolve(root, 'tooling/boundaries/node_modules/.bin/depcruise')
+const checker = resolve(root, 'tooling/depcruise/node_modules/.bin/depcruise')
 
 export const cruise = (roots: readonly string[] = ['src'], directory = root): Cruise => {
   // depcruise deliberately exits nonzero on rule violations; retain its JSON so
@@ -46,7 +46,7 @@ export const availableTranspilers = (): readonly Readonly<{ name: string; availa
         "import { getAvailableTranspilers } from 'dependency-cruiser'; console.log(JSON.stringify(getAvailableTranspilers()))"
       ],
       {
-        cwd: resolve(root, 'tooling/boundaries'),
+        cwd: resolve(root, 'tooling/depcruise'),
         encoding: 'utf8',
         stdio: ['ignore', 'pipe', 'pipe']
       }

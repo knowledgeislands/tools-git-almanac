@@ -31,7 +31,7 @@ describe('enforced architecture boundaries', () => {
     expect(entry?.dependencies).toContainEqual(
       expect.objectContaining({ resolved: 'src/cli/run.ts', couldNotResolve: false })
     )
-    const tooling = JSON.parse(readFileSync(join(root, 'tooling/boundaries/package.json'), 'utf8')) as {
+    const tooling = JSON.parse(readFileSync(join(root, 'tooling/depcruise/package.json'), 'utf8')) as {
       dependencies: Record<string, string>
     }
     const product = JSON.parse(readFileSync(join(root, 'package.json'), 'utf8')) as {

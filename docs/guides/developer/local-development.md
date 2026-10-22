@@ -9,7 +9,7 @@ The exact Bun and Node versions are declared in `mise.toml`; `package.json` repe
 ```bash
 mise install
 bun install
-bun install --frozen-lockfile --cwd tooling/boundaries
+bun install --frozen-lockfile --cwd tooling/depcruise
 ```
 
 Run source directly:
@@ -52,7 +52,7 @@ Run the complete verification gate in the [definition of done](definition-of-don
 
 Tests drive the in-process `run(args, context)` boundary and deliberately dated temporary Git repositories. Product coverage is held at 100% statements, branches, functions, and lines.
 
-The suite also enforces `.dependency-cruiser.ts`: core counting and types stay below I/O, renderers stay independent of repository writes, the executable stays thin, and CLI acceptance tests use `run` with its documented Git-executor and diagnostic-environment fixture ports. Focused configuration and rendering tests may exercise those modules' exported contracts. The isolated `tooling/boundaries` install holds a TypeScript compiler dependency-cruiser supports; the checker proves it read a resolved, type-aware graph and that each prohibited crossing fails in a temporary fixture, without writing product source.
+The suite also enforces `.dependency-cruiser.ts`: core counting and types stay below I/O, renderers stay independent of repository writes, the executable stays thin, and CLI acceptance tests use `run` with its documented Git-executor and diagnostic-environment fixture ports. Focused configuration and rendering tests may exercise those modules' exported contracts. The isolated `tooling/depcruise` install holds a TypeScript compiler dependency-cruiser supports; the checker proves it read a resolved, type-aware graph and that each prohibited crossing fails in a temporary fixture, without writing product source.
 
 ## Verify the built CLI
 
