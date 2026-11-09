@@ -1,5 +1,6 @@
 ---
 areas: { CLI: 8 }
+work: ki.sop.tools
 ---
 
 # Roadmap issue ledger
