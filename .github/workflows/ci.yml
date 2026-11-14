@@ -46,7 +46,7 @@ jobs:
           test "$(command -v ki)" = "$KI_CLI_INSTALL_DIR/ki"
           test "v$(ki --version)" = "$KI_VERSION"
           ki bootstrap
-          for skill in ki-binding ki-binding-claude ki-binding-chatgpt ki-housekeeping-claude ki-housekeeping-chatgpt ki-tokenomics ki-tokenomics-claude ki-tokenomics-chatgpt; do
+          for skill in ki-env-binding ki-env-binding-claude ki-env-binding-chatgpt ki-env-housekeeping-claude ki-env-housekeeping-chatgpt ki-env-tokenomics ki-env-tokenomics-claude ki-env-tokenomics-chatgpt; do
             ki repo skill add "$skill" --repo .
           done
           ki registry add --repo .
